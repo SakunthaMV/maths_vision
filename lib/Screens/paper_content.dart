@@ -36,7 +36,6 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     const oneSec = const Duration(seconds: 1);
     if (widget.type == 'Question') {
@@ -74,7 +73,6 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     initTimer.cancel();
   }

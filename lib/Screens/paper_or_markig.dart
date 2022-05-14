@@ -62,7 +62,6 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       _year = widget.year.split(" ");
