@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "187427432276",
+    "project_id": "maths-vision-e2bb7",
+    "storage_bucket": "maths-vision-e2bb7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187427432276:android:86d2a6f778842e8f35cac1",
+        "android_client_info": {
+          "package_name": "org.mathsvision.mathsvision"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187427432276-0iebjpmjvbsd40q33gm0vuq2g3d34to9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.mathsvision.mathsvision",
+            "certificate_hash": "6c0655453181a3d0300cf599fff2d4cc851f0f36"
+          }
+        },
+        {
+          "client_id": "187427432276-ffjtc51f37iaenqk3l6ads4skagsi6ih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.mathsvision.mathsvision",
+            "certificate_hash": "fb8b7100ac4b1395b3b8eb6a8297c25aa134e591"
+          }
+        },
+        {
+          "client_id": "187427432276-it4bmkaueu2a6b6n2osoam4d0c4utrh5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.mathsvision.mathsvision",
+            "certificate_hash": "0213f9c1ff0053ca3b9de23220ecdcd9337d0cc7"
+          }
+        },
+        {
+          "client_id": "187427432276-hh8r8jokv5cgdlc2oqii15r71jrqhvdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjUCG4WFt5huqwBR1bzLO57_Y960ZsQ80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "187427432276-hh8r8jokv5cgdlc2oqii15r71jrqhvdb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-2445637094519371~9400624945"
+    }
+  ],
+  "configuration_version": "1"
+}
