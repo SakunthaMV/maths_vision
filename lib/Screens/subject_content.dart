@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maths_vision/Splash_Screens/log_in_splash_screen.dart';
 

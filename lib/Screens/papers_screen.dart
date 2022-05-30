@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:clip_shadow/clip_shadow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
@@ -265,7 +262,7 @@ class _PapersScreenState extends State<PapersScreen> {
     List sorted = docs.keys.toList()..sort();
     List sortedKeys = sorted.reversed.toList();
     return Scrollbar(
-      isAlwaysShown: true,
+      thumbVisibility: true,
       thickness: 7,
       child: ListView.builder(
         padding: EdgeInsets.only(bottom: 15),
