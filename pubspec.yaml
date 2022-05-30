@@ -44,7 +44,7 @@ dependencies:
   connectivity: ^3.0.3
   permission_handler: ^8.0.0+2
   image_picker: ^0.7.5+3
-  ext_storage: ^1.0.3
+  external_path: ^1.0.1
   shimmer: ^1.1.2
   date_time_picker: ^2.0.0
   scroll_snap_list: ^0.8.0
