@@ -558,13 +558,14 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     final _storage = FirebaseStorage.instance;
     final _picker = ImagePicker();
     DocumentReference userData = FirebaseFirestore.instance.collection('Users').doc(user.uid);
-    PickedFile image;
+    XFile image;
     String _imageURL;
 
     await Permission.photos.request();
     var permissionStatus = await Permission.photos.status;
     if (permissionStatus.isGranted) {
-      image = await _picker.getImage(source: ImageSource.gallery);
+      image = await _picker.pickImage(source: ImageSource.gallery);
+      // image = await _picker.getImage(source: ImageSource.gallery);
       if (image != null) {
         var file = File(image.path);
         try {
