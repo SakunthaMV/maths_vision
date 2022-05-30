@@ -426,7 +426,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
                                               animateFromLastPercent: true,
                                               animationDuration: 1000,
                                               percent: 1 * currentLevelXP / currentLevelTotalXP,
-                                              linearStrokeCap: LinearStrokeCap.roundAll,
+                                              barRadius: Radius.circular(10),
                                               progressColor: Color.fromARGB(255, 111, 164, 200),
                                               backgroundColor: Colors.white,
                                             ),
