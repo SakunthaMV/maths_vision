@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:ext_storage/ext_storage.dart';
+import 'package:external_path/external_path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -30,7 +30,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
 
   void pastPaperDownload(String link) async {
     final externalDir =
-        await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+        await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
     Fluttertoast.showToast(
       msg: 'Downloading...',
       fontSize: 16,
@@ -45,8 +45,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
   }
 
   void markingDownload(String link) async {
-    final externalDir =
-        await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+    final externalDir = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
     Fluttertoast.showToast(
       msg: 'Downloading...',
       fontSize: 16,
