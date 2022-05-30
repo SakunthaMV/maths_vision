@@ -1,9 +1,6 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:maths_vision/Screens/home_screen.dart';
 import 'content.dart';
