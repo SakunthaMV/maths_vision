@@ -14,12 +14,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   _launchURL() async {
     const url =
         "https://play.google.com/store/apps/details?id=" + "org.mathsvision.mathsvision";
-    await launch(url);
+    await launchUrl(Uri.parse(url));
   }
 
   _facebookURL() async {
     const url = "https://www.facebook.com/groups/mathsvision/";
-    await launch(url);
+    await launchUrl(Uri.parse(url));
   }
 
   _instagramURL() async {
@@ -27,17 +27,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     // password = ma.ha.0101
     // email = magichackers0101@gmail.com
     const url = "https://www.instagram.com/maths_vision/";
-    await launch(url);
+    await launchUrl(Uri.parse(url));
   }
 
   _telegramURL() async {
     const url = "https://t.me/maths_vision";
-    await launch(url);
+    await launchUrl(Uri.parse(url));
   }
 
-  void customLaunch(link) async {
-    if (await canLaunch(link)) {
-      await launch(link);
+  void customLaunch(String link) async {
+    if (await canLaunchUrl(Uri.parse(link))) {
+      await launchUrl(Uri.parse(link));
     } else {
       print('cannot launch $link');
     }
