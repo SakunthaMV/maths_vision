@@ -765,7 +765,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: 80,
                                       height: 80,
                                       child: CircularPercentIndicator(
-                                        radius: 80,
+                                        radius: 40,
                                         lineWidth: 6,
                                         percent: _progress / 100,
                                         progressColor: Colors.white,
@@ -1095,7 +1095,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             floatingActionButton: SpeedDial(
               animatedIcon: AnimatedIcons.menu_home,
-              buttonSize: 60,
+              buttonSize: Size(60.0,60.0),
               visible: _loggedIn == true ? true : false,
               animatedIconTheme: IconThemeData(
                 size: 25,
