@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:maths_vision/Diary/diary_home_screen.dart';
@@ -677,6 +678,10 @@ class _AccountScreenState extends State<AccountScreen> {
                                                       'google.com') {
                                                     final googleSignIn = GoogleSignIn();
                                                     await googleSignIn.disconnect();
+                                                  } else if (auth.currentUser.providerData[0].providerId ==
+                                                      'facebook.com') {
+                                                    await FacebookAuth.instance.logOut();
+                                                    print('Facebook Logged Out');
                                                   }
                                                   auth.signOut();
                                                   final SharedPreferences sharedPreferences =
