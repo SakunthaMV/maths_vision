@@ -2,4 +2,5 @@
     <string name="app_name">Maths Vision</string>
     <string name="facebook_app_id">292154679299607</string>
     <string name="fb_login_protocol_scheme">fb292154679299607</string>
+    <string name="facebook_client_token">205bac6ff3b3894814f22e69b3b84e91</string>
 </resources>

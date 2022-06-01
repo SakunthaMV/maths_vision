@@ -70,6 +70,7 @@ class _LogInScreenState extends State<LogInScreen> {
             final facebookProvider = Provider.of<FacebookSignInProvider>(context);
             final user = FirebaseAuth.instance.currentUser;
             if (googleProvider.isSigningIn || facebookProvider.isSigningIn) {
+              print(facebookProvider.isSigningIn);
               return Center(
                 child: SizedBox(
                   height: 100,
@@ -80,6 +81,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
               );
             } else if (snapshot.hasData) {
+              print(facebookProvider.isSigningIn);
               sharedPreferenceSaver(user.uid);
               if (user.providerData[0].providerId == 'google.com' ||
                   user.providerData[0].providerId == 'facebook.com' ||
@@ -89,6 +91,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 return EmailVerification();
               }
             } else {
+              // print(facebookProvider.isSigningIn);
               return Stack(
                 children: [
                   Opacity(

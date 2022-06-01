@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 
 class FacebookSignInProvider extends ChangeNotifier {
-  final facebookSignIn = FacebookLogin();
+  Map<String,dynamic> _userData;
+  AccessToken _accessToken;
 
   bool _isSigningIn;
 
@@ -27,25 +25,23 @@ class FacebookSignInProvider extends ChangeNotifier {
   }
 
   loginFacebook() async {
-    final userFacebook = await facebookSignIn.logIn(['email']);
+    final LoginResult result = await FacebookAuth.instance.login();
     isSigningIn = true;
 
-    switch (userFacebook.status) {
-      case FacebookLoginStatus.loggedIn:
-        final FacebookAccessToken fbToken = userFacebook.accessToken;
-        final AuthCredential credential = FacebookAuthProvider.credential(fbToken.token);
-        final UserCredential result =
-            await FirebaseAuth.instance.signInWithCredential(credential);
-        User userFireStore = result.user;
+    switch (result.status) {
+      case LoginStatus.success:
+        _accessToken = result.accessToken;
+        final userData = await FacebookAuth.instance.getUserData();
+        _userData = userData;
+        final AuthCredential credential = FacebookAuthProvider.credential(_accessToken.token);
+        final UserCredential resultUser = await FirebaseAuth.instance.signInWithCredential(credential);
+        User userFireStore = resultUser.user;
 
         isSigningIn = false;
-
-        var graphResponse = await http.get(
-          Uri.parse(
-              'https://graph.facebook.com/${fbToken.userId}?fields=first_name,last_name,birthday,gender,email,picture.height(700)&access_token=${fbToken.token}'),
-        );
-
-        var profile = jsonDecode(graphResponse.body);
+        String name = _userData['name'];
+        String firstName = name.split(' ')[0];
+        String lastName = name.split(' ')[1];
+        print(_userData);
 
         users.doc(userFireStore.uid).get().then((doc) {
           if (!doc.exists) {
@@ -54,13 +50,13 @@ class FacebookSignInProvider extends ChangeNotifier {
                 'userId': userFireStore.uid,
                 'signUpWith': 'Facebook',
                 'completePercentage': 0.0,
-                'firstName': profile['first_name'],
-                'lastName': profile['last_name'],
-                'dateOfBirth': profile['birthday'],
-                'gender': profile['gender'],
-                'email': profile['email'],
+                'firstName': firstName,
+                'lastName': lastName,
+                'dateOfBirth': null,
+                'gender': null,
+                'email': _userData['email'],
                 'phoneNumber': null,
-                'photoURL': profile['picture']['data']['url'],
+                'photoURL': _userData['picture']['data']['url'],
                 'coins': 50,
                 'xp': 0,
                 'level': 1,
@@ -136,7 +132,7 @@ class FacebookSignInProvider extends ChangeNotifier {
           }
         });
         break;
-      case FacebookLoginStatus.cancelledByUser:
+      case LoginStatus.cancelled:
         isSigningIn = false;
         Fluttertoast.showToast(
           msg: 'You have been denied login via Facebook',
@@ -147,17 +143,19 @@ class FacebookSignInProvider extends ChangeNotifier {
           textColor: Colors.white,
         );
         break;
-      case FacebookLoginStatus.error:
+      case LoginStatus.failed:
         isSigningIn = false;
         Fluttertoast.showToast(
           msg:
-              'Something went wrong with the login process.\nHere is the error Facebook gave us: ${userFacebook.errorMessage}',
+              'Something went wrong with the login process.\nHere is the error Facebook gave us: \'userFacebook.errorMessage\'',
           timeInSecForIosWeb: 3,
           gravity: ToastGravity.TOP,
           fontSize: 17,
           backgroundColor: Color.fromARGB(255, 34, 34, 47),
           textColor: Colors.white,
         );
+        break;
+      case LoginStatus.operationInProgress:
         break;
     }
   }
