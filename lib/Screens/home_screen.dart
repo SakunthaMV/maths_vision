@@ -98,13 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
             'LogIn_Details.loginDays': 1,
             'LogIn_Details.day': DateTime.now().day,
             'LogIn_Details.Owned_Days': {
-              '1':false,
-              '2':false,
-              '3':false,
-              '4':false,
-              '5':false,
-              '6':false,
-              '7':false,
+              '1': false,
+              '2': false,
+              '3': false,
+              '4': false,
+              '5': false,
+              '6': false,
+              '7': false,
             },
           });
         } else {
@@ -118,13 +118,13 @@ class _HomeScreenState extends State<HomeScreen> {
           'LogIn_Details.loginDays': 1,
           'LogIn_Details.day': DateTime.now().day,
           'LogIn_Details.Owned_Days': {
-            '1':false,
-            '2':false,
-            '3':false,
-            '4':false,
-            '5':false,
-            '6':false,
-            '7':false,
+            '1': false,
+            '2': false,
+            '3': false,
+            '4': false,
+            '5': false,
+            '6': false,
+            '7': false,
           },
         });
       }
@@ -137,13 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
             'LogIn_Details.day': DateTime.now().day,
             'LogIn_Details.month': DateTime.now().month,
             'LogIn_Details.Owned_Days': {
-              '1':false,
-              '2':false,
-              '3':false,
-              '4':false,
-              '5':false,
-              '6':false,
-              '7':false,
+              '1': false,
+              '2': false,
+              '3': false,
+              '4': false,
+              '5': false,
+              '6': false,
+              '7': false,
             },
           });
         } else {
@@ -159,13 +159,13 @@ class _HomeScreenState extends State<HomeScreen> {
           'LogIn_Details.day': DateTime.now().day,
           'LogIn_Details.month': DateTime.now().month,
           'LogIn_Details.Owned_Days': {
-            '1':false,
-            '2':false,
-            '3':false,
-            '4':false,
-            '5':false,
-            '6':false,
-            '7':false,
+            '1': false,
+            '2': false,
+            '3': false,
+            '4': false,
+            '5': false,
+            '6': false,
+            '7': false,
           },
         });
       }
@@ -175,13 +175,13 @@ class _HomeScreenState extends State<HomeScreen> {
         'LogIn_Details.day': DateTime.now().day,
         'LogIn_Details.month': DateTime.now().month,
         'LogIn_Details.Owned_Days': {
-          '1':false,
-          '2':false,
-          '3':false,
-          '4':false,
-          '5':false,
-          '6':false,
-          '7':false,
+          '1': false,
+          '2': false,
+          '3': false,
+          '4': false,
+          '5': false,
+          '6': false,
+          '7': false,
         },
       });
     }
@@ -217,6 +217,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
     Timer(Duration(microseconds: 300), () {
       setState(() {
         widget.userId == null
@@ -226,12 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 : _progress = userData['progress'];
       });
     });
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     return Stack(
       children: [
         Container(
-          color: Color.fromARGB(255, 0, 135, 145),
+          color: colorScheme.background,
         ),
         Opacity(
           opacity: 0.12,
@@ -263,43 +265,21 @@ class _HomeScreenState extends State<HomeScreen> {
               child: AlertDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
-                  side: BorderSide(color: Colors.black),
+                  side: BorderSide(color: colorScheme.onPrimary),
                 ),
                 contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 5),
                 content: Text(
                   'Are you sure you want to quit Maths Vision?',
-                  style: TextStyle(
-                    height: 1.5,
-                    fontFamily: 'Rockwell',
-                    fontSize: 20,
-                    color: Color.fromARGB(255, 3, 130, 139),
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 1,
-                        offset: Offset(0.5, 1),
-                      ),
-                    ],
-                  ),
+                  style: textTheme.labelMedium,
                   textAlign: TextAlign.center,
                 ),
                 actions: [
                   TextButton(
                     child: Text(
                       'Yes, Quit Now',
-                      style: TextStyle(
-                        height: 1.5,
-                        fontFamily: 'Rockwell',
+                      style: textTheme.labelMedium.copyWith(
                         fontSize: 16,
                         color: Color.fromARGB(255, 20, 14, 94),
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.6),
-                            blurRadius: 1,
-                            offset: Offset(0.5, 1),
-                          ),
-                        ],
                       ),
                     ),
                     onPressed: () => SystemNavigator.pop(),
@@ -307,19 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   TextButton(
                     child: Text(
                       'No',
-                      style: TextStyle(
-                        height: 1.5,
-                        fontFamily: 'Rockwell',
+                      style: textTheme.labelMedium.copyWith(
                         fontSize: 16,
                         color: Color.fromARGB(255, 20, 14, 94),
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.6),
-                            blurRadius: 1,
-                            offset: Offset(0.5, 1),
-                          ),
-                        ],
                       ),
                     ),
                     onPressed: () => Navigator.pop(c, false),
@@ -336,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     iconSize: 30,
                     icon: Icon(
                       Icons.menu,
-                      color: Colors.white,
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                     onPressed: () {
@@ -367,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 25,
                                 width: 95,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: colorScheme.primary,
                                   borderRadius: BorderRadius.circular(12.5),
                                   boxShadow: [
                                     BoxShadow(
@@ -392,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       style: TextStyle(
                                         fontFamily: 'Forte',
                                         fontSize: 17,
-                                        color: Colors.black,
+                                        color: colorScheme.onPrimary,
                                       ),
                                     ),
                                     Padding(
@@ -407,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Icon(
                                           Icons.add,
                                           size: 15,
-                                          color: Colors.black,
+                                          color: colorScheme.onPrimary,
                                         ),
                                       ),
                                     ),
@@ -420,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 60,
                             margin: EdgeInsets.only(top: 15, bottom: 15),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: colorScheme.primary,
                               borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
@@ -444,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: IconShadowWidget(
                     Icon(
                       Icons.article,
-                      color: Colors.white,
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                     shadowColor: Colors.black.withOpacity(0.3),
@@ -474,13 +444,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   splashColor: Colors.grey.shade600,
                   highlightColor: Colors.black.withOpacity(0.2),
                   iconSize: 30,
-                  color: Colors.white,
+                  color: colorScheme.primary,
                 ),
                 IconButton(
                   icon: IconShadowWidget(
                     Icon(
                       Icons.emoji_events_rounded,
-                      color: Colors.white,
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                     shadowColor: Colors.black.withOpacity(0.3),
@@ -510,13 +480,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   splashColor: Colors.grey.shade600,
                   highlightColor: Colors.black.withOpacity(0.2),
                   iconSize: 30,
-                  color: Colors.white,
+                  color: colorScheme.primary,
                 ),
                 IconButton(
                   icon: IconShadowWidget(
                     Icon(
                       Icons.person,
-                      color: Colors.white,
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                     shadowColor: Colors.black.withOpacity(0.3),
@@ -546,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   splashColor: Colors.grey.shade600,
                   highlightColor: Colors.black.withOpacity(0.2),
                   iconSize: 30,
-                  color: Colors.white,
+                  color: colorScheme.primary,
                 ),
               ],
               leadingWidth: 70,
@@ -561,19 +531,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       'LATEST EVENT',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Roboto Regular',
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      style: textTheme.headlineSmall.copyWith(
                         letterSpacing: 2.5,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.6),
-                            offset: Offset(0.5, 0.5),
-                          ),
-                        ],
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Row(
@@ -613,18 +573,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 25, bottom: 25, left: 5, right: 5),
+                                  top: 25,
+                                  bottom: 25,
+                                  left: 5,
+                                  right: 5,
+                                ),
                                 child: Container(
                                   width: 220,
                                   height: 150,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: colorScheme.primary,
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
                                         blurRadius: 1,
                                         spreadRadius: 1,
-                                        color: Colors.black.withOpacity(0.3),
+                                        color: colorScheme.shadow,
                                         offset: Offset(0, 3),
                                       ),
                                     ],
@@ -651,7 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           'TRIGONOMETRY',
                                           style: TextStyle(
                                             fontFamily: 'Verdana Bold',
-                                            color: Color.fromARGB(255, 3, 130, 139),
+                                            color: colorScheme.tertiary,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -663,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           'Guidance for the Combat with',
                                           style: TextStyle(
                                             fontFamily: 'Lemon Jelly',
-                                            color: Color.fromARGB(255, 3, 130, 139),
+                                            color: colorScheme.tertiary,
                                             fontSize: 16,
                                           ),
                                         ),
@@ -675,7 +639,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           'the Examination',
                                           style: TextStyle(
                                             fontFamily: 'Lemon Jelly',
-                                            color: Color.fromARGB(255, 3, 130, 139),
+                                            color: colorScheme.tertiary,
                                             fontSize: 16,
                                           ),
                                         ),
@@ -729,7 +693,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 150,
                             width: 90,
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 162, 156, 156),
+                              color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -768,7 +732,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         radius: 40,
                                         lineWidth: 6,
                                         percent: _progress / 100,
-                                        progressColor: Colors.white,
+                                        progressColor: colorScheme.primary,
                                         animation: true,
                                         animateFromLastPercent: true,
                                         animationDuration: 1000,
@@ -807,7 +771,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         fontSize: 21,
                                                         fontFamily: 'Open Sans',
                                                         fontWeight: FontWeight.bold,
-                                                        color: Colors.white,
+                                                        color: colorScheme.primary,
                                                         shadows: [
                                                           Shadow(
                                                             blurRadius: 1,
@@ -834,7 +798,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fontSize: 25,
                                             fontFamily: 'Typo Round Demo',
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: colorScheme.primary,
                                             height: 1,
                                             shadows: [
                                               Shadow(
@@ -857,19 +821,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.only(bottom: 25),
                       child: Text(
                         'THEORY AND PAPERS',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: 'Roboto Regular',
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                        style: textTheme.headlineSmall.copyWith(
                           letterSpacing: 2.5,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 2,
-                              color: Colors.black.withOpacity(0.6),
-                              offset: Offset(0.5, 0.5),
-                            ),
-                          ],
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -885,7 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: Colors.white,
+                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -901,40 +855,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Align(
                                     child: Text(
                                       'ශුද්ධ ගණිතය',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 72, 73, 75),
-                                        fontSize: 27.0,
-                                        fontFamily: 'Warna',
-                                        fontWeight: FontWeight.w600,
-                                        wordSpacing: -6,
-                                        letterSpacing: 1.5,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 2,
-                                            offset: Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleMedium,
                                     ),
                                     alignment: Alignment(-0.9, -0.7),
                                   ),
                                   Align(
                                     child: Text(
                                       'PURE MATHS',
-                                      style: TextStyle(
-                                        fontFamily: 'Gabriola',
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color.fromARGB(255, 119, 123, 126),
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 1,
-                                            offset: Offset(0.5, 0.5),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleSmall,
                                     ),
                                     alignment: Alignment(-0.92, 0.7),
                                   ),
@@ -954,7 +882,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: Colors.white,
+                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -970,43 +898,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Align(
                                     child: Text(
                                       'ව්‍යවහාරික ගණිතය',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 72, 73, 75),
-                                        fontSize: 27.0,
-                                        fontFamily: 'Warna',
-                                        fontWeight: FontWeight.w600,
-                                        wordSpacing: -6,
-                                        letterSpacing: 1.5,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 2,
-                                            offset: Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleMedium,
                                     ),
                                     alignment: Alignment(-0.86, -0.7),
                                   ),
                                   Align(
                                     child: Text(
                                       'APPLIED MATHS',
-                                      style: TextStyle(
-                                        fontFamily: 'Gabriola',
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color.fromARGB(255, 119, 123, 126),
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 1,
-                                            offset: Offset(
-                                              0.5,
-                                              0.5,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleSmall,
                                     ),
                                     alignment: Alignment(-0.92, 0.7),
                                   ),
@@ -1026,7 +925,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: Colors.white,
+                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -1045,40 +944,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Align(
                                     child: Text(
                                       'පසුගිය විභාග ප්‍රශ්න පත්‍ර සහ පිළිතුරු',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 72, 73, 75),
-                                        fontSize: 27.0,
-                                        fontFamily: 'Warna',
-                                        fontWeight: FontWeight.w600,
-                                        wordSpacing: -6,
-                                        letterSpacing: 1.5,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 2,
-                                            offset: Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleMedium,
                                     ),
                                     alignment: Alignment(-0.86, -0.7),
                                   ),
                                   Align(
                                     child: Text(
                                       'PAST PAPERS & MARKING SCHEMES',
-                                      style: TextStyle(
-                                        fontFamily: 'Gabriola',
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color.fromARGB(255, 119, 123, 126),
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.grey.shade600,
-                                            blurRadius: 1,
-                                            offset: Offset(0.5, 0.5),
-                                          ),
-                                        ],
-                                      ),
+                                      style: textTheme.titleSmall,
                                     ),
                                     alignment: Alignment(-0.92, 0.8),
                                   ),
@@ -1095,21 +968,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             floatingActionButton: SpeedDial(
               animatedIcon: AnimatedIcons.menu_home,
-              buttonSize: Size(60.0,60.0),
+              buttonSize: Size(60.0, 60.0),
               visible: _loggedIn == true ? true : false,
               animatedIconTheme: IconThemeData(
                 size: 25,
-                color: Colors.white,
+                color: colorScheme.primary,
               ),
               backgroundColor: _fabBackgroundColor,
               onOpen: () {
                 setState(() {
-                  _fabBackgroundColor = Color.fromARGB(255, 0, 136, 145);
+                  _fabBackgroundColor = colorScheme.background;
                 });
               },
               onClose: () {
                 setState(() {
-                  _fabBackgroundColor = Color.fromARGB(255, 1, 79, 134);
+                  _fabBackgroundColor = colorScheme.secondary;
                 });
               },
               curve: Curves.easeIn,
@@ -1135,8 +1008,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   },
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   child: Icon(
                     Icons.event,
                     size: 32,
@@ -1163,25 +1036,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'EVENT',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w900,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 1,
-                                color: Colors.black.withOpacity(0.8),
-                                offset: Offset(0.5, 1.5),
-                              ),
-                            ],
-                          ),
+                          style: textTheme.headlineSmall.copyWith(
+                              fontSize: 20, fontWeight: FontWeight.w200, letterSpacing: 1.2),
                         ),
                       ),
                       width: 170,
                       height: 35,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 1, 79, 134),
+                        color: colorScheme.secondary,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -1212,8 +1074,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   },
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   child: Icon(
                     Icons.store,
                     size: 32,
@@ -1240,25 +1102,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'STORE',
-                          style: TextStyle(
+                          style: textTheme.headlineSmall.copyWith(
                             fontSize: 20,
-                            color: Colors.white,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w900,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 1,
-                                color: Colors.black.withOpacity(0.8),
-                                offset: Offset(0.5, 1.5),
-                              ),
-                            ],
+                            fontWeight: FontWeight.w200,
+                            letterSpacing: 1.2,
                           ),
                         ),
                       ),
                       width: 170,
                       height: 35,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 1, 79, 134),
+                        color: colorScheme.secondary,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -1289,8 +1143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   },
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   child: Icon(
                     Icons.style_outlined,
                     size: 32,
@@ -1317,25 +1171,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           'COLLECTION',
-                          style: TextStyle(
+                          style: textTheme.headlineSmall.copyWith(
                             fontSize: 20,
-                            color: Colors.white,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w900,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 1,
-                                color: Colors.black.withOpacity(0.8),
-                                offset: Offset(0.5, 1.5),
-                              ),
-                            ],
+                            fontWeight: FontWeight.w200,
+                            letterSpacing: 1.2,
                           ),
                         ),
                       ),
                       width: 170,
                       height: 35,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 1, 79, 134),
+                        color: colorScheme.secondary,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
