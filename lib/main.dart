@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:maths_vision/Event_1/play_store_provider.dart';
 import 'package:maths_vision/Splash_Screens/open_splash_screen.dart';
@@ -24,7 +25,80 @@ class MathsVision extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(brightness: Brightness.light),
+      theme: ThemeData(
+        colorScheme: ColorScheme(
+          primary: Colors.white,
+          background: Color.fromARGB(255, 0, 135, 145),
+          brightness: Brightness.light,
+          secondary: Color.fromARGB(255, 0, 135, 145),
+          surface: Color.fromARGB(255, 0, 135, 145),
+          error: Colors.redAccent,
+          onBackground: Color.fromARGB(255, 0, 135, 145),
+          onError: Colors.redAccent,
+          onPrimary: Color.fromARGB(255, 0, 135, 145),
+          onSecondary: Color.fromARGB(255, 0, 135, 145),
+          onSurface: Color.fromARGB(255, 0, 135, 145),
+          shadow: Colors.black.withOpacity(0.3),
+          tertiary: Color.fromARGB(255, 3, 130, 139),
+        ),
+        textTheme: TextTheme(
+          headlineSmall: GoogleFonts.roboto(
+            fontSize: 12,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.5,
+            shadows: [
+              Shadow(
+                blurRadius: 2,
+                color: Colors.black.withOpacity(0.6),
+                offset: Offset(0.5, 0.5),
+              ),
+            ],
+          ),
+          titleMedium: TextStyle(
+            color: Color.fromARGB(255, 72, 73, 75),
+            fontSize: 27.0,
+            fontFamily: 'Warna',
+            fontWeight: FontWeight.bold,
+            wordSpacing: -6,
+            letterSpacing: 1.5,
+            shadows: [
+              Shadow(
+                color: Colors.grey.shade600,
+                blurRadius: 2,
+                offset: Offset(1, 1),
+              ),
+            ],
+          ),
+          titleSmall: TextStyle(
+            fontFamily: 'Gabriola',
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 119, 123, 126),
+            shadows: [
+              Shadow(
+                color: Colors.grey.shade600,
+                blurRadius: 1,
+                offset: Offset(0.5, 0.5),
+              ),
+            ],
+          ),
+          labelMedium: TextStyle(
+            height: 1.5,
+            fontFamily: 'Rockwell',
+            fontSize: 20,
+            color: Color.fromARGB(255, 72, 73, 75),
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 1,
+                offset: Offset(0.5, 1),
+              ),
+            ],
+          ),
+        )
+      ),
       home: MyApp(),
     );
   }
