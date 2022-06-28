@@ -27,15 +27,15 @@ class MathsVision extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme(
-          primary: Colors.white,
-          background: Color.fromARGB(255, 0, 135, 145),
           brightness: Brightness.light,
-          secondary: Color.fromARGB(255, 0, 135, 145),
-          surface: Color.fromARGB(255, 0, 135, 145),
-          error: Colors.redAccent,
+          primary: Colors.white,
+          onPrimary: Colors.black,
+          background: Color.fromARGB(255, 0, 135, 145),
           onBackground: Color.fromARGB(255, 0, 135, 145),
+          secondary: Color.fromARGB(255, 1, 79, 134),
+          surface: Color.fromARGB(255, 162, 156, 156),
+          error: Colors.redAccent,
           onError: Colors.redAccent,
-          onPrimary: Color.fromARGB(255, 0, 135, 145),
           onSecondary: Color.fromARGB(255, 0, 135, 145),
           onSurface: Color.fromARGB(255, 0, 135, 145),
           shadow: Colors.black.withOpacity(0.3),
@@ -45,8 +45,6 @@ class MathsVision extends StatelessWidget {
           headlineSmall: GoogleFonts.roboto(
             fontSize: 12,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.5,
             shadows: [
               Shadow(
                 blurRadius: 2,
