@@ -61,7 +61,7 @@ dependencies:
   firebase_core: ^1.17.1
   firebase_auth: ^3.3.19
   firebase_storage: ^10.2.17
-  appodeal_flutter: ^1.1.2
+  stack_appodeal_flutter: ^1.2.2
   in_app_purchase:
   firebase_messaging:
 
