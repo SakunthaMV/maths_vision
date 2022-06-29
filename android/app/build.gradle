@@ -45,7 +45,7 @@ android {
 
     defaultConfig {
         applicationId "org.mathsvision.mathsvision"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
