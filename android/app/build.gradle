@@ -81,4 +81,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:21.0.0'
     implementation 'com.facebook.android:audience-network-sdk:6.11.0'
     implementation 'com.facebook.android:facebook-login:latest.release'
+    implementation 'com.appodeal.ads:sdk:2.11.0.+'
 }
