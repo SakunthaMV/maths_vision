@@ -18,6 +18,7 @@ import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Log_In/log_in_screen.dart';
 import 'package:maths_vision/Splash_Screens/go_event_splash_screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:stack_appodeal_flutter/stack_appodeal_flutter.dart';
 
 import 'main_screens.dart';
 import 'navigation_drawer.dart';
@@ -187,6 +188,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _appodealInitialize() async {
+    await Appodeal.initialize(
+      '3691fbfffc57f6e17eb13ea66f7e77dc65477cd8abb03f8f',
+      [Appodeal.BANNER],
+      boolConsent: true,
+    );
+  }
+
+  Future<void> _showBanner() async {
+    var isCanShow = await Appodeal.canShow(Appodeal.BANNER);
+    var isLoaded = await Appodeal.isLoaded(Appodeal.BANNER);
+    if(isLoaded && isCanShow) {
+      await Appodeal.show(Appodeal.BANNER, 'MVbanner');
+    } else {
+      print('banner ad unable to load');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -212,6 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
           _getUserData();
         }
       }
+    });
+    _appodealInitialize().then((value) {
+      _showBanner();
     });
   }
 
