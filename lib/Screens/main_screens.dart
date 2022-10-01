@@ -118,24 +118,6 @@ class _MainScreenState extends State<MainScreen> {
                         },
                       ),
                     );
-                    // DocumentReference ref =
-                    //     FirebaseFirestore.instance.collection('Papers').doc('Papers');
-                    // ref.set({
-                    //   'Full_Papers': {
-                    //     '2019 Old': {
-                    //       'Marking_Scheme': {
-                    //         'size': '4.39 MB',
-                    //         'purePages': 36,
-                    //         'appliedPages': 31,
-                    //       },
-                    //       'Past_Paper': {
-                    //         'size': '1.29 MB',
-                    //         'purePages':5,
-                    //         'appliedPages': 6,
-                    //       }
-                    //     },
-                    //   }
-                    // }, SetOptions(merge: true));
                   },
                   iconSize: 35,
                   splashRadius: 25,
