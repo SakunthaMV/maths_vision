@@ -134,7 +134,8 @@ class _PapersScreenState extends State<PapersScreen> {
                         },
                       ),
                     );
-                    // _paperUpdate();
+                    // ignore: dead_code
+                    if(false) {_paperUpdate();}
                   },
                   iconSize: 35,
                   splashRadius: 25,
