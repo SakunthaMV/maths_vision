@@ -1438,7 +1438,7 @@ class _StageHomeScreenState extends State<StageHomeScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

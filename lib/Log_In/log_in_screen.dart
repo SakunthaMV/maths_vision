@@ -487,7 +487,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                           ),
                                         ),
                                         style: TextButton.styleFrom(
-                                          primary: Colors.white,
+                                          foregroundColor: Colors.white,
                                         ),
                                       ),
                                     ),
@@ -518,10 +518,10 @@ class _LogInScreenState extends State<LogInScreen> {
                                         },
                                         style: ElevatedButton.styleFrom(
                                           elevation: 4,
+                                          backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(25.0),
                                           ),
-                                          primary: Colors.white,
                                         ),
                                         child: Text(
                                           'LOG IN',

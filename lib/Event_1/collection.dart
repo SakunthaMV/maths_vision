@@ -612,7 +612,7 @@ class _CollectionState extends State<Collection> {
                                               ),
                                               style: ElevatedButton.styleFrom(
                                                 shape: StadiumBorder(),
-                                                primary: Color.fromARGB(255, 0, 88, 122),
+                                                backgroundColor: Color.fromARGB(255, 0, 88, 122),
                                                 elevation: 3,
                                               ),
                                             ),
@@ -680,7 +680,7 @@ class _CollectionState extends State<Collection> {
                                               ),
                                               style: ElevatedButton.styleFrom(
                                                 shape: StadiumBorder(),
-                                                primary: Color.fromARGB(255, 0, 88, 122),
+                                                backgroundColor: Color.fromARGB(255, 0, 88, 122),
                                                 elevation: 3,
                                               ),
                                             ),
@@ -775,7 +775,7 @@ class _CollectionState extends State<Collection> {
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     shape: StadiumBorder(),
-                                    primary: Color.fromARGB(255, 0, 88, 122),
+                                    backgroundColor: Color.fromARGB(255, 0, 88, 122),
                                     elevation: 3,
                                   ),
                                 ),
@@ -934,7 +934,7 @@ class _CollectionState extends State<Collection> {
             ),
             style: ElevatedButton.styleFrom(
               shape: StadiumBorder(),
-              primary: Color.fromARGB(255, 0, 88, 122),
+              backgroundColor: Color.fromARGB(255, 0, 88, 122),
               elevation: 3,
             ),
           ),
@@ -1164,7 +1164,7 @@ class _CollectionState extends State<Collection> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 1, 79, 134),
+                                backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                 padding: EdgeInsets.only(left: 3, right: 3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -1245,7 +1245,7 @@ class _CollectionState extends State<Collection> {
                             _answerCouponUpdates(answerData);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 1, 79, 134),
+                            backgroundColor: Color.fromARGB(255, 1, 79, 134),
                             padding: EdgeInsets.only(left: 3, right: 3),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -1613,7 +1613,7 @@ class _CollectionState extends State<Collection> {
               ),
               style: ElevatedButton.styleFrom(
                 shape: StadiumBorder(),
-                primary: Color.fromARGB(255, 0, 88, 122),
+                backgroundColor: Color.fromARGB(255, 0, 88, 122),
                 elevation: 3,
               ),
             ),
@@ -1892,7 +1892,7 @@ class _CollectionState extends State<Collection> {
                             child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 1, 79, 134),
+                                backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                 padding: EdgeInsets.only(left: 3, right: 3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -1973,7 +1973,7 @@ class _CollectionState extends State<Collection> {
                             _videoCouponUpdates(videoData);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 1, 79, 134),
+                            backgroundColor: Color.fromARGB(255, 1, 79, 134),
                             padding: EdgeInsets.only(left: 3, right: 3),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -2340,7 +2340,7 @@ class _CollectionState extends State<Collection> {
                                 child: ElevatedButton(
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color.fromARGB(255, 1, 79, 134),
+                                    backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                     padding: EdgeInsets.only(left: 3, right: 3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -2421,7 +2421,7 @@ class _CollectionState extends State<Collection> {
                                 _answerVoucherUpdates(stage, question);
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 1, 79, 134),
+                                backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                 padding: EdgeInsets.only(left: 3, right: 3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -2851,7 +2851,7 @@ class _CollectionState extends State<Collection> {
                                 child: ElevatedButton(
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color.fromARGB(255, 1, 79, 134),
+                                    backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                     padding: EdgeInsets.only(left: 3, right: 3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -2932,7 +2932,7 @@ class _CollectionState extends State<Collection> {
                                 _videoVoucherUpdates(stage);
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 1, 79, 134),
+                                backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                 padding: EdgeInsets.only(left: 3, right: 3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -3280,7 +3280,7 @@ class _CollectionState extends State<Collection> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 1, 79, 134),
+                            backgroundColor: Color.fromARGB(255, 1, 79, 134),
                             padding: EdgeInsets.only(left: 3, right: 3),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

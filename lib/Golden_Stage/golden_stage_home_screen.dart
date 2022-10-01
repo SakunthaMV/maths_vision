@@ -1096,7 +1096,7 @@ class _GoldenStageHomeScreenState extends State<GoldenStageHomeScreen> {
                         _questionPayUpdates(value, index, level);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1388,7 +1388,9 @@ class _GoldenStageHomeScreenState extends State<GoldenStageHomeScreen> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                          shape: StadiumBorder(), primary: Colors.black),
+                          shape: StadiumBorder(),
+                          backgroundColor: Colors.black,
+                      ),
                     ),
                   ],
                   content: Column(
@@ -1635,7 +1637,7 @@ class _GoldenStageHomeScreenState extends State<GoldenStageHomeScreen> {
                       ),
                       style: ElevatedButton.styleFrom(
                         shape: StadiumBorder(),
-                        primary: Colors.black,
+                        backgroundColor: Colors.black,
                       ),
                     ),
                   ),
@@ -2640,7 +2642,7 @@ class _GoldenStageHomeScreenState extends State<GoldenStageHomeScreen> {
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                 ),
               ],

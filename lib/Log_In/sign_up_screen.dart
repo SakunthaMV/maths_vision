@@ -1117,10 +1117,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         },
                                         style: ElevatedButton.styleFrom(
                                           elevation: 4,
+                                          backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(25.0),
                                           ),
-                                          primary: Colors.white,
                                         ),
                                         child: Text(
                                           'SIGN UP',

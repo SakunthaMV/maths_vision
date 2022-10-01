@@ -1081,8 +1081,8 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                                               ),
                                             ),
                                             style: OutlinedButton.styleFrom(
+                                              foregroundColor: Color.fromARGB(255, 1, 79, 134),
                                               shape: StadiumBorder(),
-                                              primary: Color.fromARGB(255, 1, 79, 134),
                                               side: BorderSide(
                                                 width: 3,
                                                 color: Color.fromARGB(255, 1, 79, 134),
@@ -1152,7 +1152,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                                             ),
                                             style: ElevatedButton.styleFrom(
                                               shape: StadiumBorder(),
-                                              primary: Color.fromARGB(255, 1, 79, 134),
+                                              backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                             ),
                                           ),
                                         ),
@@ -1189,7 +1189,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                                       ),
                                       style: ElevatedButton.styleFrom(
                                         shape: StadiumBorder(),
-                                        primary: Colors.black,
+                                        backgroundColor: Colors.black,
                                       ),
                                     ),
                                   ),
@@ -1424,7 +1424,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                 ),
               ],
@@ -1681,7 +1681,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                 ),
               ],
@@ -2151,7 +2151,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -2323,7 +2323,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
+                      backgroundColor: Colors.black,
                       shape: StadiumBorder(),
                       side: BorderSide(
                         color: Colors.yellow,
@@ -2494,7 +2494,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

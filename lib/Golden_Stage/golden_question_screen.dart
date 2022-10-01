@@ -700,8 +700,8 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
                                 ),
                               ),
                               style: OutlinedButton.styleFrom(
+                                foregroundColor: Color.fromARGB(255, 1, 79, 134),
                                 shape: StadiumBorder(),
-                                primary: Color.fromARGB(255, 1, 79, 134),
                                 side: BorderSide(
                                   width: 3,
                                   color: Color.fromARGB(255, 1, 79, 134),
@@ -914,7 +914,7 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
                         ),
                         style: ElevatedButton.styleFrom(
                           shape: StadiumBorder(),
-                          primary: Colors.black,
+                          backgroundColor: Colors.black,
                         ),
                       ),
                     ),
@@ -1428,7 +1428,7 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                 ),
               ],
@@ -1705,7 +1705,7 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: StadiumBorder(),
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                 ),
               ],
@@ -2128,7 +2128,7 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
                               ),
                               style: ElevatedButton.styleFrom(
                                 shape: StadiumBorder(),
-                                primary: Colors.black,
+                                backgroundColor: Colors.black,
                               ),
                             ),
                             OutlinedButton(

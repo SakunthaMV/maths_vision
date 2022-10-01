@@ -783,8 +783,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                                                             }
                                                           : null,
                                                       style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Color.fromARGB(255, 1, 79, 134),
+                                                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                                         padding: EdgeInsets.only(
                                                             left: 1.5, right: 1.5),
                                                         shape: RoundedRectangleBorder(
@@ -990,8 +989,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                                                         }
                                                       },
                                                       style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Color.fromARGB(255, 1, 79, 134),
+                                                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                                         padding: EdgeInsets.only(
                                                             left: 1.5, right: 1.5),
                                                         shape: RoundedRectangleBorder(
@@ -1189,8 +1187,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                                                         }
                                                       },
                                                       style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Color.fromARGB(255, 1, 79, 134),
+                                                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                                                         padding: EdgeInsets.only(
                                                             left: 1.5, right: 1.5),
                                                         shape: RoundedRectangleBorder(
@@ -1671,7 +1668,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1840,7 +1837,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -2030,7 +2027,7 @@ class _StageEntryPageState extends State<StageEntryPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 1, 79, 134),
+                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
                         padding: EdgeInsets.only(left: 3, right: 3),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

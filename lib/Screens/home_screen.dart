@@ -836,10 +836,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 8,
+                                backgroundColor: colorScheme.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -879,10 +879,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 8,
+                                backgroundColor: colorScheme.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -922,10 +922,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 8,
+                                backgroundColor: colorScheme.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
-                                primary: colorScheme.primary,
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -1257,7 +1257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         style: ElevatedButton.styleFrom(
                           shape: StadiumBorder(),
-                          primary: Color.fromARGB(255, 0, 88, 122),
+                          backgroundColor: Color.fromARGB(255, 0, 88, 122),
                         ),
                       ),
                     ),
@@ -1274,7 +1274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         style: ElevatedButton.styleFrom(
                           shape: StadiumBorder(),
-                          primary: Color.fromARGB(255, 0, 88, 122),
+                          backgroundColor: Color.fromARGB(255, 0, 88, 122),
                         ),
                       ),
                     ),

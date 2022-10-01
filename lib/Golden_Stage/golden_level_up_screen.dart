@@ -365,7 +365,7 @@ class _GoldenLevelUpScreenState extends State<GoldenLevelUpScreen>
                     ),
                     style: ElevatedButton.styleFrom(
                       shape: StadiumBorder(),
-                      primary: Colors.black,
+                      backgroundColor: Colors.black,
                       padding: EdgeInsets.only(top: 3, bottom: 3, left: 20, right: 20),
                       elevation: 7,
                     ),

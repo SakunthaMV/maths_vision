@@ -621,7 +621,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
                             ),
                             style: ElevatedButton.styleFrom(
                               shape: StadiumBorder(),
-                              primary: Colors.black,
+                              backgroundColor: Colors.black,
                             ),
                           ),
                         ),

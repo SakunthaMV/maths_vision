@@ -432,7 +432,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                               ),
                               style: ElevatedButton.styleFrom(
                                 shape: StadiumBorder(),
-                                primary: Color.fromARGB(255, 0, 136, 145),
+                                backgroundColor: Color.fromARGB(255, 0, 136, 145),
                               ),
                             ),
                           ),

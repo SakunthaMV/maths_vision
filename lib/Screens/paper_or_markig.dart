@@ -195,10 +195,10 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 7,
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                      primary: Colors.white,
                     ),
                     onLongPress: () {
                       Navigator.of(context).push(
@@ -285,10 +285,10 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 7,
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                      primary: Colors.white,
                     ),
                     onLongPress: () {
                       Navigator.of(context).push(
@@ -426,7 +426,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
                   width: 210,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 0, 136, 145),
+                      backgroundColor: Color.fromARGB(255, 0, 136, 145),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -492,7 +492,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
                       width: 210,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 0, 136, 145),
+                          backgroundColor: Color.fromARGB(255, 0, 136, 145),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
