@@ -352,7 +352,7 @@ class AppliedContentNavigation extends StatelessWidget {
     ["ඒකතල බල පද්ධති", "assets/Coplanar_Forces_Icon.png", 'Coplanar Forces'],
     ["බල සමතුලිතතාවය", "assets/Equilibrium_of_Forces_Icon.png", 'Equilibrium of Forces'],
     ["ප්‍රවේග-කාල ප්‍රස්තාර", "assets/Velocity-Time_Graphs_Icon.png", 'Velocity-Time Graphs'],
-    ["සාපේක්ෂ ප්‍රාවේගය", "assets/Relative_Velocity_Icon.png", 'Relative Velocity'],
+    ["සාපේක්ෂ ප්‍රවේගය", "assets/Relative_Velocity_Icon.png", 'Relative Velocity'],
     ["සාපේක්ෂ ත්වරණය", "assets/Relative_Acceleration_Icon.png", 'Relative Acceleration'],
     ["වෘත්ත චලිතය", "assets/Circular_Motion_Icon.png", 'Circular Motion'],
     [
