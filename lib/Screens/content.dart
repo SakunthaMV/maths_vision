@@ -1,50 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:maths_vision/Data_Directory/subjects_data.dart';
 import 'package:maths_vision/Screens/choosable_screen.dart';
 import 'package:maths_vision/Screens/paper_or_markig.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
 
 import 'subject_content.dart';
 
-class PureContent extends StatefulWidget {
-  @override
-  _PureContentState createState() => _PureContentState();
-}
-
-class _PureContentState extends State<PureContent> {
-  var items = [
-    [
-      "ගණිත අභ්‍යුහන මූලධර්මය",
-      "assets/Mathematical_Induction_Icon.png",
-      'Mathematical Induction'
-    ],
-    ["අසමානතා", "assets/Inequalities_Icon.png", 'Inequalities'],
-    ["ද්විපද ප්‍රසාරණය", "assets/Binomial_Expansion_Icon.png", 'Binomial Expansion'],
-    ["සීමා", "assets/Limits_Icon.png", 'Limits'],
-    ["බහුපද ශ්‍රිත", "assets/Polynomial_Equations_Icon.png", 'Polynomial Equations'],
-    ["වර්ග සමීකරණ", "assets/Quadratic_Functions_Icon.png", 'Quadratic Functions'],
-    [
-      "සංකරණ හා සං‍යෝජන",
-      "assets/Permutations_and_Combinations_Icon.png",
-      'Permutations and Combinations'
-    ],
-    ["ශ්‍රේණි", "assets/Series_Icon.png", 'Series'],
-    ["න්‍යාස", "assets/Matrices_Icon.png", 'Matrices'],
-    ["සංකීර්ණ සංඛ්‍යා", "assets/Complex_Numbers_Icon.png", 'Complex Numbers'],
-    ["අවකලනය", "assets/Differentiation_Icon.png", 'Differentiation'],
-    ["අනුකලනය", "assets/Integration_Icon.png", 'Integration'],
-    ["සරල රේඛාව", "assets/Straight_Line_Icon.png", 'Straight Line'],
-    ["වෘත්තය", "assets/Circle_Icon.png", 'Circle'],
-    ["ත්‍රිකෝණමිතිය", "assets/Trigonometry_Icon.png", 'Trigonometry'],
-  ];
-
+class PureContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 15.0),
       child: Column(
-        children: items
+        children: pureSubjects
             .map(
               (val) => Column(
                 children: [
@@ -125,42 +95,13 @@ class _PureContentState extends State<PureContent> {
   }
 }
 
-class AppliedContent extends StatefulWidget {
-  @override
-  _AppliedContentState createState() => _AppliedContentState();
-}
-
-class _AppliedContentState extends State<AppliedContent> {
-  var items = [
-    ["ගැටුම්", "assets/Collisions_Icon.png", 'Collisions'],
-    ["ප්‍රක්ශිප්ත", "assets/Projectiles_Icon.png", 'Projectiles'],
-    ["ඝර්ෂණය", "assets/Friction_Icon.png", 'Friction'],
-    ["කාර්යය, ශක්තිය, ජවය", "assets/Work_Energy_Power_Icon.png", 'Work, Energy, Power'],
-    ["දෛශික", "assets/Vectors_Icon.png", 'Vectors'],
-    ["ඒකතල බල පද්ධති", "assets/Coplanar_Forces_Icon.png", 'Coplanar Forces'],
-    ["බල සමතුලිතතාවය", "assets/Equilibrium_of_Forces_Icon.png", 'Equilibrium of Forces'],
-    ["ප්‍රවේග-කාල ප්‍රස්තාර", "assets/Velocity-Time_Graphs_Icon.png", 'Velocity-Time Graphs'],
-    ["සාපේක්ෂ ප්‍රාවේගය", "assets/Relative_Velocity_Icon.png", 'Relative Velocity'],
-    ["සාපේක්ෂ ත්වරණය", "assets/Relative_Acceleration_Icon.png", 'Relative Acceleration'],
-    ["වෘත්ත චලිතය", "assets/Circular_Motion_Icon.png", 'Circular Motion'],
-    [
-      "සරල අනුවර්තීය චලිතය",
-      "assets/Simple_Harmonic_Motion_Icon.png",
-      'Simple Harmonic Motion'
-    ],
-    ["රාමු සැකිලි", "assets/Frame_Works_Icon.png", 'Frame Works'],
-    ["සන්දි කල දඬු", "assets/Jointed_Rods_Icon.png", 'Jointed Rods'],
-    ["ගුරුත්ව කේන්ද්‍රය", "assets/Center_of_Gravity_Icon.png", 'Center of Gravity'],
-    ["සම්භාවිතාව", "assets/Probability_Icon.png", 'Probability'],
-    ["සංඛ්‍යානය", "assets/Statistics_Icon.png", 'Statistics'],
-  ];
-
+class AppliedContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 15.0),
       child: Column(
-        children: items
+        children: pureSubjects
             .map(
               (val) => Column(
                 children: [
@@ -245,39 +186,12 @@ class _AppliedContentState extends State<AppliedContent> {
 
 class PureContentNavigation extends StatelessWidget {
   PureContentNavigation({Key key}) : super(key: key);
-
-  final List items = [
-    [
-      "ගණිත අභ්‍යුහන මූලධර්මය",
-      "assets/Mathematical_Induction_Icon.png",
-      'Mathematical Induction'
-    ],
-    ["අසමානතා", "assets/Inequalities_Icon.png", 'Inequalities'],
-    ["ද්විපද ප්‍රසාරණය", "assets/Binomial_Expansion_Icon.png", 'Binomial Expansion'],
-    ["සීමා", "assets/Limits_Icon.png", 'Limits'],
-    ["බහුපද ශ්‍රිත", "assets/Polynomial_Equations_Icon.png", 'Polynomial Equations'],
-    ["වර්ග සමීකරණ", "assets/Quadratic_Functions_Icon.png", 'Quadratic Functions'],
-    [
-      "සංකරණ හා සං‍යෝජන",
-      "assets/Permutations_and_Combinations_Icon.png",
-      'Permutations and Combinations'
-    ],
-    ["ශ්‍රේණි", "assets/Series_Icon.png", 'Series'],
-    ["න්‍යාස", "assets/Matrices_Icon.png", 'Matrices'],
-    ["සංකීර්ණ සංඛ්‍යා", "assets/Complex_Numbers_Icon.png", 'Complex Numbers'],
-    ["අවකලනය", "assets/Differentiation_Icon.png", 'Differentiation'],
-    ["අනුකලනය", "assets/Integration_Icon.png", 'Integration'],
-    ["සරල රේඛාව", "assets/Straight_Line_Icon.png", 'Straight Line'],
-    ["වෘත්තය", "assets/Circle_Icon.png", 'Circle'],
-    ["ත්‍රිකෝණමිතිය", "assets/Trigonometry_Icon.png", 'Trigonometry'],
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 5.0),
       child: Column(
-        children: items
+        children: pureSubjects
             .map(
               (val) => SizedBox(
                 height: 55,
@@ -343,36 +257,12 @@ class PureContentNavigation extends StatelessWidget {
 class AppliedContentNavigation extends StatelessWidget {
   AppliedContentNavigation({Key key}) : super(key: key);
 
-  final List items = [
-    ["ගැටුම්", "assets/Collisions_Icon.png", 'Collisions'],
-    ["ප්‍රක්ශිප්ත", "assets/Projectiles_Icon.png", 'Projectiles'],
-    ["ඝර්ෂණය", "assets/Friction_Icon.png", 'Friction'],
-    ["කාර්යය, ශක්තිය, ජවය", "assets/Work_Energy_Power_Icon.png", "Work, Energy, Power"],
-    ["දෛශික", "assets/Vectors_Icon.png", 'Vectors'],
-    ["ඒකතල බල පද්ධති", "assets/Coplanar_Forces_Icon.png", 'Coplanar Forces'],
-    ["බල සමතුලිතතාවය", "assets/Equilibrium_of_Forces_Icon.png", 'Equilibrium of Forces'],
-    ["ප්‍රවේග-කාල ප්‍රස්තාර", "assets/Velocity-Time_Graphs_Icon.png", 'Velocity-Time Graphs'],
-    ["සාපේක්ෂ ප්‍රවේගය", "assets/Relative_Velocity_Icon.png", 'Relative Velocity'],
-    ["සාපේක්ෂ ත්වරණය", "assets/Relative_Acceleration_Icon.png", 'Relative Acceleration'],
-    ["වෘත්ත චලිතය", "assets/Circular_Motion_Icon.png", 'Circular Motion'],
-    [
-      "සරල අනුවර්තීය චලිතය",
-      "assets/Simple_Harmonic_Motion_Icon.png",
-      'Simple Harmonic Motion'
-    ],
-    ["රාමු සැකිලි", "assets/Frame_Works_Icon.png", 'Frame Works'],
-    ["සන්දි කල දඬු", "assets/Jointed_Rods_Icon.png", 'Jointed Rods'],
-    ["ගුරුත්ව කේන්ද්‍රය", "assets/Center_of_Gravity_Icon.png", 'Center of Gravity'],
-    ["සම්භාවිතාව", "assets/Probability_Icon.png", 'Probability'],
-    ["සංඛ්‍යානය", "assets/Statistics_Icon.png", 'Statistics'],
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 5.0),
       child: Column(
-        children: items
+        children: appliedSubjects
             .map(
               (val) => SizedBox(
                 height: 55,
