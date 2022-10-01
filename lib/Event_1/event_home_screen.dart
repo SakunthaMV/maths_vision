@@ -623,7 +623,7 @@ class TrigonometryEventDetails extends StatelessWidget {
                         ),
                       ),
                       CircularPercentIndicator(
-                        radius: 82,
+                        radius: 41,
                         percent: eventData['progress'] / 100,
                         lineWidth: 7,
                         progressColor: Colors.white,
@@ -903,7 +903,7 @@ class TrigonometryEventDetails extends StatelessWidget {
                           width: 15,
                         ),
                         CircularPercentIndicator(
-                          radius: 40,
+                          radius: 20,
                           percent: eventData['totalCompleted'] != 0
                               ? eventData['totalCorrect'] / eventData['totalCompleted']
                               : 0,
@@ -1037,7 +1037,7 @@ class TrigonometryEventDetails extends StatelessWidget {
                           width: 15,
                         ),
                         CircularPercentIndicator(
-                          radius: 40,
+                          radius: 20,
                           percent: eventData['xpEarned'] < 10001
                               ? eventData['xpEarned'] / 10000
                               : 1,
