@@ -72,7 +72,7 @@ class _GoldenQuestionScreenState extends State<GoldenQuestionScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     user = FirebaseAuth.instance.currentUser;
-    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+    _stopWatchTimer.onStartTimer();
     screenProtect();
     Wakelock.enable();
     DocumentReference userData = FirebaseFirestore.instance.collection('Users').doc(user.uid);
