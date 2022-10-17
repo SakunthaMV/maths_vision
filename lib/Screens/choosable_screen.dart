@@ -48,6 +48,7 @@ class ChooseScreen extends StatelessWidget {
                 return IconButton(
                   iconSize: 35,
                   icon: Icon(Icons.menu),
+                  color: Theme.of(context).colorScheme.primary,
                   onPressed: () {
                     return Scaffold.of(context).openDrawer();
                   },

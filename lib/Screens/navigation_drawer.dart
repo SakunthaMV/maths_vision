@@ -137,7 +137,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                     letterSpacing: 0.7,
                   ),
                 ),
-                children: [PureContentNavigation()],
+                children: [ContentNavigation('Pure')],
               ),
               ExpansionTile(
                 title: Text(
@@ -149,7 +149,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                     letterSpacing: 0.7,
                   ),
                 ),
-                children: [AppliedContentNavigation()],
+                children: [ContentNavigation('Pure')],
               ),
               Divider(
                 height: 0,

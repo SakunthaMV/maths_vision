@@ -61,9 +61,10 @@ class _NotePageState extends State<NotePage> {
                 fontFamily: 'Gabriola',
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
+                color: Theme.of(context).colorScheme.primary,
                 shadows: [
                   Shadow(
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     blurRadius: 3,
                     offset: Offset(0, 2),
                   ),
@@ -74,6 +75,7 @@ class _NotePageState extends State<NotePage> {
               builder: (context) {
                 return IconButton(
                   iconSize: 35,
+                  color: Theme.of(context).colorScheme.primary,
                   icon: Icon(Icons.menu),
                   onPressed: () {
                     return Scaffold.of(context).openDrawer();

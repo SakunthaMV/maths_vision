@@ -225,9 +225,9 @@ class _MainScreenState extends State<MainScreen> {
                       child: SingleChildScrollView(
                         controller: controller,
                         child: screen == 'Pure'
-                            ? PureContent()
+                            ? Content('Pure')
                             : screen == 'Applied'
-                                ? AppliedContent()
+                                ? Content('Applied')
                                 : PastPapersAndMarkingSchemes(widget.dataStatus),
                       ),
                       decoration: BoxDecoration(
