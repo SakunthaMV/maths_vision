@@ -101,7 +101,7 @@ class AppliedContent extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 15.0),
       child: Column(
-        children: pureSubjects
+        children: appliedSubjects
             .map(
               (val) => Column(
                 children: [
