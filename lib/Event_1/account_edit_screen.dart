@@ -13,7 +13,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'account_screen.dart';
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 
 class AccountEditScreen extends StatefulWidget {
   const AccountEditScreen({Key key}) : super(key: key);

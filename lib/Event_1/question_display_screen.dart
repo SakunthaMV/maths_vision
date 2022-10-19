@@ -24,7 +24,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shape_of_view/shape_of_view.dart';
 
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 import 'leaderboard.dart';
 
 class QuestionDisplayScreen extends StatefulWidget {

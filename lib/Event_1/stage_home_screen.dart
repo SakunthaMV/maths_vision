@@ -17,7 +17,7 @@ import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:connectivity/connectivity.dart';
 
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 import 'leaderboard.dart';
 import 'questions_map.dart';
 import 'question_display_screen.dart';

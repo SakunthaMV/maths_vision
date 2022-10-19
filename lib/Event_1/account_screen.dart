@@ -15,7 +15,7 @@ import 'package:maths_vision/Splash_Screens/log_out_splash_screen.dart';
 import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 import 'leaderboard.dart';
 
 class AccountScreen extends StatefulWidget {

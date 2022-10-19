@@ -12,7 +12,7 @@ import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'event_front_screen.dart';
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 import 'leaderboard.dart';
 
 class EventHomeScreen extends StatelessWidget {

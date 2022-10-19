@@ -11,7 +11,7 @@ import 'package:maths_vision/Event_1/play_store_provider.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 
 class Store extends StatefulWidget {
   const Store({Key key}) : super(key: key);

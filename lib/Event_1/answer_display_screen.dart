@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
+import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 
 class AnswerDisplayScreen extends StatefulWidget {
   final int stage;

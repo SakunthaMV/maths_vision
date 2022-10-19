@@ -18,7 +18,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:charcode/charcode.dart';
 
-import 'event_errors_and_loading.dart';
+import '../Support_Classes/event_errors_and_loading.dart';
 import 'leaderboard.dart';
 import 'stage_home_screen.dart';
 

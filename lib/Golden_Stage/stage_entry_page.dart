@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Event_1/account_screen.dart';
-import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
+import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 import 'package:maths_vision/Event_1/leaderboard.dart';
 import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Golden_Stage/more_info_screen.dart';

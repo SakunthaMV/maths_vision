@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
+import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 import 'package:maths_vision/Golden_Stage/rewards_screen.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';

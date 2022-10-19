@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:maths_vision/Event_1/account_screen.dart';
-import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
+import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 import 'package:maths_vision/Event_1/event_front_screen.dart';
 import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Golden_Stage/golden_question_screen.dart';
