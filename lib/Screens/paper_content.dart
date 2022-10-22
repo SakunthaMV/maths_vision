@@ -103,7 +103,7 @@ class PaperContent extends StatelessWidget {
                       );
                     }
                     if (type != 'Question') {
-                      SizedBox(
+                      return SizedBox(
                         height: 25,
                       );
                     }
