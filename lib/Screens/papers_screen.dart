@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:clip_shadow/clip_shadow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maths_vision/Event_1/event_errors_and_loading.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:maths_vision/Screens/paper_content.dart';
 
@@ -21,34 +24,20 @@ class PapersScreen extends StatefulWidget {
 }
 
 class _PapersScreenState extends State<PapersScreen> {
-  String _connectionStatus = 'Unknown';
-  final Connectivity _connectivity = Connectivity();
+  bool _hasConnection;
+  StreamSubscription _subscription;
 
-  Future<void> initConnectivity() async {
-    ConnectivityResult result;
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.none:
-        setState(() => _connectionStatus = result.toString());
-        break;
-      default:
-        setState(() => _connectionStatus = 'Failed to get connectivity.');
-        break;
-    }
+  Future<void> checkInternet() async {
+    bool status = await InternetConnectionChecker().hasConnection;
+    setState(() {
+      _hasConnection = status;
+    });
+    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
+      status = await InternetConnectionChecker().hasConnection;
+      setState(() {
+        _hasConnection = status;
+      });
+    });
   }
 
   String _subject;
@@ -56,21 +45,14 @@ class _PapersScreenState extends State<PapersScreen> {
   @override
   void initState() {
     super.initState();
-    initConnectivity();
-    List parts = widget.subjectE.split(' ');
-    if (parts.length > 2) {
-      setState(() {
-        _subject = '${parts[0]}_${parts[1]}_${parts[2]}';
-      });
-    } else if (parts.length > 1) {
-      setState(() {
-        _subject = '${parts[0]}_${parts[1]}';
-      });
-    } else {
-      setState(() {
-        _subject = parts[0];
-      });
-    }
+    checkInternet();
+    _subject = widget.subjectE.split(' ').join('_');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.cancel();
   }
 
   @override
@@ -155,7 +137,7 @@ class _PapersScreenState extends State<PapersScreen> {
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: FittedBox(
                   child: Text(
-                    '${widget.paperType.split('_').first} ${widget.paperType.split('_').last}',
+                    '${widget.paperType.split('_').join(' ')}',
                     style: TextStyle(
                       fontSize: 43,
                       fontFamily: 'Roboto',
@@ -217,28 +199,33 @@ class _PapersScreenState extends State<PapersScreen> {
                 height: 1,
                 thickness: 1,
               ),
-              _connectionStatus == 'ConnectivityResult.wifi' ||
-                      _connectionStatus == 'ConnectivityResult.mobile'
-                  ? Expanded(
-                      child: StreamBuilder<DocumentSnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('Papers')
-                            .doc('Papers')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return _itemList(snapshot.data);
-                          } else {
-                            return EventLoading();
-                          }
-                        },
-                      ),
-                    )
-                  : Expanded(
-                      child: Center(
+              Expanded(
+                child: Builder(
+                  builder: (context){
+                    if(_hasConnection==null){
+                      return EventLoading();
+                    }
+                    if(!_hasConnection){
+                      return Center(
                         child: NetworkError(Colors.white),
-                      ),
-                    ),
+                      );
+                    }
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Papers')
+                          .doc('Papers')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return _itemList(snapshot.data);
+                        } else {
+                          return EventLoading();
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
