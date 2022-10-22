@@ -5,9 +5,9 @@ import 'package:countdown_timer_simple/countdown_timer_simple.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../Widgets/common_app_bar.dart';
 import 'navigation_drawer.dart';
 
 class PaperContent extends StatelessWidget {
@@ -48,58 +48,7 @@ class PaperContent extends StatelessWidget {
           ),
         ),
         Scaffold(
-          appBar: AppBar(
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                  iconSize: 35,
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    return Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 70,
-            actions: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      color: Colors.grey.shade700,
-                      blurRadius: 10,
-                      spreadRadius: -9,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: ClipOval(
-                    child: Image.asset(
-                      'assets/HomeButton.jpg',
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) {
-                          return WentHomeSplashScreen();
-                        },
-                      ),
-                    );
-                  },
-                  iconSize: 35,
-                  splashRadius: 25,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
+          appBar: CommonAppBar(),
           drawer: NavigationDrawer(),
           backgroundColor: Colors.transparent,
           body: Stack(

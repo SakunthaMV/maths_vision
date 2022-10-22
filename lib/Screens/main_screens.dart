@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:maths_vision/Screens/home_screen.dart';
+import '../Widgets/common_app_bar.dart';
 import 'content.dart';
 import 'navigation_drawer.dart';
 
@@ -76,57 +76,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         Scaffold(
-          appBar: AppBar(
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                  iconSize: 35,
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    return Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 70,
-            actions: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      color: Colors.grey.shade700,
-                      blurRadius: 10,
-                      spreadRadius: -9,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: ClipOval(
-                    child: Image.asset(
-                      'assets/HomeButton.jpg',
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) {
-                          return WentHomeSplashScreen();
-                        },
-                      ),
-                    );
-                  },
-                  iconSize: 35,
-                  splashRadius: 25,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
+          appBar: CommonAppBar(
             title: AnimatedOpacity(
               duration: Duration(milliseconds: 500),
               opacity: closeTopContainer ? 1 : 0,
@@ -134,6 +84,7 @@ class _MainScreenState extends State<MainScreen> {
                 _titleSubject,
                 textAlign: TextAlign.center,
                 style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
                   height: 0.8,
                   fontFamily: 'Gabriola',
                   fontSize: _titleFontSize,
@@ -148,7 +99,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
-            centerTitle: true,
           ),
           backgroundColor: Colors.transparent,
           drawer: NavigationDrawer(),

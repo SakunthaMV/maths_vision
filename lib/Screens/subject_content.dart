@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:maths_vision/Splash_Screens/log_in_splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Widgets/common_app_bar.dart';
 import 'navigation_drawer.dart';
 
 class NotePage extends StatefulWidget {
@@ -53,8 +53,7 @@ class _NotePageState extends State<NotePage> {
           ),
         ),
         Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
+          appBar: CommonAppBar(
             title: Text(
               subject,
               style: TextStyle(
@@ -71,58 +70,6 @@ class _NotePageState extends State<NotePage> {
                 ],
               ),
             ),
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                  iconSize: 35,
-                  color: Theme.of(context).colorScheme.primary,
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    return Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 70,
-            toolbarHeight: 70,
-            actions: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      color: Colors.grey.shade700,
-                      blurRadius: 10,
-                      spreadRadius: -9,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: ClipOval(
-                    child: Image.asset(
-                      'assets/HomeButton.jpg',
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) {
-                          return LogInSplashScreen();
-                        },
-                      ),
-                    );
-                  },
-                  iconSize: 35,
-                  splashRadius: 25,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
           ),
           drawer: NavigationDrawer(),
           backgroundColor: Colors.transparent,
