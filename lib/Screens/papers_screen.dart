@@ -24,6 +24,7 @@ class PapersScreen extends StatefulWidget {
 class _PapersScreenState extends State<PapersScreen> {
   bool _hasConnection;
   StreamSubscription _subscription;
+  String _subject;
 
   Future<void> checkInternet() async {
     bool status = await InternetConnectionChecker().hasConnection;
@@ -37,8 +38,6 @@ class _PapersScreenState extends State<PapersScreen> {
       });
     });
   }
-
-  String _subject;
 
   @override
   void initState() {
@@ -231,75 +230,77 @@ class _PapersScreenState extends State<PapersScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 85, top: 25),
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: year[0],
-                                    style: TextStyle(
-                                      fontFamily: 'Constan',
-                                      color: Color.fromARGB(255, 0, 88, 122),
-                                      fontSize: 30,
-                                      letterSpacing: -0.5,
-                                      wordSpacing: -2,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withOpacity(0.4),
-                                          blurRadius: 1,
-                                          offset: Offset(1, 1),
-                                        ),
-                                      ],
+                            child: FittedBox(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: year[0],
+                                      style: TextStyle(
+                                        fontFamily: 'Constan',
+                                        color: Color.fromARGB(255, 0, 88, 122),
+                                        fontSize: 30,
+                                        letterSpacing: -0.5,
+                                        wordSpacing: -2,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black.withOpacity(0.4),
+                                            blurRadius: 1,
+                                            offset: Offset(1, 1),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: year.length == 3
-                                        ? ' ${year[1]}'
-                                        : year.length == 2
-                                            ? year[1] == 'New' || year[1] == 'Old'
-                                                ? ' ${year[1]}'
-                                                : ''
-                                            : '',
-                                    style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      color: Color.fromARGB(255, 0, 88, 122),
-                                      fontSize: 18,
+                                    TextSpan(
+                                      text: year.length == 3
+                                          ? ' ${year[1]}'
+                                          : year.length == 2
+                                              ? year[1] == 'New' || year[1] == 'Old'
+                                                  ? ' ${year[1]}'
+                                                  : ''
+                                              : '',
+                                      style: TextStyle(
+                                        fontFamily: 'Open Sans',
+                                        color: Color.fromARGB(255, 0, 88, 122),
+                                        fontSize: 18,
+                                      ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: year.length == 3
-                                        ? ' ${year[2]}'
-                                        : year.length == 2
-                                            ? year[1] == 'New' || year[1] == 'Old'
-                                                ? ''
-                                                : ' ${year[1]}'
-                                            : '',
-                                    style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      color: Color.fromARGB(255, 0, 88, 122),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1,
+                                    TextSpan(
+                                      text: year.length == 3
+                                          ? ' ${year[2]}'
+                                          : year.length == 2
+                                              ? year[1] == 'New' || year[1] == 'Old'
+                                                  ? ''
+                                                  : ' ${year[1]}'
+                                              : '',
+                                      style: TextStyle(
+                                        fontFamily: 'Open Sans',
+                                        color: Color.fromARGB(255, 0, 88, 122),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1,
+                                      ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: widget.paperType == 'Past_Papers'
-                                        ? ' Question'
-                                        : ' Answer',
-                                    style: TextStyle(
-                                      fontFamily: 'Constan',
-                                      color: Color.fromARGB(255, 0, 88, 122),
-                                      fontSize: 13,
-                                      wordSpacing: 1,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withOpacity(0.4),
-                                          blurRadius: 1,
-                                          offset: Offset(0.5, 0.5),
-                                        ),
-                                      ],
+                                    TextSpan(
+                                      text: widget.paperType == 'Past_Papers'
+                                          ? ' Question'
+                                          : ' Answer',
+                                      style: TextStyle(
+                                        fontFamily: 'Constan',
+                                        color: Color.fromARGB(255, 0, 88, 122),
+                                        fontSize: 13,
+                                        wordSpacing: 1,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black.withOpacity(0.4),
+                                            blurRadius: 1,
+                                            offset: Offset(0.5, 0.5),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
