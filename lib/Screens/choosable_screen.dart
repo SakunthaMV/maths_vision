@@ -12,9 +12,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../Widgets/common_app_bar.dart';
+import '../Widgets/common_background.dart';
 import 'subject_content.dart';
-import 'navigation_drawer.dart';
 
 class ChooseScreen extends StatelessWidget {
   final String subjectE;
@@ -25,226 +24,205 @@ class ChooseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Container(
-          color: Color.fromARGB(255, 0, 135, 145),
-        ),
-        Opacity(
-          opacity: 0.12,
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/HomeBackground.jpg'),
-                fit: BoxFit.fill,
+    return CommonBackground(
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              subjectS,
+              style: TextStyle(
+                fontFamily: 'Abhaya Libre',
+                fontSize: 30,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                wordSpacing: 1,
+                shadows: [
+                  Shadow(
+                    color: Colors.grey.shade900,
+                    blurRadius: 5,
+                    offset: Offset(1, 1),
+                  ),
+                ],
               ),
             ),
-          ),
-        ),
-        Scaffold(
-          appBar: CommonAppBar(),
-          backgroundColor: Colors.transparent,
-          drawer: NavigationDrawer(),
-          body: Center(
-            child: Column(
-              children: [
-                Text(
-                  subjectS,
-                  style: TextStyle(
-                    fontFamily: 'Abhaya Libre',
-                    fontSize: 30,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    wordSpacing: 1,
-                    shadows: [
-                      Shadow(
-                        color: Colors.grey.shade900,
-                        blurRadius: 5,
-                        offset: Offset(1, 1),
-                      ),
-                    ],
+            Text(
+              subjectE,
+              style: TextStyle(
+                fontFamily: 'Gabriola',
+                fontSize: 25,
+                color: Color.fromARGB(255, 125, 249, 255),
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                wordSpacing: 1,
+                shadows: [
+                  Shadow(
+                    color: Colors.grey.shade900,
+                    blurRadius: 5,
+                    offset: Offset(1, 1),
                   ),
-                ),
-                Text(
-                  subjectE,
-                  style: TextStyle(
-                    fontFamily: 'Gabriola',
-                    fontSize: 25,
-                    color: Color.fromARGB(255, 125, 249, 255),
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    wordSpacing: 1,
-                    shadows: [
-                      Shadow(
-                        color: Colors.grey.shade900,
-                        blurRadius: 5,
-                        offset: Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.075),
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      final List levels = [
-                        ['සටහන', 'NOTE'],
-                        ['පසුගිය ප්‍රශ්න', 'QUESTIONS'],
-                        ['පිළිතුරු', 'MARKING SCHEMES']
-                      ];
-                      return InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          if (index == 0) {
-                            final SharedPreferences prefs = await SharedPreferences.getInstance();
-                            bool deviceConnected = await InternetConnectionChecker().hasConnection;
-                            String pathName = subjectE.split(' ').join('_');
-                            String imageBase64;
-                            int imageCount = prefs.getInt(pathName)??0;
-                            int downloadedCount = 0;
-                            int storageImageCount = 0;
-                            if(imageCount!=0){
-                              for(int i=0;i<imageCount;i++){
-                                imageBase64 = prefs.getString('$pathName\_${i+1}');
-                                if(imageBase64!=null){
-                                  downloadedCount++;
-                                }
-                              }
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 18,
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.075),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  final List levels = [
+                    ['සටහන', 'NOTE'],
+                    ['පසුගිය ප්‍රශ්න', 'QUESTIONS'],
+                    ['පිළිතුරු', 'MARKING SCHEMES']
+                  ];
+                  return InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () async {
+                      if (index == 0) {
+                        final SharedPreferences prefs = await SharedPreferences.getInstance();
+                        bool deviceConnected = await InternetConnectionChecker().hasConnection;
+                        String pathName = subjectE.split(' ').join('_');
+                        String imageBase64;
+                        int imageCount = prefs.getInt(pathName)??0;
+                        int downloadedCount = 0;
+                        int storageImageCount = 0;
+                        if(imageCount!=0){
+                          for(int i=0;i<imageCount;i++){
+                            imageBase64 = prefs.getString('$pathName\_${i+1}');
+                            if(imageBase64!=null){
+                              downloadedCount++;
                             }
-                            if(deviceConnected){
-                              Reference ref = FirebaseStorage.instance.ref().child('/Notes/$pathName');
-                              ref.listAll().then((pages) {
-                                storageImageCount = pages.items.length;
-                              });
-                            }
-                            if(downloadedCount>0 && imageCount>0 && downloadedCount==imageCount
+                          }
+                        }
+                        if(deviceConnected){
+                          Reference ref = FirebaseStorage.instance.ref().child('/Notes/$pathName');
+                          ref.listAll().then((pages) {
+                            storageImageCount = pages.items.length;
+                          });
+                        }
+                        if(downloadedCount>0 && imageCount>0 && downloadedCount==imageCount
                             && (storageImageCount==0 || storageImageCount==downloadedCount)){
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) {
-                                    return NotePage(subjectE);
-                                  },
-                                ),
-                              );
-                            } else {
-                              if(deviceConnected){
-                                progressDialogBox(context);
-                              } else {
-                                Fluttertoast.showToast(
-                                  msg: 'You need an internet connection to view $subjectE Note for the first time.',
-                                );
-                              }
-                            }
-                          } else if (index == 1) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) {
-                                  return PapersScreen(
-                                    'Past_Papers',
-                                    subjectS,
-                                    subjectE,
-                                  );
-                                },
-                              ),
-                            );
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return NotePage(subjectE);
+                              },
+                            ),
+                          );
+                        } else {
+                          if(deviceConnected){
+                            progressDialogBox(context);
                           } else {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) {
-                                  return PapersScreen(
-                                    'Marking_Schemes',
-                                    subjectS,
-                                    subjectE,
-                                  );
-                                },
-                              ),
+                            Fluttertoast.showToast(
+                              msg: 'You need an internet connection to view $subjectE Note for the first time.',
                             );
                           }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Container(
-                            padding: EdgeInsets.only(left: 25),
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 246, 246, 246),
-                              borderRadius: BorderRadius.circular(25),
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 4,
-                                  spreadRadius: 0,
-                                  color: Colors.black.withOpacity(0.4),
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+                        }
+                      } else if (index == 1) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) {
+                              return PapersScreen(
+                                'Past_Papers',
+                                subjectS,
+                                subjectE,
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) {
+                              return PapersScreen(
+                                'Marking_Schemes',
+                                subjectS,
+                                subjectE,
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 25),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 246, 246, 246),
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 4,
+                              spreadRadius: 0,
+                              color: Colors.black.withOpacity(0.4),
+                              offset: Offset(0, 3),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      levels[index][0],
-                                      style: TextStyle(
-                                        fontSize: 40,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Abhaya Libre',
-                                        color: Color.fromARGB(255, 72, 73, 75),
-                                        height: 1,
-                                        letterSpacing: 1,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 1,
-                                            color: Colors.black.withOpacity(0.5),
-                                            offset: Offset(0.5, 1),
-                                          ),
-                                        ],
+                                Text(
+                                  levels[index][0],
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Abhaya Libre',
+                                    color: Color.fromARGB(255, 72, 73, 75),
+                                    height: 1,
+                                    letterSpacing: 1,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 1,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(0.5, 1),
                                       ),
-                                    ),
-                                    Text(
-                                      levels[index][1],
-                                      style: TextStyle(
-                                        fontFamily: 'Open Sans',
-                                        fontSize: 20,
-                                        color: Color.fromARGB(255, 119, 123, 126),
-                                        letterSpacing: 1.5,
-                                        height: 1.5,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 1,
-                                            color: Colors.black.withOpacity(0.5),
-                                            offset: Offset(0.5, 1),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: SizedBox(
-                                    height: 90,
-                                    child: Image.asset('assets/Choosable_Pic.jpg'),
+                                Text(
+                                  levels[index][1],
+                                  style: TextStyle(
+                                    fontFamily: 'Open Sans',
+                                    fontSize: 20,
+                                    color: Color.fromARGB(255, 119, 123, 126),
+                                    letterSpacing: 1.5,
+                                    height: 1.5,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 1,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(0.5, 1),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: SizedBox(
+                                height: 90,
+                                child: Image.asset('assets/Choosable_Pic.jpg'),
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

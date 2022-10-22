@@ -8,8 +8,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Support_Classes/event_errors_and_loading.dart';
 import 'package:maths_vision/Screens/paper_content.dart';
 
-import '../Widgets/common_app_bar.dart';
-import 'navigation_drawer.dart';
+import '../Widgets/common_background.dart';
 
 class PapersScreen extends StatefulWidget {
   final String paperType;
@@ -56,126 +55,105 @@ class _PapersScreenState extends State<PapersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          color: Color.fromARGB(255, 0, 135, 145),
-        ),
-        Opacity(
-          opacity: 0.12,
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/HomeBackground.jpg'),
-                fit: BoxFit.fill,
+    return CommonBackground(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 30, right: 30),
+            child: FittedBox(
+              child: Text(
+                '${widget.paperType.split('_').join(' ')}',
+                style: TextStyle(
+                  fontSize: 43,
+                  fontFamily: 'Roboto',
+                  color: Colors.white,
+                  letterSpacing: -0.7,
+                  wordSpacing: 1,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withOpacity(0.6),
+                      blurRadius: 3,
+                      offset: Offset(1.5, 1.5),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Scaffold(
-          appBar: CommonAppBar(),
-          drawer: NavigationDrawer(),
-          backgroundColor: Colors.transparent,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: FittedBox(
-                  child: Text(
-                    '${widget.paperType.split('_').join(' ')}',
-                    style: TextStyle(
-                      fontSize: 43,
-                      fontFamily: 'Roboto',
-                      color: Colors.white,
-                      letterSpacing: -0.7,
-                      wordSpacing: 1,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.6),
-                          blurRadius: 3,
-                          offset: Offset(1.5, 1.5),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 30),
-                child: Text(
-                  widget.subjectS,
-                  style: TextStyle(
-                    fontSize: 29,
-                    fontFamily: 'Abhaya Libre',
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 3,
-                        offset: Offset(1, 1.5),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 30, top: 4, bottom: 12),
-                child: Text(
-                  widget.subjectE,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontFamily: 'Dancing Script',
-                    color: Colors.white,
-                    letterSpacing: 1,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 3,
-                        offset: Offset(1, 1.5),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Divider(
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Text(
+              widget.subjectS,
+              style: TextStyle(
+                fontSize: 29,
+                fontFamily: 'Abhaya Libre',
                 color: Colors.white,
-                indent: 30,
-                endIndent: 30,
-                height: 1,
-                thickness: 1,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.6),
+                    blurRadius: 3,
+                    offset: Offset(1, 1.5),
+                  ),
+                ],
               ),
-              Expanded(
-                child: Builder(
-                  builder: (context){
-                    if(_hasConnection==null){
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30, top: 4, bottom: 12),
+            child: Text(
+              widget.subjectE,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Dancing Script',
+                color: Colors.white,
+                letterSpacing: 1,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.6),
+                    blurRadius: 3,
+                    offset: Offset(1, 1.5),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            color: Colors.white,
+            indent: 30,
+            endIndent: 30,
+            height: 1,
+            thickness: 1,
+          ),
+          Expanded(
+            child: Builder(
+              builder: (context){
+                if(_hasConnection==null){
+                  return EventLoading();
+                }
+                if(!_hasConnection){
+                  return Center(
+                    child: NetworkError(Colors.white),
+                  );
+                }
+                return StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Papers')
+                      .doc('Papers')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return _itemList(snapshot.data);
+                    } else {
                       return EventLoading();
                     }
-                    if(!_hasConnection){
-                      return Center(
-                        child: NetworkError(Colors.white),
-                      );
-                    }
-                    return StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Papers')
-                          .doc('Papers')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return _itemList(snapshot.data);
-                        } else {
-                          return EventLoading();
-                        }
-                      },
-                    );
                   },
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
