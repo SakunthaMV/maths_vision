@@ -15,6 +15,7 @@ void main() async {
   await FlutterDownloader.initialize(debug: true);
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: 'recaptcha-v3-site-key',
+    androidDebugProvider: true,
   );
   runApp(
     ChangeNotifierProvider(
