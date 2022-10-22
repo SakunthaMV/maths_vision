@@ -5,11 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
 import 'package:maths_vision/Screens/paper_or_marking_watch.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'navigation_drawer.dart';
+import '../Widgets/common_background.dart';
 
 class PaperOrMarking extends StatefulWidget {
   final String year;
@@ -70,307 +69,235 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Container(
-          color: Color.fromARGB(255, 0, 135, 145),
-        ),
-        Opacity(
-          opacity: 0.12,
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/HomeBackground.jpg'),
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-        ),
-        Scaffold(
-          appBar: AppBar(
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                  iconSize: 35,
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    return Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 70,
-            actions: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      color: Colors.grey.shade700,
-                      blurRadius: 10,
-                      spreadRadius: -9,
+    return CommonBackground(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: _year[0],
+                      style: TextStyle(
+                        fontSize: 60,
+                        fontFamily: 'Gothic',
+                        color: Colors.white,
+                        height: 1,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextSpan(
+                      text: _year.length > 1 ? ' ${_year[1]}' : '',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontFamily: 'Georgia',
+                        color: Colors.white,
+                        height: 1,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                child: IconButton(
-                  icon: ClipOval(
-                    child: Image.asset(
-                      'assets/HomeButton.jpg',
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) {
-                          return WentHomeSplashScreen();
-                        },
-                      ),
-                    );
-                  },
-                  iconSize: 35,
-                  splashRadius: 25,
-                ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
-          backgroundColor: Colors.transparent,
-          drawer: NavigationDrawer(),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: _year[0],
-                          style: TextStyle(
-                            fontSize: 60,
-                            fontFamily: 'Gothic',
-                            color: Colors.white,
-                            height: 1,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 4,
-                                color: Colors.black.withOpacity(0.5),
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                          ),
-                        ),
-                        TextSpan(
-                          text: _year.length > 1 ? ' ${_year[1]}' : '',
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontFamily: 'Georgia',
-                            color: Colors.white,
-                            height: 1,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 4,
-                                color: Colors.black.withOpacity(0.5),
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: size.width * 0.8,
-                  height: 150,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 7,
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    onLongPress: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return PaperOrMarkingWatch(
-                              widget.year,
-                              'Past Paper',
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    onPressed: () {
-                      _paperDialog(context, 'Past_Paper');
-                    },
-                    child: Stack(
-                      children: [
-                        Opacity(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 100, top: 20),
-                            child: Image.asset('assets/Past_Paper_Icon.jpg'),
-                            width: size.width * 0.9,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.white,
-                            ),
-                          ),
-                          opacity: 0.15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15, top: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ප්‍රශ්න පත්‍රය',
-                                style: TextStyle(
-                                  fontFamily: 'Abhaya Libre',
-                                  fontSize: 35,
-                                  color: Color.fromARGB(255, 0, 88, 122),
-                                  fontWeight: FontWeight.w600,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 2,
-                                      offset: Offset(1, 1),
-                                      color: Colors.black.withOpacity(0.3),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  'Past Paper',
-                                  style: TextStyle(
-                                    fontFamily: 'Pristina',
-                                    fontSize: 25,
-                                    color: Color.fromARGB(255, 0, 88, 122),
-                                    fontWeight: FontWeight.w600,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 1,
-                                        offset: Offset(0.5, 0.5),
-                                        color: Colors.black.withOpacity(0.3),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                SizedBox(
-                  width: size.width * 0.8,
-                  height: 150,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 7,
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    onLongPress: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return PaperOrMarkingWatch(
-                              widget.year,
-                              'Marking Scheme',
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    onPressed: () {
-                      _paperDialog(context, 'Marking_Scheme');
-                    },
-                    child: Stack(
-                      children: [
-                        Opacity(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 100, top: 20),
-                            child: Image.asset('assets/Marking_Scheme_Icon.jpg'),
-                            width: size.width * 0.9,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.white,
-                            ),
-                          ),
-                          opacity: 0.15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15, top: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ලකුණු දීමේ ක්‍රමවේදය',
-                                style: TextStyle(
-                                  fontFamily: 'Abhaya Libre',
-                                  fontSize: 35,
-                                  color: Color.fromARGB(255, 0, 88, 122),
-                                  fontWeight: FontWeight.w600,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 2,
-                                      offset: Offset(1, 1),
-                                      color: Colors.black.withOpacity(0.3),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(
-                                  'Marking Scheme',
-                                  style: TextStyle(
-                                    fontFamily: 'Pristina',
-                                    fontSize: 25,
-                                    color: Color.fromARGB(255, 0, 88, 122),
-                                    fontWeight: FontWeight.w600,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 1,
-                                        offset: Offset(0.5, 0.5),
-                                        color: Colors.black.withOpacity(0.3),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ),
-          ),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              width: size.width * 0.8,
+              height: 150,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 7,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                onLongPress: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return PaperOrMarkingWatch(
+                          widget.year,
+                          'Past Paper',
+                        );
+                      },
+                    ),
+                  );
+                },
+                onPressed: () {
+                  _paperDialog(context, 'Past_Paper');
+                },
+                child: Stack(
+                  children: [
+                    Opacity(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 100, top: 20),
+                        child: Image.asset('assets/Past_Paper_Icon.jpg'),
+                        width: size.width * 0.9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.white,
+                        ),
+                      ),
+                      opacity: 0.15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ප්‍රශ්න පත්‍රය',
+                            style: TextStyle(
+                              fontFamily: 'Abhaya Libre',
+                              fontSize: 35,
+                              color: Color.fromARGB(255, 0, 88, 122),
+                              fontWeight: FontWeight.w600,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Colors.black.withOpacity(0.3),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              'Past Paper',
+                              style: TextStyle(
+                                fontFamily: 'Pristina',
+                                fontSize: 25,
+                                color: Color.fromARGB(255, 0, 88, 122),
+                                fontWeight: FontWeight.w600,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 1,
+                                    offset: Offset(0.5, 0.5),
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            SizedBox(
+              width: size.width * 0.8,
+              height: 150,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 7,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                ),
+                onLongPress: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return PaperOrMarkingWatch(
+                          widget.year,
+                          'Marking Scheme',
+                        );
+                      },
+                    ),
+                  );
+                },
+                onPressed: () {
+                  _paperDialog(context, 'Marking_Scheme');
+                },
+                child: Stack(
+                  children: [
+                    Opacity(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 100, top: 20),
+                        child: Image.asset('assets/Marking_Scheme_Icon.jpg'),
+                        width: size.width * 0.9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.white,
+                        ),
+                      ),
+                      opacity: 0.15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ලකුණු දීමේ ක්‍රමවේදය',
+                            style: TextStyle(
+                              fontFamily: 'Abhaya Libre',
+                              fontSize: 35,
+                              color: Color.fromARGB(255, 0, 88, 122),
+                              fontWeight: FontWeight.w600,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Colors.black.withOpacity(0.3),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              'Marking Scheme',
+                              style: TextStyle(
+                                fontFamily: 'Pristina',
+                                fontSize: 25,
+                                color: Color.fromARGB(255, 0, 88, 122),
+                                fontWeight: FontWeight.w600,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 1,
+                                    offset: Offset(0.5, 0.5),
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -388,22 +315,25 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  type == 'Past_Paper'
-                      ? '${widget.year} Past Paper'
-                      : '${widget.year} Marking Scheme',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Gothic',
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w600,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 2,
-                        color: Colors.black.withOpacity(0.5),
-                        offset: Offset(1, 1.5),
-                      ),
-                    ],
+                FittedBox(
+                  child: Text(
+                    type == 'Past_Paper'
+                        ? '${widget.year} Past Paper'
+                        : '${widget.year} Marking Scheme',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Gothic',
+                      fontWeight: FontWeight.bold,
+                      wordSpacing: 1.0,
+                      letterSpacing: 0.0,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 2,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(1, 1.5),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
@@ -415,7 +345,9 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
                     style: TextStyle(
                       fontSize: 13,
                       fontFamily: 'Gothic',
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.normal,
+                      wordSpacing: 1.0,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
