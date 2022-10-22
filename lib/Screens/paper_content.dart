@@ -6,10 +6,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'navigation_drawer.dart';
 
-class PaperContent extends StatefulWidget {
+class PaperContent extends StatelessWidget {
   final String imagePath;
   final String subjectS;
   final String year;
@@ -18,62 +19,13 @@ class PaperContent extends StatefulWidget {
 
   const PaperContent(this.imagePath, this.subjectS, this.year, this.type, this.timeOrMarks);
 
-  @override
-  _PaperContentState createState() => _PaperContentState();
-}
-
-class _PaperContentState extends State<PaperContent> with TickerProviderStateMixin {
-  Timer initTimer;
-  int _start = 10;
-  double _counterOpacity = 1.0;
-  double _positionX = 3;
-  double _positionY = -1.0;
-  double _paperHeight = 102;
-  List _time;
-  int _min;
-  int _sec;
-
-  @override
-  void initState() {
-    super.initState();
-    const oneSec = const Duration(seconds: 1);
-    if (widget.type == 'Question') {
-      _time = widget.timeOrMarks.split(':');
-      _min = int.parse(_time[0]);
-      _sec = int.parse(_time[1]);
-      initTimer = new Timer.periodic(
-        oneSec,
-        (Timer timer) {
-          if (_start == 0) {
-            setState(() {
-              initTimer.cancel();
-            });
-          } else if (_start == 1) {
-            setState(() {
-              _counterOpacity = 0.0;
-              _positionY = -1.14;
-              _paperHeight = 75;
-              _start--;
-            });
-          } else if (_start == 4) {
-            setState(() {
-              _positionX = 1;
-              _start--;
-            });
-          } else {
-            setState(() {
-              _start--;
-            });
-          }
-        },
-      );
+  Stream<int> waitingCounter() async* {
+    int seconds = 11;
+    while (true) {
+      await Future.delayed(Duration(seconds: 1));
+      yield --seconds;
+      if (seconds == 0) break;
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    initTimer.cancel();
   }
 
   @override
@@ -174,7 +126,7 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                             Padding(
                               padding: const EdgeInsets.only(bottom: 6),
                               child: Text(
-                                widget.subjectS,
+                                subjectS,
                                 style: TextStyle(
                                   fontFamily: 'Abhaya Libre',
                                   fontSize: 28,
@@ -186,7 +138,7 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                             Padding(
                               padding: const EdgeInsets.only(bottom: 3),
                               child: Text(
-                                widget.year + ' ' + widget.type,
+                                year + ' ' + type,
                                 style: TextStyle(
                                   fontFamily: 'Pristina',
                                   fontSize: 30,
@@ -195,9 +147,9 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                               ),
                             ),
                             Text(
-                              widget.type == 'Question'
-                                  ? 'Time : ' + widget.timeOrMarks + ' min'
-                                  : 'Marks : ' + widget.timeOrMarks,
+                              type == 'Question'
+                                  ? 'Time : ' + timeOrMarks + ' min'
+                                  : 'Marks : ' + timeOrMarks,
                               style: TextStyle(
                                 fontFamily: 'Pristina',
                                 fontSize: 27,
@@ -211,69 +163,77 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                       ),
                     ),
                   ),
-                  widget.type == 'Question'
-                      ? Column(
+                  StreamBuilder<int>(
+                      stream: waitingCounter(),
+                      builder: (context, snapshot) {
+                        double counterOpacity = 0.0;
+                        double paperHeight = 102;
+                        if (!snapshot.hasData) {
+                          return SizedBox(
+                            height: paperHeight + 35,
+                          );
+                        }
+                        if (type != 'Question') {
+                          SizedBox(
+                            height: 25,
+                          );
+                        }
+                        if (snapshot.data < 10 && snapshot.data > 0) {
+                          counterOpacity = 1.0;
+                        }
+                        if(snapshot.data==0){
+                          paperHeight = 75;
+                        }
+                        int time = snapshot.data;
+                        return Column(
                           children: [
                             Center(
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: AnimatedOpacity(
-                                  duration: Duration(milliseconds: 700),
-                                  opacity: _counterOpacity,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Your time will start in ',
-                                          style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 20,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.7),
-                                                blurRadius: 4,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
-                                          ),
+                                  duration: Duration(milliseconds: 500),
+                                  opacity: counterOpacity,
+                                  child: SizedBox(
+                                    height: 25,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                          fontFamily: 'Open Sans',
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.black.withOpacity(0.7),
+                                              blurRadius: 4,
+                                              offset: Offset(1, 1),
+                                            ),
+                                          ],
                                         ),
-                                        TextSpan(
-                                          text: '$_start',
-                                          style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 20,
-                                            color: _start > 3 ? Colors.white : Colors.red,
-                                            fontWeight: FontWeight.w600,
-                                            shadows: [
-                                              Shadow(
-                                                color: _start > 3
-                                                    ? Colors.black.withOpacity(0.7)
-                                                    : Colors.grey.shade600.withOpacity(0.7),
-                                                blurRadius: 4,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
+                                        children: [
+                                          TextSpan(
+                                            text: 'Your time will start in ',
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: ' seconds',
-                                          style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 20,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.7),
-                                                blurRadius: 4,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
+                                          TextSpan(
+                                            text: '$time',
+                                            style: TextStyle(
+                                              color: time > 3 ? Colors.white : Colors.red,
+                                              shadows: [
+                                                Shadow(
+                                                  color: time > 3
+                                                      ? Colors.black.withOpacity(0.7)
+                                                      : Colors.grey.shade600.withOpacity(0.7),
+                                                  blurRadius: 4,
+                                                  offset: Offset(1, 1),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          TextSpan(
+                                            text: ' seconds',
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -281,17 +241,15 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                             ),
                             AnimatedContainer(
                               duration: Duration(seconds: 3),
-                              height: _paperHeight,
+                              height: paperHeight,
                             ),
                           ],
-                        )
-                      : SizedBox(
-                          height: 25,
-                        ),
+                        );
+                      }),
                   StreamBuilder<String>(
                     stream: FirebaseStorage.instance
                         .ref()
-                        .child(widget.imagePath)
+                        .child(imagePath)
                         .getDownloadURL()
                         .asStream(),
                     builder: (context, snapshot) {
@@ -309,12 +267,22 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                                   child: CachedNetworkImage(
                                     imageUrl: snapshot.data,
                                     placeholder: (context, url) {
+                                      if (type == 'Question') {
+                                        return SizedBox(
+                                          width: double.infinity,
+                                          child: LoadingBumpingLine.circle(
+                                            size: 100,
+                                            backgroundColor: Colors.transparent,
+                                            borderColor: Colors.black,
+                                          ),
+                                        );
+                                      }
                                       return SizedBox(
-                                        width: 200,
-                                        child: LoadingBumpingLine.circle(
-                                          size: 100,
-                                          backgroundColor: Colors.transparent,
-                                          borderColor: Colors.black,
+                                        width: size.width * 0.8,
+                                        child: Shimmer.fromColors(
+                                          baseColor: Colors.transparent,
+                                          highlightColor: Colors.grey,
+                                          child: Image.asset('assets/Loading_Icon.png'),
                                         ),
                                       );
                                     },
@@ -326,20 +294,41 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                           ),
                         );
                       } else {
-                        return LoadingBumpingLine.circle(
-                          size: 100,
-                          backgroundColor: Colors.transparent,
-                          borderColor: Colors.black,
+                        return SizedBox(
+                          width: size.width * 0.8,
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.transparent,
+                            highlightColor: Colors.grey,
+                            child: Image.asset('assets/Loading_Icon.png'),
+                          ),
                         );
                       }
                     },
                   ),
                 ],
               ),
-              widget.type == 'Question'
-                  ? AnimatedContainer(
+              StreamBuilder<int>(
+                  stream: waitingCounter(),
+                  builder: (context, snapshot) {
+                    double positionX = 1.0;
+                    double positionY = -1.14;
+                    int min = int.parse(timeOrMarks.split(':').first);
+                    int sec = int.parse(timeOrMarks.split(':').last);
+                    if (!snapshot.hasData) {
+                      return SizedBox.shrink();
+                    }
+                    if (type != 'Question') {
+                      return SizedBox.shrink();
+                    }
+                    if(snapshot.data >3){
+                      positionX = 3.0;
+                    }
+                    if(snapshot.data>0){
+                      positionY = -1.0;
+                    }
+                    return AnimatedContainer(
                       duration: Duration(seconds: 3),
-                      alignment: Alignment(_positionX, _positionY),
+                      alignment: Alignment(positionX, positionY),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 180),
                         child: Container(
@@ -362,7 +351,7 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                           ),
                           child: CountdownTimerSimple(
                             endTime: DateTime.now().millisecondsSinceEpoch +
-                                1000 * ((60 * _min) + 1 + _sec),
+                                1000 * ((60 * min) + 1 + sec),
                             showHour: false,
                             textStyle: TextStyle(
                               fontSize: 40,
@@ -380,8 +369,8 @@ class _PaperContentState extends State<PaperContent> with TickerProviderStateMix
                           ),
                         ),
                       ),
-                    )
-                  : SizedBox.shrink(),
+                    );
+                  }),
             ],
           ),
         ),
