@@ -37,7 +37,7 @@ dependencies:
   shape_of_view: ^1.0.2
   loading_animations: ^2.2.0
   share: ^2.0.4
-  cloud_firestore: ^3.5.1
+  cloud_firestore: ^4.0.2
   clip_shadow: ^0.2.1
   icon_shadow: ^1.0.1
   countdown_timer_simple: ^1.0.2
@@ -45,7 +45,7 @@ dependencies:
   cached_network_image: ^3.2.2
   connectivity: ^3.0.6
   internet_connection_checker: ^1.0.0+1
-  permission_handler: ^10.1.0
+  permission_handler: ^10.2.0
   image_picker: ^0.8.6
   external_path: ^1.0.3
   shimmer: ^2.0.0
@@ -61,9 +61,10 @@ dependencies:
   fluttertoast: ^8.1.1
   flutter_speed_dial: ^6.2.0
   flutter_facebook_auth: ^4.4.1+1
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.2
-  firebase_storage: ^10.3.11
+  firebase_core: ^2.1.0
+  firebase_auth: ^4.0.2
+  firebase_storage: ^11.0.2
+  firebase_app_check: ^0.1.1+1
   in_app_purchase:
   firebase_messaging:
 
