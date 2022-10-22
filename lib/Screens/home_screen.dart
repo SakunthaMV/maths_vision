@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:icon_shadow/icon_shadow.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Diary/diary_home_screen.dart';
 import 'package:maths_vision/Event_1/account_screen.dart';
@@ -30,15 +31,13 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({this.loggedIn, this.userId});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState(loggedIn);
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  _HomeScreenState(this._loggedIn);
 
-  String _connectionStatus = 'Unknown';
-  final Connectivity _connectivity = Connectivity();
-  bool _loggedIn;
+  bool _hasConnection;
+  StreamSubscription _subscription;
   Color _fabBackgroundColor = Color.fromARGB(255, 1, 79, 134);
   double _progress = 0.0;
   double sizeEvent = 80.0;
@@ -49,31 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
   int _coins;
   int _level;
 
-  Future<void> initConnectivity() async {
-    ConnectivityResult result;
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.none:
-        setState(() => _connectionStatus = result.toString());
-        break;
-      default:
-        setState(() => _connectionStatus = 'Failed to get connectivity.');
-        break;
-    }
+  Future<void> checkInternet() async {
+    bool status = await InternetConnectionChecker().hasConnection;
+    setState(() {
+      _hasConnection = status;
+    });
+    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
+      status = await InternetConnectionChecker().hasConnection;
+      setState(() {
+        _hasConnection = status;
+      });
+    });
   }
 
   Future<void> _getUserData() async {
@@ -190,9 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initConnectivity().whenComplete(() {
-      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-          _connectionStatus == 'ConnectivityResult.mobile') {
+    checkInternet().whenComplete(() {
+      if (_hasConnection) {
         if (widget.userId != null) {
           DocumentReference userData =
               FirebaseFirestore.instance.collection('Users').doc(widget.userId);
@@ -213,6 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -318,98 +308,195 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
-                userData != null
-                    ? Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return Store();
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                height: 25,
-                                width: 95,
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(12.5),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 5,
-                                      color: Colors.black.withOpacity(0.3),
-                                    ),
-                                  ],
+                Builder(
+                  builder: (context){
+                    if(!widget.loggedIn){
+                      return SizedBox.shrink();
+                    }
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return Store();
+                                  },
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: SizedBox(
-                                        child: Image.asset('assets/Coin.png'),
-                                        height: 20,
-                                        width: 20,
-                                      ),
+                              );
+                            },
+                            child: Container(
+                              height: 25,
+                              width: 95,
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary,
+                                borderRadius: BorderRadius.circular(12.5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 5,
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: SizedBox(
+                                      child: Image.asset('assets/Coin.png'),
+                                      height: 20,
+                                      width: 20,
                                     ),
-                                    Text(
-                                      '$_coins',
-                                      style: TextStyle(
-                                        fontFamily: 'Forte',
-                                        fontSize: 17,
+                                  ),
+                                  Text(
+                                    '$_coins',
+                                    style: TextStyle(
+                                      fontFamily: 'Forte',
+                                      fontSize: 17,
+                                      color: colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: Container(
+                                      width: 15,
+                                      height: 15,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color.fromARGB(255, 139, 205, 250),
+                                      ),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 15,
                                         color: colorScheme.onPrimary,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 4),
-                                      child: Container(
-                                        width: 15,
-                                        height: 15,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Color.fromARGB(255, 139, 205, 250),
-                                        ),
-                                        child: Icon(
-                                          Icons.add,
-                                          size: 15,
-                                          color: colorScheme.onPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          Container(
-                            width: 60,
-                            margin: EdgeInsets.only(top: 15, bottom: 15),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 5,
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                'lv $_level',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
+                        ),
+                        Container(
+                          width: 60,
+                          margin: EdgeInsets.only(top: 15, bottom: 15),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 5,
+                                color: Colors.black.withOpacity(0.3),
                               ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              'lv $_level',
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
                             ),
                           ),
-                        ],
-                      )
-                    : SizedBox(),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                // userData != null
+                //     ? Row(
+                //         children: [
+                //           Padding(
+                //             padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
+                //             child: InkWell(
+                //               onTap: () {
+                //                 Navigator.of(context).push(
+                //                   MaterialPageRoute(
+                //                     builder: (_) {
+                //                       return Store();
+                //                     },
+                //                   ),
+                //                 );
+                //               },
+                //               child: Container(
+                //                 height: 25,
+                //                 width: 95,
+                //                 decoration: BoxDecoration(
+                //                   color: colorScheme.primary,
+                //                   borderRadius: BorderRadius.circular(12.5),
+                //                   boxShadow: [
+                //                     BoxShadow(
+                //                       blurRadius: 5,
+                //                       color: Colors.black.withOpacity(0.3),
+                //                     ),
+                //                   ],
+                //                 ),
+                //                 child: Row(
+                //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //                   children: [
+                //                     Padding(
+                //                       padding: const EdgeInsets.only(left: 4),
+                //                       child: SizedBox(
+                //                         child: Image.asset('assets/Coin.png'),
+                //                         height: 20,
+                //                         width: 20,
+                //                       ),
+                //                     ),
+                //                     Text(
+                //                       '$_coins',
+                //                       style: TextStyle(
+                //                         fontFamily: 'Forte',
+                //                         fontSize: 17,
+                //                         color: colorScheme.onPrimary,
+                //                       ),
+                //                     ),
+                //                     Padding(
+                //                       padding: const EdgeInsets.only(right: 4),
+                //                       child: Container(
+                //                         width: 15,
+                //                         height: 15,
+                //                         decoration: BoxDecoration(
+                //                           shape: BoxShape.circle,
+                //                           color: Color.fromARGB(255, 139, 205, 250),
+                //                         ),
+                //                         child: Icon(
+                //                           Icons.add,
+                //                           size: 15,
+                //                           color: colorScheme.onPrimary,
+                //                         ),
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //           Container(
+                //             width: 60,
+                //             margin: EdgeInsets.only(top: 15, bottom: 15),
+                //             decoration: BoxDecoration(
+                //               color: colorScheme.primary,
+                //               borderRadius: BorderRadius.circular(15),
+                //               boxShadow: [
+                //                 BoxShadow(
+                //                   blurRadius: 5,
+                //                   color: Colors.black.withOpacity(0.3),
+                //                 ),
+                //               ],
+                //             ),
+                //             child: Center(
+                //               child: Text(
+                //                 'lv $_level',
+                //                 style: TextStyle(
+                //                     fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       )
+                //     : SizedBox(),
                 IconButton(
                   icon: IconShadowWidget(
                     Icon(
@@ -421,8 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onPressed: () {
                     if (widget.loggedIn) {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -457,8 +543,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onPressed: () {
                     if (widget.loggedIn) {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -493,8 +578,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onPressed: () {
                     if (widget.loggedIn) {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -543,8 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () {
-                            if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                                _connectionStatus == 'ConnectivityResult.mobile') {
+                            if (_hasConnection) {
                               if (widget.loggedIn == true) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
@@ -663,9 +746,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () {
-                            if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                                _connectionStatus == 'ConnectivityResult.mobile') {
-                              if (widget.loggedIn == true) {
+                            if (_hasConnection) {
+                              if (widget.loggedIn) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) {
@@ -968,7 +1050,7 @@ class _HomeScreenState extends State<HomeScreen> {
             floatingActionButton: SpeedDial(
               animatedIcon: AnimatedIcons.menu_home,
               buttonSize: Size(60.0, 60.0),
-              visible: _loggedIn == true ? true : false,
+              visible: widget.loggedIn ? true : false,
               animatedIconTheme: IconThemeData(
                 size: 25,
                 color: colorScheme.primary,
@@ -991,8 +1073,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SpeedDialChild(
                   onTap: () {
-                    if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                        _connectionStatus == 'ConnectivityResult.mobile') {
+                    if (_hasConnection) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) {
@@ -1015,8 +1096,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   labelWidget: GestureDetector(
                     onTap: () {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -1057,8 +1137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SpeedDialChild(
                   onTap: () {
-                    if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                        _connectionStatus == 'ConnectivityResult.mobile') {
+                    if (_hasConnection) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) {
@@ -1081,8 +1160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   labelWidget: GestureDetector(
                     onTap: () {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -1126,8 +1204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SpeedDialChild(
                   onTap: () {
-                    if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                        _connectionStatus == 'ConnectivityResult.mobile') {
+                    if (_hasConnection) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) {
@@ -1150,8 +1227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   labelWidget: GestureDetector(
                     onTap: () {
-                      if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                          _connectionStatus == 'ConnectivityResult.mobile') {
+                      if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
