@@ -7,9 +7,8 @@ import 'content.dart';
 
 class MainScreen extends StatefulWidget {
   final String screen;
-  final String dataStatus;
 
-  const MainScreen(this.screen, {this.dataStatus});
+  const MainScreen(this.screen);
 
   @override
   _MainScreenState createState() => _MainScreenState(screen);
@@ -157,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
                         ? Content('Pure')
                         : screen == 'Applied'
                         ? Content('Applied')
-                        : PastPapersAndMarkingSchemes(widget.dataStatus),
+                        : PastPapersAndMarkingSchemes(),
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,

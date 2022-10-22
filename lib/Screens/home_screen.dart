@@ -933,7 +933,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (_) {
                                       return MainScreen(
                                         'Past Papers And Marking Schemes',
-                                        dataStatus: _connectionStatus,
                                       );
                                     },
                                   ),

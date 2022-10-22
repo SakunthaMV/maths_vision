@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class EventLoading extends StatelessWidget {
-  const EventLoading({Key key}) : super(key: key);
+  final Color color;
+  const EventLoading({Key key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class EventLoading extends StatelessWidget {
         height: 100,
         child: CircularProgressIndicator(
           strokeWidth: 7,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          valueColor: AlwaysStoppedAnimation<Color>(color?? Colors.white),
         ),
       ),
     );
