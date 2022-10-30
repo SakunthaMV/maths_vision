@@ -1305,6 +1305,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontFamily: 'Philosopher',
                       fontSize: 20,
+                      wordSpacing: 1.0,
+                      fontWeight: FontWeight.normal,
                       color: Colors.black.withOpacity(0.8),
                     ),
                     textAlign: TextAlign.center,
