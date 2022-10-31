@@ -6,14 +6,9 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:icon_shadow/icon_shadow.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Diary/diary_home_screen.dart';
-import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
-import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
-
-import 'account_screen.dart';
+import 'package:maths_vision/Widgets/home_app_bar.dart';
 
 class LeaderBoard extends StatefulWidget {
   const LeaderBoard({Key key}) : super(key: key);
@@ -52,8 +47,6 @@ class _LeaderBoardState extends State<LeaderBoard> {
     }
   }
 
-  int _coins;
-  int _level;
   int _currentRank;
   User user;
   List _usersData;
@@ -71,15 +64,6 @@ class _LeaderBoardState extends State<LeaderBoard> {
     user = FirebaseAuth.instance.currentUser;
     initConnectivity();
     DocumentReference userData = FirebaseFirestore.instance.collection('Users').doc(user.uid);
-    userData.snapshots().listen((event) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _coins = event['User_Details.coins'];
-        _level = event['User_Details.level'];
-      });
-    });
     data.snapshots().listen((docs) {
       _usersData = docs.docs.toList();
       for (int i = 0; i < _usersData.length; i++) {
@@ -120,170 +104,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 0, 136, 205),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) {
-                  return WentHomeSplashScreen();
-                },
-              ),
-            );
-          },
-          splashRadius: 20,
-          splashColor: Colors.grey.shade600,
-          highlightColor: Colors.black.withOpacity(0.2),
-          iconSize: 30,
-          color: Colors.white,
-        ),
-        actions: [
-          _connectionStatus == 'ConnectivityResult.wifi' ||
-                  _connectionStatus == 'ConnectivityResult.mobile'
-              ? Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return Store();
-                              },
-                            ),
-                          );
-                        },
-                        child: Container(
-                          height: 25,
-                          width: 95,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.5),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.black.withOpacity(0.3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 4),
-                                child: SizedBox(
-                                  child: Image.asset('assets/Coin.png'),
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ),
-                              Text(
-                                '$_coins',
-                                style: TextStyle(
-                                  fontFamily: 'Forte',
-                                  fontSize: 17,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 4),
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color.fromARGB(255, 139, 205, 250),
-                                  ),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 15,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 60,
-                      margin: EdgeInsets.only(top: 15, bottom: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 5,
-                            color: Colors.black.withOpacity(0.3),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          'lv $_level',
-                          style: TextStyle(
-                              fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : SizedBox(),
-          IconButton(
-            icon: Icon(Icons.article),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return DiaryHomeScreen();
-                  },
-                ),
-              );
-            },
-            splashRadius: 20,
-            splashColor: Colors.grey.shade600,
-            highlightColor: Colors.black.withOpacity(0.2),
-            iconSize: 30,
-            color: Colors.white,
-          ),
-          IconButton(
-            icon: IconShadowWidget(
-              Icon(
-                Icons.emoji_events_rounded,
-                color: Colors.white,
-                size: 30,
-              ),
-              shadowColor: Colors.black,
-            ),
-            onPressed: () {},
-            splashRadius: 20,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return AccountScreen();
-                  },
-                ),
-              );
-            },
-            splashRadius: 20,
-            splashColor: Colors.grey.shade600,
-            highlightColor: Colors.black.withOpacity(0.2),
-            iconSize: 30,
-            color: Colors.white,
-          ),
-        ],
-      ),
+      appBar: HomeAppBar(page: 'Leaderboard',),
       body: _connectionStatus == 'ConnectivityResult.wifi' ||
               _connectionStatus == 'ConnectivityResult.mobile'
           ? Stack(

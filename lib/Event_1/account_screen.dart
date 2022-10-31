@@ -6,17 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:icon_shadow/icon_shadow.dart';
-import 'package:maths_vision/Diary/diary_home_screen.dart';
 import 'package:maths_vision/Event_1/account_edit_screen.dart';
-import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
 import 'package:maths_vision/Splash_Screens/log_out_splash_screen.dart';
-import 'package:maths_vision/Splash_Screens/went_home_splash_screen.dart';
+import 'package:maths_vision/Widgets/home_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Support_Classes/event_errors_and_loading.dart';
-import 'leaderboard.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key key}) : super(key: key);
@@ -55,8 +51,6 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  int _coins;
-  int _level;
   DocumentSnapshot _userData;
   DocumentSnapshot _userEventData;
   User user;
@@ -74,8 +68,6 @@ class _AccountScreenState extends State<AccountScreen> {
         return;
       }
       setState(() {
-        _coins = event['User_Details.coins'];
-        _level = event['User_Details.level'];
         _userData = event;
       });
     });
@@ -95,176 +87,7 @@ class _AccountScreenState extends State<AccountScreen> {
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 183, 183, 183),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.home),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) {
-                  return WentHomeSplashScreen();
-                },
-              ),
-            );
-          },
-          splashRadius: 20,
-          splashColor: Colors.grey.shade600,
-          highlightColor: Colors.black.withOpacity(0.2),
-          iconSize: 30,
-          color: Colors.white,
-        ),
-        actions: [
-          _connectionStatus == 'ConnectivityResult.wifi' ||
-                  _connectionStatus == 'ConnectivityResult.mobile'
-              ? _userData != null
-                  ? Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) {
-                                    return Store();
-                                  },
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 25,
-                              width: 95,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 5,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 4),
-                                    child: SizedBox(
-                                      child: Image.asset('assets/Coin.png'),
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$_coins',
-                                    style: TextStyle(
-                                      fontFamily: 'Forte',
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: Container(
-                                      width: 15,
-                                      height: 15,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color.fromARGB(255, 139, 205, 250),
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 15,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 60,
-                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.black.withOpacity(0.3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'lv $_level',
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : SizedBox()
-              : SizedBox(),
-          IconButton(
-            icon: Icon(Icons.article),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return DiaryHomeScreen();
-                  },
-                ),
-              );
-            },
-            splashRadius: 20,
-            splashColor: Colors.grey.shade600,
-            highlightColor: Colors.black.withOpacity(0.2),
-            iconSize: 30,
-            color: Colors.white,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.emoji_events_rounded,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) {
-                    return LeaderBoard();
-                  },
-                ),
-              );
-            },
-            splashRadius: 20,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          IconButton(
-            icon: IconShadowWidget(
-              Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 30,
-              ),
-              shadowColor: Colors.black,
-            ),
-            onPressed: () {},
-            splashRadius: 20,
-            splashColor: Colors.grey.shade600,
-            highlightColor: Colors.black.withOpacity(0.2),
-            iconSize: 30,
-            color: Colors.white,
-          ),
-        ],
-      ),
+      appBar: HomeAppBar(page: 'Account',),
       body: Stack(
         alignment: AlignmentDirectional.topCenter,
         children: [

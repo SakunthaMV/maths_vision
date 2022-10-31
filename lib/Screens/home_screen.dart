@@ -9,20 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:icon_shadow/icon_shadow.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Diary/diary_home_screen.dart';
-import 'package:maths_vision/Event_1/account_screen.dart';
 import 'package:maths_vision/Event_1/collection.dart';
 import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Log_In/log_in_screen.dart';
 import 'package:maths_vision/Splash_Screens/go_event_splash_screen.dart';
+import 'package:maths_vision/Widgets/home_app_bar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'main_screens.dart';
 import 'navigation_drawer.dart';
-import 'package:maths_vision/Event_1/leaderboard.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -39,8 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final auth = FirebaseAuth.instance;
   DocumentSnapshot userData;
   DocumentSnapshot _loginData;
-  int _coins;
-  int _level;
 
   User user;
 
@@ -177,12 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
         if (user != null) {
           DocumentReference userData =
               FirebaseFirestore.instance.collection('Users').doc(user.uid);
-          userData.snapshots().listen((doc) {
-            setState(() {
-              _coins = doc['User_Details.coins'];
-              _level = doc['User_Details.level'];
-            });
-          });
           userData.get().then((doc) {
             setState(() {
               _loginData = doc;
@@ -286,9 +275,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           child: Scaffold(
-            appBar: AppBar(
+            appBar: HomeAppBar(
               leading: Builder(
-                builder: (context) {
+                builder: (context){
                   return IconButton(
                     iconSize: 30,
                     icon: Icon(
@@ -296,223 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: colorScheme.primary,
                       size: 30,
                     ),
-                    onPressed: () {
-                      // return Scaffold.of(context).openDrawer();
-                      print(user);
+                    onPressed: (){
+                      return Scaffold.of(context).openDrawer();
                     },
                   );
                 },
               ),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              actions: [
-                Builder(
-                  builder: (context) {
-                    if (user == null) {
-                      return SizedBox.shrink();
-                    }
-                    return Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) {
-                                    return Store();
-                                  },
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 25,
-                              width: 95,
-                              decoration: BoxDecoration(
-                                color: colorScheme.primary,
-                                borderRadius: BorderRadius.circular(12.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 5,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 4),
-                                    child: SizedBox(
-                                      child: Image.asset('assets/Coin.png'),
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$_coins',
-                                    style: TextStyle(
-                                      fontFamily: 'Forte',
-                                      fontSize: 17,
-                                      color: colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4),
-                                    child: Container(
-                                      width: 15,
-                                      height: 15,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color.fromARGB(255, 139, 205, 250),
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 15,
-                                        color: colorScheme.onPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 60,
-                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primary,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.black.withOpacity(0.3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'lv $_level',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontFamily: 'Forte',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: IconShadowWidget(
-                    Icon(
-                      Icons.article,
-                      color: colorScheme.primary,
-                      size: 30,
-                    ),
-                    shadowColor: Colors.black.withOpacity(0.3),
-                  ),
-                  onPressed: () {
-                    if (user != null) {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return DiaryHomeScreen();
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You need internet connection to continue.',
-                          fontSize: 16,
-                        );
-                      }
-                    } else {
-                      _logInErrorPopUp(context);
-                    }
-                  },
-                  splashRadius: 20,
-                  splashColor: Colors.grey.shade600,
-                  highlightColor: Colors.black.withOpacity(0.2),
-                  iconSize: 30,
-                  color: colorScheme.primary,
-                ),
-                IconButton(
-                  icon: IconShadowWidget(
-                    Icon(
-                      Icons.emoji_events_rounded,
-                      color: colorScheme.primary,
-                      size: 30,
-                    ),
-                    shadowColor: Colors.black.withOpacity(0.3),
-                  ),
-                  onPressed: () {
-                    if (user != null) {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return LeaderBoard();
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You need internet connection to continue.',
-                          fontSize: 16,
-                        );
-                      }
-                    } else {
-                      _logInErrorPopUp(context);
-                    }
-                  },
-                  splashRadius: 20,
-                  splashColor: Colors.grey.shade600,
-                  highlightColor: Colors.black.withOpacity(0.2),
-                  iconSize: 30,
-                  color: colorScheme.primary,
-                ),
-                IconButton(
-                  icon: IconShadowWidget(
-                    Icon(
-                      Icons.person,
-                      color: colorScheme.primary,
-                      size: 30,
-                    ),
-                    shadowColor: Colors.black.withOpacity(0.3),
-                  ),
-                  onPressed: () {
-                    if (user != null) {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return AccountScreen();
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You need internet connection to continue.',
-                          fontSize: 16,
-                        );
-                      }
-                    } else {
-                      _logInErrorPopUp(context);
-                    }
-                  },
-                  splashRadius: 20,
-                  splashColor: Colors.grey.shade600,
-                  highlightColor: Colors.black.withOpacity(0.2),
-                  iconSize: 30,
-                  color: colorScheme.primary,
-                ),
-              ],
-              leadingWidth: 70,
             ),
             backgroundColor: Colors.transparent,
             drawer: NavigationDrawer(),
@@ -1183,94 +961,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> _logInErrorPopUp(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: Opacity(
-                    opacity: 0.6,
-                    child: Image.asset('assets/Log_In_Error_Icon.png'),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    'You must be logged in to access this feature.',
-                    style: TextStyle(
-                      fontFamily: 'Philosopher',
-                      fontSize: 20,
-                      wordSpacing: 1.0,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black.withOpacity(0.8),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return LogInScreen();
-                              },
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Log In',
-                          style: TextStyle(
-                              fontSize: 22, fontFamily: 'Philosopher', color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: StadiumBorder(),
-                          backgroundColor: Color.fromARGB(255, 0, 88, 122),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context, false);
-                        },
-                        child: Text(
-                          'Ok',
-                          style: TextStyle(
-                              fontSize: 22, fontFamily: 'Philosopher', color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: StadiumBorder(),
-                          backgroundColor: Color.fromARGB(255, 0, 88, 122),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
