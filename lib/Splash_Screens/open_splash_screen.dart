@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:maths_vision/Screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OpenSplashScreen extends StatefulWidget {
@@ -13,32 +12,18 @@ class OpenSplashScreen extends StatefulWidget {
 }
 
 class _OpenSplashScreenState extends State<OpenSplashScreen> {
-  String _userId;
-
-  Future getValidationData() async {
-    final SharedPreferences sharedPreferences =
-    await SharedPreferences.getInstance();
-    var obtainedUserId = sharedPreferences.getString('userId');
-    setState(() {
-      _userId = obtainedUserId;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    getValidationData().whenComplete(() {
-      Timer(Duration(milliseconds: 1500), () {
-        return Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) {
-              return _userId == null
-                  ? HomeScreen(loggedIn: false)
-                  : HomeScreen(loggedIn: true,userId: _userId);
-            },
-          ),
-        );
-      });
+    Timer(Duration(milliseconds: 1500), () {
+      return Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return HomeScreen();
+          },
+        ),
+      );
     });
   }
 

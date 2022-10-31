@@ -25,17 +25,11 @@ import 'navigation_drawer.dart';
 import 'package:maths_vision/Event_1/leaderboard.dart';
 
 class HomeScreen extends StatefulWidget {
-  final bool loggedIn;
-  final String userId;
-
-  const HomeScreen({this.loggedIn, this.userId});
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   bool _hasConnection;
   StreamSubscription _subscription;
   Color _fabBackgroundColor = Color.fromARGB(255, 1, 79, 134);
@@ -47,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
   DocumentSnapshot _loginData;
   int _coins;
   int _level;
+
+  User user;
 
   Future<void> checkInternet() async {
     bool status = await InternetConnectionChecker().hasConnection;
@@ -62,10 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _getUserData() async {
-    userData = widget.userId != null
+    userData = user != null
         ? await FirebaseFirestore.instance
             .collection('Users')
-            .doc(widget.userId)
+            .doc(user.uid)
             .collection('Trigonometry_Event')
             .doc('Event_Info')
             .get()
@@ -73,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loginDetails() async {
-    DocumentReference time = FirebaseFirestore.instance.collection('Users').doc(widget.userId);
+    DocumentReference time = FirebaseFirestore.instance.collection('Users').doc(user.uid);
     if (DateTime.now().month - _loginData['LogIn_Details.month'] == 0) {
       if (DateTime.now().day - _loginData['LogIn_Details.day'] == 0) {
         return null;
@@ -175,11 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    user = FirebaseAuth.instance.currentUser;
     checkInternet().whenComplete(() {
       if (_hasConnection) {
-        if (widget.userId != null) {
+        if (user != null) {
           DocumentReference userData =
-              FirebaseFirestore.instance.collection('Users').doc(widget.userId);
+              FirebaseFirestore.instance.collection('Users').doc(user.uid);
           userData.snapshots().listen((doc) {
             setState(() {
               _coins = doc['User_Details.coins'];
@@ -213,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final double height = MediaQuery.of(context).size.height;
     Timer(Duration(microseconds: 300), () {
       setState(() {
-        widget.userId == null
+        user == null
             ? _progress = 0.0
             : userData == null
                 ? _progress = 0.0
@@ -300,7 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 30,
                     ),
                     onPressed: () {
-                      return Scaffold.of(context).openDrawer();
+                      // return Scaffold.of(context).openDrawer();
+                      print(user);
                     },
                   );
                 },
@@ -309,8 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Colors.transparent,
               actions: [
                 Builder(
-                  builder: (context){
-                    if(!widget.loggedIn){
+                  builder: (context) {
+                    if (user == null) {
                       return SizedBox.shrink();
                     }
                     return Row(
@@ -397,7 +395,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               'lv $_level',
                               style: TextStyle(
-                                  fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontFamily: 'Forte',
+                              ),
                             ),
                           ),
                         ),
@@ -405,98 +406,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
-                // userData != null
-                //     ? Row(
-                //         children: [
-                //           Padding(
-                //             padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                //             child: InkWell(
-                //               onTap: () {
-                //                 Navigator.of(context).push(
-                //                   MaterialPageRoute(
-                //                     builder: (_) {
-                //                       return Store();
-                //                     },
-                //                   ),
-                //                 );
-                //               },
-                //               child: Container(
-                //                 height: 25,
-                //                 width: 95,
-                //                 decoration: BoxDecoration(
-                //                   color: colorScheme.primary,
-                //                   borderRadius: BorderRadius.circular(12.5),
-                //                   boxShadow: [
-                //                     BoxShadow(
-                //                       blurRadius: 5,
-                //                       color: Colors.black.withOpacity(0.3),
-                //                     ),
-                //                   ],
-                //                 ),
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //                   children: [
-                //                     Padding(
-                //                       padding: const EdgeInsets.only(left: 4),
-                //                       child: SizedBox(
-                //                         child: Image.asset('assets/Coin.png'),
-                //                         height: 20,
-                //                         width: 20,
-                //                       ),
-                //                     ),
-                //                     Text(
-                //                       '$_coins',
-                //                       style: TextStyle(
-                //                         fontFamily: 'Forte',
-                //                         fontSize: 17,
-                //                         color: colorScheme.onPrimary,
-                //                       ),
-                //                     ),
-                //                     Padding(
-                //                       padding: const EdgeInsets.only(right: 4),
-                //                       child: Container(
-                //                         width: 15,
-                //                         height: 15,
-                //                         decoration: BoxDecoration(
-                //                           shape: BoxShape.circle,
-                //                           color: Color.fromARGB(255, 139, 205, 250),
-                //                         ),
-                //                         child: Icon(
-                //                           Icons.add,
-                //                           size: 15,
-                //                           color: colorScheme.onPrimary,
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ],
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //           Container(
-                //             width: 60,
-                //             margin: EdgeInsets.only(top: 15, bottom: 15),
-                //             decoration: BoxDecoration(
-                //               color: colorScheme.primary,
-                //               borderRadius: BorderRadius.circular(15),
-                //               boxShadow: [
-                //                 BoxShadow(
-                //                   blurRadius: 5,
-                //                   color: Colors.black.withOpacity(0.3),
-                //                 ),
-                //               ],
-                //             ),
-                //             child: Center(
-                //               child: Text(
-                //                 'lv $_level',
-                //                 style: TextStyle(
-                //                     fontSize: 20, color: Colors.black, fontFamily: 'Forte'),
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       )
-                //     : SizedBox(),
                 IconButton(
                   icon: IconShadowWidget(
                     Icon(
@@ -507,7 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shadowColor: Colors.black.withOpacity(0.3),
                   ),
                   onPressed: () {
-                    if (widget.loggedIn) {
+                    if (user != null) {
                       if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -542,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shadowColor: Colors.black.withOpacity(0.3),
                   ),
                   onPressed: () {
-                    if (widget.loggedIn) {
+                    if (user != null) {
                       if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -577,7 +486,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shadowColor: Colors.black.withOpacity(0.3),
                   ),
                   onPressed: () {
-                    if (widget.loggedIn) {
+                    if (user != null) {
                       if (_hasConnection) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -628,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           highlightColor: Colors.transparent,
                           onTap: () {
                             if (_hasConnection) {
-                              if (widget.loggedIn == true) {
+                              if (user != null) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) {
@@ -747,7 +656,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           highlightColor: Colors.transparent,
                           onTap: () {
                             if (_hasConnection) {
-                              if (widget.loggedIn) {
+                              if (user != null) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) {
@@ -838,7 +747,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-                                widget.loggedIn
+                                user != null
                                     ? Padding(
                                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                                         child: Center(
@@ -1050,7 +959,7 @@ class _HomeScreenState extends State<HomeScreen> {
             floatingActionButton: SpeedDial(
               animatedIcon: AnimatedIcons.menu_home,
               buttonSize: Size(60.0, 60.0),
-              visible: widget.loggedIn ? true : false,
+              visible: user != null ? true : false,
               animatedIconTheme: IconThemeData(
                 size: 25,
                 color: colorScheme.primary,

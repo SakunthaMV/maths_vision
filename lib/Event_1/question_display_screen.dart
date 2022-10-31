@@ -1363,7 +1363,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                 duration: Duration(milliseconds: 3150),
                 builder: (context, animate, __) {
                   return CircularPercentIndicator(
-                    radius: 250,
+                    radius: 125,
                     percent: animate,
                     progressColor: Colors.black,
                     backgroundColor: Colors.white,

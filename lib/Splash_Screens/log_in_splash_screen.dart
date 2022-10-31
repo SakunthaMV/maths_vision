@@ -112,9 +112,7 @@ class _LogInSplashScreenState extends State<LogInSplashScreen> {
         return Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) {
-              return _userId == null
-                  ? HomeScreen(loggedIn: false)
-                  : HomeScreen(loggedIn: true, userId: _userId);
+              return HomeScreen();
             },
           ),
         );
