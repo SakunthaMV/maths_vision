@@ -37,7 +37,7 @@ dependencies:
   shape_of_view: ^1.0.2
   loading_animations: ^2.2.0
   share: ^2.0.4
-  cloud_firestore: ^4.0.2
+  cloud_firestore: ^4.0.3
   clip_shadow: ^0.2.1
   icon_shadow: ^1.0.1
   countdown_timer_simple: ^1.0.2
@@ -57,14 +57,14 @@ dependencies:
   youtube_player_flutter: ^8.1.1
   flutter_blurhash: ^0.7.0
   flutter_rating_bar: ^4.0.1
-  flutter_downloader: ^1.8.4
+  flutter_downloader: ^1.9.0
   fluttertoast: ^8.1.1
   flutter_speed_dial: ^6.2.0
-  flutter_facebook_auth: ^4.4.1+1
-  firebase_core: ^2.1.0
-  firebase_auth: ^4.0.2
-  firebase_storage: ^11.0.2
-  firebase_app_check: ^0.1.1+1
+  flutter_facebook_auth: ^5.0.1
+  firebase_core: ^2.1.1
+  firebase_auth: ^4.1.0
+  firebase_storage: ^11.0.3
+  firebase_app_check: ^0.1.1+2
   in_app_purchase:
   firebase_messaging:
 
