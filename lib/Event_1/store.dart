@@ -51,7 +51,7 @@ class _StoreState extends State<Store> {
     }
   }
 
-  InAppPurchaseConnection _iap = InAppPurchaseConnection.instance;
+  InAppPurchase _iap = InAppPurchase.instance;
   User user;
   DocumentSnapshot _data;
 

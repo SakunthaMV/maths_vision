@@ -57,7 +57,7 @@ class _CollectionState extends State<Collection> {
   User user;
   DocumentSnapshot _data;
   DocumentSnapshot _stageData;
-  InAppPurchaseConnection _iap = InAppPurchaseConnection.instance;
+  InAppPurchase _iap = InAppPurchase.instance;
 
   @override
   void initState() {

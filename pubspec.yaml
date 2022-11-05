@@ -37,7 +37,7 @@ dependencies:
   shape_of_view: ^1.0.2
   loading_animations: ^2.2.0
   share: ^2.0.4
-  cloud_firestore: ^4.0.3
+  cloud_firestore: ^4.0.4
   clip_shadow: ^0.2.1
   icon_shadow: ^1.0.1
   countdown_timer_simple: ^1.0.2
@@ -62,9 +62,10 @@ dependencies:
   flutter_speed_dial: ^6.2.0
   flutter_facebook_auth: ^5.0.1
   firebase_core: ^2.1.1
-  firebase_auth: ^4.1.0
-  firebase_storage: ^11.0.3
-  firebase_app_check: ^0.1.1+2
+  firebase_auth: ^4.1.1
+  firebase_storage: ^11.0.4
+  firebase_app_check: ^0.1.1+3
+  firebase_core_platform_interface: 4.5.2
   in_app_purchase:
   firebase_messaging:
 

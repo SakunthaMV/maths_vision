@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 class PlayStoreProvider with ChangeNotifier {
-  InAppPurchaseConnection _iap = InAppPurchaseConnection.instance;
+  InAppPurchase _iap = InAppPurchase.instance;
   bool available = true;
   StreamSubscription subscription;
   final String coins_40 = 'coins_40';
@@ -59,9 +58,8 @@ class PlayStoreProvider with ChangeNotifier {
     available = await _iap.isAvailable();
     if (available) {
       await _getProducts();
-      await _getPastPurchases();
       verifyPurchase();
-      subscription = _iap.purchaseUpdatedStream.listen((data) {
+      subscription = _iap.purchaseStream.listen((data) {
         purchases.addAll(data);
         verifyPurchase();
       }, onDone: () {
@@ -291,15 +289,5 @@ class PlayStoreProvider with ChangeNotifier {
     ]);
     ProductDetailsResponse response = await _iap.queryProductDetails(ids);
     products = response.productDetails;
-  }
-
-  Future<void> _getPastPurchases() async {
-    QueryPurchaseDetailsResponse response = await _iap.queryPastPurchases();
-    for (PurchaseDetails purchase in response.pastPurchases) {
-      if (Platform.isIOS) {
-        _iap.consumePurchase(purchase);
-      }
-    }
-    purchases = response.pastPurchases;
   }
 }

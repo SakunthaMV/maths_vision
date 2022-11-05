@@ -3,19 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:maths_vision/Event_1/play_store_provider.dart';
 import 'package:maths_vision/Splash_Screens/open_splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  InAppPurchaseConnection.enablePendingPurchases();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FlutterDownloader.initialize(debug: true);
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: 'recaptcha-v3-site-key',
-    androidDebugProvider: true,
+    androidProvider: AndroidProvider.debug,
   );
   runApp(
     ChangeNotifierProvider(
