@@ -85,40 +85,95 @@ class _HomeAppBarState extends State<HomeAppBar> {
             color: Colors.white,
           ),
       actions: [
-        StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
-          builder: (context, snapshot) {
+        Builder(
+          builder: (context) {
             if (user == null) {
               return SizedBox.shrink();
             }
             if (!(_hasConnection ?? false)) {
               return SizedBox.shrink();
             }
-            if (!snapshot.hasData) {
-              return SizedBox.shrink();
-            }
-            int coins = snapshot.data['User_Details.coins'];
-            int level = snapshot.data['User_Details.level'];
-            return Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return Store();
-                          },
+            return StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return SizedBox.shrink();
+                }
+                int coins = snapshot.data['User_Details.coins'];
+                int level = snapshot.data['User_Details.level'];
+                return Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return Store();
+                              },
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 25,
+                          width: 95,
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12.5),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 5,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4),
+                                child: SizedBox(
+                                  child: Image.asset('assets/Coin.png'),
+                                  height: 20,
+                                  width: 20,
+                                ),
+                              ),
+                              Text(
+                                '$coins',
+                                style: TextStyle(
+                                  fontFamily: 'Forte',
+                                  fontSize: 17,
+                                  color: colorScheme.onPrimary,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Container(
+                                  width: 15,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(255, 139, 205, 250),
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 15,
+                                    color: colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      height: 25,
-                      width: 95,
+                      ),
+                    ),
+                    Container(
+                      width: 60,
+                      margin: EdgeInsets.only(top: 15, bottom: 15),
                       decoration: BoxDecoration(
                         color: colorScheme.primary,
-                        borderRadius: BorderRadius.circular(12.5),
+                        borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 5,
@@ -126,73 +181,22 @@ class _HomeAppBarState extends State<HomeAppBar> {
                           ),
                         ],
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: SizedBox(
-                              child: Image.asset('assets/Coin.png'),
-                              height: 20,
-                              width: 20,
-                            ),
+                      child: Center(
+                        child: Text(
+                          'lv $level',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontFamily: 'Forte',
                           ),
-                          Text(
-                            '$coins',
-                            style: TextStyle(
-                              fontFamily: 'Forte',
-                              fontSize: 17,
-                              color: colorScheme.onPrimary,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: Container(
-                              width: 15,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color.fromARGB(255, 139, 205, 250),
-                              ),
-                              child: Icon(
-                                Icons.add,
-                                size: 15,
-                                color: colorScheme.onPrimary,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  width: 60,
-                  margin: EdgeInsets.only(top: 15, bottom: 15),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 5,
-                        color: Colors.black.withOpacity(0.3),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      'lv $level',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontFamily: 'Forte',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             );
-          },
+          }
         ),
         _actionButton(Icons.article, DiaryHomeScreen(), 'Notice'),
         _actionButton(Icons.emoji_events_rounded, LeaderBoard(), 'Leaderboard'),

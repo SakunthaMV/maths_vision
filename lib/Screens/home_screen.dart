@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:loading_animations/loading_animations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Event_1/collection.dart';
 import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Log_In/log_in_screen.dart';
@@ -30,13 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _hasConnection;
   StreamSubscription _subscription;
   Color _fabBackgroundColor = Color.fromARGB(255, 1, 79, 134);
-  double _progress = 0.0;
-  double sizeEvent = 80.0;
 
-  final auth = FirebaseAuth.instance;
-  DocumentSnapshot userData;
   DocumentSnapshot _loginData;
-
   User user;
 
   Future<void> checkInternet() async {
@@ -50,17 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _hasConnection = status;
       });
     });
-  }
-
-  Future<void> _getUserData() async {
-    userData = user != null
-        ? await FirebaseFirestore.instance
-            .collection('Users')
-            .doc(user.uid)
-            .collection('Trigonometry_Event')
-            .doc('Event_Info')
-            .get()
-        : null;
   }
 
   Future<void> _loginDetails() async {
@@ -179,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }).then((value) {
             return _loginDetails();
           });
-          _getUserData();
         }
       }
     });
@@ -197,15 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    Timer(Duration(microseconds: 300), () {
-      setState(() {
-        user == null
-            ? _progress = 0.0
-            : userData == null
-                ? _progress = 0.0
-                : _progress = userData['progress'];
-      });
-    });
     return Stack(
       children: [
         Container(
@@ -277,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Scaffold(
             appBar: HomeAppBar(
               leading: Builder(
-                builder: (context){
+                builder: (context) {
                   return IconButton(
                     iconSize: 30,
                     icon: Icon(
@@ -285,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: colorScheme.primary,
                       size: 30,
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       return Scaffold.of(context).openDrawer();
                     },
                   );
@@ -313,32 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onTap: () {
-                            if (_hasConnection) {
-                              if (user != null) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return GoEventSplashScreen('Stage');
-                                    },
-                                  ),
-                                );
-                              } else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return LogInScreen();
-                                    },
-                                  ),
-                                );
-                              }
-                            } else {
-                              Fluttertoast.showToast(
-                                msg: 'You need internet connection to continue.',
-                                fontSize: 16,
-                              );
-                            }
-                          },
+                          onTap: _eventButtonPress,
                           child: Stack(
                             children: [
                               Padding(
@@ -432,32 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         InkWell(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onTap: () {
-                            if (_hasConnection) {
-                              if (user != null) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return GoEventSplashScreen('Stage');
-                                    },
-                                  ),
-                                );
-                              } else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return LogInScreen();
-                                    },
-                                  ),
-                                );
-                              }
-                            } else {
-                              Fluttertoast.showToast(
-                                msg: 'You need internet connection to continue.',
-                                fontSize: 16,
-                              );
-                            }
-                          },
+                          onTap: _eventButtonPress,
                           child: Container(
                             height: 150,
                             width: 90,
@@ -472,122 +396,95 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Stack(
-                                  alignment: AlignmentDirectional.center,
+                            child: Builder(builder: (context) {
+                              if (user == null) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.3),
-                                            blurRadius: 5,
-                                            spreadRadius: 0,
-                                          ),
-                                        ],
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      child: CircularPercentIndicator(
-                                        radius: 40,
-                                        lineWidth: 6,
-                                        percent: _progress / 100,
-                                        progressColor: colorScheme.primary,
-                                        animation: true,
-                                        animateFromLastPercent: true,
-                                        animationDuration: 1000,
-                                        curve: Curves.easeOut,
-                                        backgroundColor: Color.fromARGB(255, 200, 197, 201)
-                                            .withOpacity(0.5),
-                                        circularStrokeCap: CircularStrokeCap.round,
-                                      ),
-                                    ),
-                                    Opacity(
-                                      opacity: 0.7,
-                                      child: Container(
-                                        width: 65,
-                                        height: 65,
-                                        child: ClipOval(
-                                          child: Image.asset(
-                                            'assets/Trigonometry_Event_Icon.png',
-                                          ),
+                                    _eventCircularProgress(0.0),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                      child: Text(
+                                        'Log In',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontFamily: 'Typo Round Demo',
+                                          fontWeight: FontWeight.bold,
+                                          color: colorScheme.primary,
+                                          height: 1,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 1,
+                                              color: Colors.black.withOpacity(0.8),
+                                              offset: Offset(0.5, 1.5),
+                                            ),
+                                          ],
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ],
-                                ),
-                                user != null
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                        child: Center(
-                                          child: userData != null
-                                              ? TweenAnimationBuilder(
-                                                  tween: Tween(begin: 0.0, end: _progress),
-                                                  duration: Duration(seconds: 1),
-                                                  builder: (_, progress, __) {
-                                                    return Text(
-                                                      '${(progress).toStringAsFixed(2)}%',
-                                                      style: TextStyle(
-                                                        fontSize: 21,
-                                                        fontFamily: 'Open Sans',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: colorScheme.primary,
-                                                        shadows: [
-                                                          Shadow(
-                                                            blurRadius: 1,
-                                                            color:
-                                                                Colors.black.withOpacity(0.8),
-                                                            offset: Offset(0.5, 1.5),
-                                                          ),
-                                                        ],
+                                );
+                              }
+                              return StreamBuilder<DocumentSnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('Users')
+                                      .doc(user.uid)
+                                      .collection('Trigonometry_Event')
+                                      .doc('Event_Info')
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return LoadingAnimationWidget.beat(
+                                        color: Colors.white,
+                                        size: 60,
+                                      );
+                                    }
+                                    double progress = snapshot.data['progress'];
+                                    print(progress);
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        _eventCircularProgress(progress),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                          child: Center(
+                                            child: TweenAnimationBuilder(
+                                              tween: Tween(begin: 0.0, end: progress),
+                                              duration: Duration(seconds: 1),
+                                              builder: (_, progress, __) {
+                                                return Text(
+                                                  '${(progress).toStringAsFixed(2)}%',
+                                                  style: TextStyle(
+                                                    fontSize: 21,
+                                                    fontFamily: 'Open Sans',
+                                                    fontWeight: FontWeight.bold,
+                                                    color: colorScheme.primary,
+                                                    shadows: [
+                                                      Shadow(
+                                                        blurRadius: 1,
+                                                        color: Colors.black.withOpacity(0.8),
+                                                        offset: Offset(0.5, 1.5),
                                                       ),
-                                                    );
-                                                  },
-                                                )
-                                              : LoadingBouncingLine.circle(
-                                                  backgroundColor:
-                                                      Colors.white.withOpacity(0.8),
-                                                ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                        child: Text(
-                                          'Log In',
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontFamily: 'Typo Round Demo',
-                                            fontWeight: FontWeight.bold,
-                                            color: colorScheme.primary,
-                                            height: 1,
-                                            shadows: [
-                                              Shadow(
-                                                blurRadius: 1,
-                                                color: Colors.black.withOpacity(0.8),
-                                                offset: Offset(0.5, 1.5),
-                                              ),
-                                            ],
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
-                                      ),
-                              ],
-                            ),
+                                      ],
+                                    );
+                                  });
+                            }),
                           ),
                         ),
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 25),
+                      padding: const EdgeInsets.only(bottom: 15),
                       child: Text(
                         'THEORY AND PAPERS',
                         style: textTheme.headlineSmall.copyWith(
@@ -599,133 +496,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: Column(
                         children: [
-                          SizedBox(
-                            width: 300,
-                            height: 80,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 8,
-                                backgroundColor: colorScheme.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return MainScreen('Pure');
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    child: Text(
-                                      'ශුද්ධ ගණිතය',
-                                      style: textTheme.titleMedium,
-                                    ),
-                                    alignment: Alignment(-0.9, -0.7),
-                                  ),
-                                  Align(
-                                    child: Text(
-                                      'PURE MATHS',
-                                      style: textTheme.titleSmall,
-                                    ),
-                                    alignment: Alignment(-0.92, 0.7),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          _mainScreenButtons(
+                            'ශුද්ධ ගණිතය',
+                            'PURE MATHS',
+                            'Pure',
                           ),
-                          SizedBox(
-                            height: 20,
+                          _mainScreenButtons(
+                            'ව්‍යවහාරික ගණිතය',
+                            'APPLIED MATHS',
+                            'Applied',
                           ),
-                          SizedBox(
-                            width: 300,
-                            height: 80,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 8,
-                                backgroundColor: colorScheme.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return MainScreen('Applied');
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    child: Text(
-                                      'ව්‍යවහාරික ගණිතය',
-                                      style: textTheme.titleMedium,
-                                    ),
-                                    alignment: Alignment(-0.86, -0.7),
-                                  ),
-                                  Align(
-                                    child: Text(
-                                      'APPLIED MATHS',
-                                      style: textTheme.titleSmall,
-                                    ),
-                                    alignment: Alignment(-0.92, 0.7),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          SizedBox(
-                            width: 300,
-                            height: 115,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 8,
-                                backgroundColor: colorScheme.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return MainScreen(
-                                        'Past Papers And Marking Schemes',
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    child: Text(
-                                      'පසුගිය විභාග ප්‍රශ්න පත්‍ර සහ පිළිතුරු',
-                                      style: textTheme.titleMedium,
-                                    ),
-                                    alignment: Alignment(-0.86, -0.7),
-                                  ),
-                                  Align(
-                                    child: Text(
-                                      'PAST PAPERS & MARKING SCHEMES',
-                                      style: textTheme.titleSmall,
-                                    ),
-                                    alignment: Alignment(-0.92, 0.8),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          _mainScreenButtons(
+                            'පසුගිය විභාග ප්‍රශ්න පත්‍ර සහ පිළිතුරු',
+                            'PAST PAPERS & MARKING SCHEMES',
+                            'Past Papers And Marking Schemes',
                           ),
                         ],
                       ),
@@ -758,209 +542,206 @@ class _HomeScreenState extends State<HomeScreen> {
               overlayOpacity: 0.5,
               overlayColor: Colors.black26,
               children: [
-                SpeedDialChild(
-                  onTap: () {
-                    if (_hasConnection) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return GoEventSplashScreen('Event');
-                          },
-                        ),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: 'You need internet connection to continue.',
-                        fontSize: 16,
-                      );
-                    }
-                  },
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
-                  child: Icon(
-                    Icons.event,
-                    size: 32,
-                  ),
-                  labelWidget: GestureDetector(
-                    onTap: () {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return GoEventSplashScreen('Event');
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You are not connected to the Internet.',
-                          fontSize: 16,
-                        );
-                      }
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          'EVENT',
-                          style: textTheme.headlineSmall.copyWith(
-                              fontSize: 20, fontWeight: FontWeight.w200, letterSpacing: 1.2),
-                        ),
-                      ),
-                      width: 170,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 3,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SpeedDialChild(
-                  onTap: () {
-                    if (_hasConnection) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return Store();
-                          },
-                        ),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: 'You need internet connection to continue.',
-                        fontSize: 16,
-                      );
-                    }
-                  },
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
-                  child: Icon(
-                    Icons.store,
-                    size: 32,
-                  ),
-                  labelWidget: GestureDetector(
-                    onTap: () {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return Store();
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You need internet connection to continue.',
-                          fontSize: 16,
-                        );
-                      }
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          'STORE',
-                          style: textTheme.headlineSmall.copyWith(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w200,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
-                      width: 170,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 3,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SpeedDialChild(
-                  onTap: () {
-                    if (_hasConnection) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return Collection();
-                          },
-                        ),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: 'You need internet connection to continue.',
-                        fontSize: 16,
-                      );
-                    }
-                  },
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
-                  child: Icon(
-                    Icons.style_outlined,
-                    size: 32,
-                  ),
-                  labelWidget: GestureDetector(
-                    onTap: () {
-                      if (_hasConnection) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return Collection();
-                            },
-                          ),
-                        );
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'You are not connected to the Internet.',
-                          fontSize: 16,
-                        );
-                      }
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          'COLLECTION',
-                          style: textTheme.headlineSmall.copyWith(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w200,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
-                      width: 170,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 3,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                _fabChild(GoEventSplashScreen('Event'), Icons.event, 'EVENT'),
+                _fabChild(Store(), Icons.store, 'STORE'),
+                _fabChild(Collection(), Icons.style_outlined, 'COLLECTION'),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  SpeedDialChild _fabChild(Widget screen, IconData icon, String name) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return SpeedDialChild(
+      onTap: () {
+        _fabChildPress(screen);
+      },
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      child: Icon(
+        icon,
+        size: 32,
+      ),
+      labelWidget: GestureDetector(
+        onTap: () {
+          _fabChildPress(screen);
+        },
+        child: Container(
+          child: Center(
+            child: Text(
+              name,
+              style: textTheme.headlineSmall.copyWith(
+                fontSize: 20,
+                fontWeight: FontWeight.w200,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          width: 170,
+          height: 35,
+          decoration: BoxDecoration(
+            color: colorScheme.secondary,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                spreadRadius: 3,
+                color: Colors.black.withOpacity(0.2),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mainScreenButtons(String sinhalaName, String englishName, String screen) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: SizedBox(
+        width: 300,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            elevation: 8,
+            backgroundColor: colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) {
+                  return MainScreen(screen);
+                },
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 5.0,
+              horizontal: 5.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  sinhalaName,
+                  style: textTheme.titleMedium,
+                ),
+                Text(
+                  englishName,
+                  style: textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _eventCircularProgress(double progress) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 5,
+                spreadRadius: 0,
+              ),
+            ],
+            shape: BoxShape.circle,
+          ),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          child: CircularPercentIndicator(
+            radius: 40,
+            lineWidth: 6,
+            percent: progress / 100,
+            progressColor: colorScheme.primary,
+            animation: true,
+            animateFromLastPercent: true,
+            animationDuration: 1000,
+            curve: Curves.easeOut,
+            backgroundColor: Color.fromARGB(255, 200, 197, 201).withOpacity(0.5),
+            circularStrokeCap: CircularStrokeCap.round,
+          ),
+        ),
+        Opacity(
+          opacity: 0.7,
+          child: Container(
+            width: 65,
+            height: 65,
+            child: ClipOval(
+              child: Image.asset(
+                'assets/Trigonometry_Event_Icon.png',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _fabChildPress(Widget screen) {
+    if (_hasConnection) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return screen;
+          },
+        ),
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: 'You need internet connection to continue.',
+        fontSize: 16,
+      );
+    }
+  }
+
+  void _eventButtonPress() {
+    if (!_hasConnection) {
+      Fluttertoast.showToast(
+        msg: 'You need internet connection to continue.',
+        fontSize: 16,
+      );
+      return;
+    }
+    if (user == null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return LogInScreen();
+          },
+        ),
+      );
+      return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          return GoEventSplashScreen('Stage');
+        },
+      ),
     );
   }
 }
