@@ -16,12 +16,11 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title ?? Text(''),
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leadingWidth: 70,
       centerTitle: true,
       leading: Builder(
         builder: (context) {
           return IconButton(
-            iconSize: 35,
+            iconSize: 30,
             icon: Icon(Icons.menu),
             color: Theme.of(context).colorScheme.primary,
             onPressed: () {
