@@ -364,7 +364,7 @@ class _PastPapersAndMarkingSchemesState extends State<PastPapersAndMarkingScheme
                       ),
                     ),
                     Opacity(
-                      opacity: 1.0,
+                      opacity: 0.6,
                       child: ListTile(
                         title: Text(
                           'Coming Soon...',
