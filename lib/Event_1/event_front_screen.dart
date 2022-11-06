@@ -424,12 +424,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
           int stageTotalXP = trigonometryEventData[_stageIndex][2];
           Map<String, dynamic> data = stageSnapshot.data.data();
           if (!data.containsKey('Stage_${_stageIndex + 1}')) {
-            return FittedBox(
-              child: LoadingAnimationWidget.halfTriangleDot(
-                color: Colors.white,
-                size: 100,
-              ),
-            );
+            return SizedBox.shrink();
           }
           int completed = data['Stage_${_stageIndex + 1}']['Info']['completed'];
           int correct = data['Stage_${_stageIndex + 1}']['Info']['correct'];
@@ -736,12 +731,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
           }
           Map<String, dynamic> eventData = eventSnapshot.data.data();
           if (!eventData.containsKey('goldenStageUnlocked')) {
-            return FittedBox(
-              child: LoadingAnimationWidget.halfTriangleDot(
-                color: Colors.white,
-                size: 100,
-              ),
-            );
+            return SizedBox.shrink();
           }
           bool isGoldenStageUnlocked = eventData['goldenStageUnlocked'];
           return Column(
