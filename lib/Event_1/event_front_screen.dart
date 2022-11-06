@@ -41,7 +41,6 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
   int _stageIndex = 0;
   ScrollController controller = ScrollController();
   User user;
-  StreamSubscription _userSubscription;
 
   Future<void> checkInternet() async {
     bool status = await InternetConnectionChecker().hasConnection;
@@ -121,7 +120,6 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
   @override
   void dispose() {
     super.dispose();
-    _userSubscription.cancel();
     _subscription.cancel();
   }
 
