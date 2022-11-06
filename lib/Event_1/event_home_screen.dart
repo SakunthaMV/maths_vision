@@ -68,35 +68,26 @@ class EventHomeScreen extends StatelessWidget {
               padding: EdgeInsets.only(top: height * 0.19 * (140 / 160)),
               child: RichText(
                 text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontFamily: 'Lucida Console',
+                    color: Color.fromARGB(255, 53, 25, 46),
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.3),
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
                   children: [
                     TextSpan(
                       text: 'T',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontFamily: 'Lucida Console',
-                        color: Color.fromARGB(255, 53, 25, 46),
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.3),
-                            offset: Offset(1, 1),
-                          ),
-                        ],
-                      ),
                     ),
                     TextSpan(
                       text: 'HE BATTLE BEGAN',
                       style: TextStyle(
                         fontSize: 21,
-                        fontFamily: 'Lucida Console',
-                        color: Color.fromARGB(255, 53, 25, 46),
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.3),
-                            offset: Offset(1, 1),
-                          ),
-                        ],
                       ),
                     ),
                   ],
@@ -128,33 +119,25 @@ class EventHomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 20),
                     child: RichText(
                       text: TextSpan(
+                        style: TextStyle(
+                          fontFamily: 'Juice ITC',
+                          fontSize: 20,
+                          color: Colors.black,
+                          height: 1,
+                        ),
                         children: [
                           TextSpan(
                             text: '"',
-                            style: TextStyle(
-                              fontFamily: 'Juice ITC',
-                              fontSize: 20,
-                              color: Colors.black,
-                              height: 1,
-                            ),
                           ),
                           TextSpan(
                             text: 'Guidance for the Combat with\n   The Examination.',
                             style: TextStyle(
-                              height: 1,
                               fontFamily: 'Lemon Jelly',
                               fontSize: 23,
-                              color: Colors.black,
                             ),
                           ),
                           TextSpan(
                             text: '"',
-                            style: TextStyle(
-                              fontFamily: 'Juice ITC',
-                              fontSize: 20,
-                              color: Colors.black,
-                              height: 1,
-                            ),
                           ),
                         ],
                       ),
@@ -387,37 +370,27 @@ class TrigonometryEventDetails extends StatelessWidget {
                         children: [
                           RichText(
                             text: TextSpan(
+                              style: TextStyle(
+                                fontFamily: 'AgencyFB',
+                                fontSize: 22,
+                                color: Colors.white,
+                                height: 0.9,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 3,
+                                    color: Colors.black.withOpacity(0.8),
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
                               children: [
                                 TextSpan(
                                   text: '${(progress).toStringAsFixed(1)}',
-                                  style: TextStyle(
-                                    fontFamily: 'AgencyFB',
-                                    fontSize: 22,
-                                    color: Colors.white,
-                                    height: 0.9,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 3,
-                                        color: Colors.black.withOpacity(0.8),
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
                                 ),
                                 TextSpan(
                                   text: '%',
                                   style: TextStyle(
-                                    fontFamily: 'AgencyFB',
                                     fontSize: 15,
-                                    color: Colors.white,
-                                    height: 0.9,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 3,
-                                        color: Colors.black.withOpacity(0.8),
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
                                   ),
                                 ),
                               ],
@@ -486,44 +459,40 @@ class TrigonometryEventDetails extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Probability',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontFamily: 'AgencyFB',
-                              color: Colors.white,
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Probability',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'AgencyFB',
+                            color: Colors.white,
                           ),
-                          Text(
-                            'of giving an answer correctly.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: 'AgencyFB',
-                              height: 0.8,
-                              color: Colors.white,
-                            ),
+                        ),
+                        Text(
+                          'of giving an answer correctly.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'AgencyFB',
+                            height: 0.8,
+                            color: Colors.white,
                           ),
-                          Text(
-                            ' In this event',
-                            style: TextStyle(
-                              fontSize: 19,
-                              fontFamily: 'Lemon Jelly',
-                              color: Color.fromARGB(255, 53, 25, 46),
-                              height: 1,
-                            ),
+                        ),
+                        Text(
+                          ' In this event',
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontFamily: 'Lemon Jelly',
+                            color: Color.fromARGB(255, 53, 25, 46),
+                            height: 1,
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
@@ -547,21 +516,19 @@ class TrigonometryEventDetails extends StatelessWidget {
                                 ),
                                 child: RichText(
                                   text: TextSpan(
+                                    style: TextStyle(
+                                      fontFamily: 'AgencyFB',
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                    ),
                                     children: [
                                       TextSpan(
                                         text: '${(probability).toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          fontFamily: 'AgencyFB',
-                                          fontSize: 25,
-                                          color: Colors.black,
-                                        ),
                                       ),
                                       TextSpan(
                                         text: '/5',
                                         style: TextStyle(
-                                          fontFamily: 'AgencyFB',
                                           fontSize: 15,
-                                          color: Colors.black,
                                         ),
                                       ),
                                     ],
@@ -611,35 +578,27 @@ class TrigonometryEventDetails extends StatelessWidget {
   Widget _similarText(String first, String last) {
     return RichText(
       text: TextSpan(
+        style: TextStyle(
+          fontFamily: 'AgencyFB',
+          fontSize: 30,
+          color: Colors.white,
+          shadows: [
+            Shadow(
+              blurRadius: 3,
+              color: Colors.black.withOpacity(0.7),
+              offset: Offset(1, 1),
+            ),
+          ],
+        ),
         children: [
           TextSpan(
             text: '$first ',
-            style: TextStyle(
-              fontFamily: 'AgencyFB',
-              fontSize: 30,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  blurRadius: 3,
-                  color: Colors.black.withOpacity(0.8),
-                  offset: Offset(1, 1),
-                ),
-              ],
-            ),
           ),
           TextSpan(
             text: last,
             style: TextStyle(
               fontFamily: 'Antipasto Pro Extralight',
               fontSize: 27,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  blurRadius: 3,
-                  color: Colors.black.withOpacity(0.7),
-                  offset: Offset(1, 1),
-                ),
-              ],
             ),
           ),
         ],
@@ -705,21 +664,19 @@ class TrigonometryEventDetails extends StatelessWidget {
                       child: Center(
                         child: RichText(
                           text: TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Niagara Solid',
+                              fontSize: eventXP == null ? 25 : 20,
+                              color: Colors.black,
+                            ),
                             children: [
                               TextSpan(
                                 text: '${data.toStringAsFixed(0)}',
-                                style: TextStyle(
-                                  fontFamily: 'Niagara Solid',
-                                  fontSize: eventXP == null ? 25 : 20,
-                                  color: Colors.black,
-                                ),
                               ),
                               TextSpan(
                                 text: '/${completed ?? '10000'}',
                                 style: TextStyle(
-                                  fontFamily: 'Niagara Solid',
                                   fontSize: eventXP == null ? 19 : 15,
-                                  color: Colors.black,
                                 ),
                               ),
                             ],
@@ -745,6 +702,12 @@ class TrigonometryEventDetails extends StatelessWidget {
                 backgroundColor: Colors.black,
                 center: RichText(
                   text: TextSpan(
+                    style: TextStyle(
+                      fontFamily: 'AgencyFB',
+                      fontSize: 13,
+                      color: Colors.white,
+                      height: 1,
+                    ),
                     children: [
                       TextSpan(
                         text: eventXP == null
@@ -752,19 +715,11 @@ class TrigonometryEventDetails extends StatelessWidget {
                                 ? '${(100 * correct / completed).toStringAsFixed(0)}'
                                 : '0')
                             : '${(100 * eventXP / 10000).toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontFamily: 'AgencyFB',
-                          fontSize: 13,
-                          color: Colors.white,
-                          height: 1,
-                        ),
                       ),
                       TextSpan(
                         text: '%',
                         style: TextStyle(
-                          fontFamily: 'AgencyFB',
                           fontSize: 9,
-                          color: Colors.white,
                         ),
                       ),
                     ],
