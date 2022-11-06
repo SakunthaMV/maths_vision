@@ -442,7 +442,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       );
                                     }
                                     double progress = snapshot.data['progress'];
-                                    print(progress);
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
