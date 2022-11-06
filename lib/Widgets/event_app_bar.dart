@@ -63,50 +63,60 @@ class _EventAppBarState extends State<EventAppBar> {
       elevation: 0,
       toolbarHeight: 60,
       leadingWidth: 70,
-      leading: InkWell(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) {
-                return LeaderBoard();
-              },
+      leading: Builder(
+        builder: (context) {
+          if(_hasConnection==null){
+            return SizedBox.shrink();
+          }
+          if(!_hasConnection){
+            return SizedBox.shrink();
+          }
+          return InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) {
+                    return LeaderBoard();
+                  },
+                ),
+              );
+            },
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  margin: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 0,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 25,
+                  height: 25,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/Leaderboard_Icon.png'),
+                      fit: BoxFit.fill,
+                      scale: 0.5,
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
-        },
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              margin: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    spreadRadius: 0,
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/Leaderboard_Icon.png'),
-                  fit: BoxFit.fill,
-                  scale: 0.5,
-                ),
-              ),
-            ),
-          ],
-        ),
+        }
       ),
       actions: [
         Builder(builder: (context) {
