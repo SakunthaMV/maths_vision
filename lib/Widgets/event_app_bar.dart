@@ -64,6 +64,8 @@ class _EventAppBarState extends State<EventAppBar> {
       toolbarHeight: 60,
       leadingWidth: 70,
       leading: InkWell(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -79,6 +81,7 @@ class _EventAppBarState extends State<EventAppBar> {
             Container(
               width: 50,
               height: 50,
+              margin: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
@@ -86,14 +89,14 @@ class _EventAppBarState extends State<EventAppBar> {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.3),
                     spreadRadius: 0,
-                    blurRadius: 8,
+                    blurRadius: 5,
                   ),
                 ],
               ),
             ),
             Container(
-              width: 27,
-              height: 27,
+              width: 25,
+              height: 25,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/Leaderboard_Icon.png'),
@@ -246,7 +249,7 @@ class _EventAppBarState extends State<EventAppBar> {
                   Container(
                     width: 50,
                     height: 50,
-                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
@@ -254,12 +257,14 @@ class _EventAppBarState extends State<EventAppBar> {
                         BoxShadow(
                           color: Colors.black.withOpacity(0.3),
                           spreadRadius: 0,
-                          blurRadius: 8,
+                          blurRadius: 4,
                         ),
                       ],
                     ),
                     child: ClipOval(
                       child: InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -291,8 +296,8 @@ class _EventAppBarState extends State<EventAppBar> {
                             ),
                             ClipOval(
                               child: SizedBox(
-                                width: 45,
-                                height: 45,
+                                width: 43,
+                                height: 43,
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
                                   imageUrl: imgURL,
