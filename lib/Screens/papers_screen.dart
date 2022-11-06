@@ -355,7 +355,7 @@ class NetworkError extends StatelessWidget {
       width: 200,
       height: 250,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width: 4),
+        border: Border.all(color: color, width: 4),
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
