@@ -14,3 +14,5 @@ List trigonometryEventData = [
   ['ත්‍රිකෝණයක සම්මත අංකනය\n(sin නීතිය සහ cos නීතිය)', 5, 650],
   ['WE WARMLY WELCOME YOU TO THE PARADISE OF THE BEST OF THE BEST', 10, 4500]
 ];
+
+List videoPrices = [0, 450, 160, 400, 300, 250, 300, 600, 230, 450];
