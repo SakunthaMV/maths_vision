@@ -15,7 +15,7 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Event_1/account_screen.dart';
 import 'package:maths_vision/Event_1/answer_display_screen.dart';
 import 'package:maths_vision/Event_1/level_up_screen.dart';
-import 'package:maths_vision/Event_1/questions_map.dart';
+import 'package:maths_vision/Data_Directory/questions_data.dart';
 import 'package:maths_vision/Event_1/store.dart';
 import 'package:maths_vision/Event_1/video_display_screen.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';

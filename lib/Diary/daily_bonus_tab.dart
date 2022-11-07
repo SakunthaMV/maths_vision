@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Event_1/collection.dart';
-import 'package:maths_vision/Event_1/questions_map.dart';
+import 'package:maths_vision/Data_Directory/questions_data.dart';
 
 class DailyBonusTab extends StatefulWidget {
   const DailyBonusTab({Key key}) : super(key: key);
