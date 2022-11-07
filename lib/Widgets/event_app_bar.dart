@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -14,7 +15,8 @@ import '../Event_1/store.dart';
 import '../Splash_Screens/went_home_splash_screen.dart';
 
 class EventAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const EventAppBar({Key key}) : super(key: key);
+  final backgroundColor;
+  const EventAppBar({Key key, this.backgroundColor}) : super(key: key);
 
   @override
   State<EventAppBar> createState() => _EventAppBarState();
@@ -59,10 +61,34 @@ class _EventAppBarState extends State<EventAppBar> {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: widget.backgroundColor?? Colors.transparent,
       elevation: 0,
       toolbarHeight: 60,
-      leadingWidth: 70,
+      leadingWidth: (_hasConnection?? true)? 70: 0,
+      title: Builder(
+        builder: (context) {
+          if(_hasConnection?? true){
+            return SizedBox.shrink();
+          }
+          return Center(
+            child: Text(
+              'No Internet Connection',
+              style: GoogleFonts.openSans(
+                fontSize: 18,
+                color: Colors.white,
+                letterSpacing: 0.2,
+                shadows: [
+                  Shadow(
+                    blurRadius: 1,
+                    offset: Offset(1,1),
+                    color: Colors.black.withOpacity(0.4),
+                  )
+                ]
+              ),
+            ),
+          );
+        }
+      ),
       leading: Builder(
         builder: (context) {
           if(_hasConnection==null){
