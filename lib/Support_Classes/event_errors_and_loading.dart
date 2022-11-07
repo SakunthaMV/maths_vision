@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class EventLoading extends StatelessWidget {
   final Color color;
@@ -7,14 +8,7 @@ class EventLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: 100,
-        height: 100,
-        child: CircularProgressIndicator(
-          strokeWidth: 7,
-          valueColor: AlwaysStoppedAnimation<Color>(color?? Colors.white),
-        ),
-      ),
+      child: LoadingAnimationWidget.threeArchedCircle(color: color?? Colors.white, size: 120),
     );
   }
 }
