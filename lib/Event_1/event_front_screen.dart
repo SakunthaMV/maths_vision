@@ -121,6 +121,8 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
   void dispose() {
     super.dispose();
     _subscription.cancel();
+    controller.dispose();
+    _snapController.dispose();
   }
 
   @override
