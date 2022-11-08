@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Event_1/collection.dart';
-import 'package:maths_vision/Event_1/play_store_provider.dart';
+import 'package:maths_vision/Providers/play_store_provider.dart';
 import 'package:maths_vision/Screens/papers_screen.dart';
 import 'package:provider/provider.dart';
 
