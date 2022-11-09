@@ -697,6 +697,49 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
     );
   }
 
+  void _userRankUpdate() {
+    final Query orderedUsers = FirebaseFirestore.instance
+        .collection('Users')
+        .where('User_Details.xp', isGreaterThan: 0)
+        .orderBy('User_Details.xp', descending: true);
+    final DocumentReference userData =
+        FirebaseFirestore.instance.collection('Users').doc(user.uid);
+    int rank;
+    StreamSubscription<QuerySnapshot> _subscription = orderedUsers.snapshots().listen((docs) {
+      for (int i = 0; i < docs.size; i++) {
+        if (docs.docs[i]['User_Details.userId'] == user.uid) {
+          rank = i + 1;
+          break;
+        }
+      }
+    });
+    Future.delayed(Duration(seconds: 1)).whenComplete(() {
+      if (rank != null) {
+        userData.collection('Trigonometry_Event').doc('Event_Info').get().then((doc) {
+          userData.collection('Trigonometry_Event').doc('Event_Info').update({
+            'currentRank': rank,
+            'bestRank': doc.get('bestRank') == 0
+                ? rank
+                : doc.get('bestRank') > rank
+                    ? rank
+                    : doc.get('bestRank'),
+          });
+        });
+        userData.get().then((doc) {
+          userData.update({
+            'User_Details.currentRank': rank,
+            'User_Details.bestRank': doc.get('User_Details.bestRank') == 0
+                ? rank
+                : doc.get('User_Details.bestRank') > rank
+                    ? rank
+                    : doc.get('User_Details.bestRank'),
+          });
+        });
+        _subscription.cancel();
+      }
+    });
+  }
+
   void _updateDatabaseDetails(bool xpDoubleUsed) {
     final String S = 'Stage_${widget.stage}';
     final String Q = 'Question_${widget.question}';
@@ -917,6 +960,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                   }
                   _showResultDialog(context, xpDoubleUsed);
                   _updateDatabaseDetails(xpDoubleUsed);
+                  _userRankUpdate();
                 },
               ),
               shape: RoundedRectangleBorder(
@@ -1225,7 +1269,8 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                                   final CollectionReference eventsInfo =
                                       FirebaseFirestore.instance.collection('Events');
 
-                                  final CollectionReference stagesInfo = FirebaseFirestore.instance
+                                  final CollectionReference stagesInfo = FirebaseFirestore
+                                      .instance
                                       .collection('Events')
                                       .doc('Trigonometry')
                                       .collection('Stages');
