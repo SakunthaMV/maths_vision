@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../Data_Directory/event_data.dart';
+
 class LevelUpScreen extends StatefulWidget {
   final int newLevel;
   final int pastLevelXP;
@@ -17,44 +19,11 @@ class LevelUpScreen extends StatefulWidget {
 }
 
 class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateMixin {
-  Map<String, List> quotes = {
-    'topQuote': [
-      'Good effort!',
-      'Good going!',
-      'Good work!',
-      'Keep it up!',
-      'Keep on trying!',
-      'Keep working on it',
-      'Much better!',
-      'Nice work!',
-      'Right on!',
-      'Super Duper!',
-      'Superior work.',
-      'Terrific!',
-      'That’s better.',
-      'That’s good!',
-      'Very interesting.',
-      'Wonderful!',
-    ],
-    'bottomQuote': [
-      'You are doing a good job!',
-      'You are learning a lot.',
-      'You are learning fast.',
-      'You must have been practicing.',
-      'You’re doing a great job',
-      'You’re getting better and better.',
-      'You’re on the right track now.',
-      'You’re really improving.',
-      'Now you’ve figured it out.',
-    ]
-  };
-
   int _topQuote;
   int _bottomQuote;
   double _percent = 0.0;
   double _opacity = 0.0;
   double _numberOpacity = 0.0;
-  double _buttonPosition = 1.2;
   double _buttonOpacity = 0.0;
   Color _shimmerColor = Color.fromARGB(255, 63, 129, 176);
   AnimationController _numberController;
@@ -73,7 +42,7 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
     );
     _scaleAnimation = CurvedAnimation(
       parent: _scaleController,
-      curve: Curves.easeInQuart,
+      curve: Curves.elasticOut,
     );
     _numberController = AnimationController(
       vsync: this,
@@ -105,173 +74,99 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 1, 79, 134),
       body: Center(
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: FittedBox(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: height * 0.1,
+        child: FittedBox(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 3,
+                      bottom: 1,
+                      top: 21,
+                      right: 5,
                     ),
-                    Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 3,
-                            bottom: 1,
-                            top: 21,
-                            right: 5,
-                          ),
-                          child: CircularPercentIndicator(
-                            radius: 170,
-                            percent: _percent,
-                            backgroundColor: Colors.transparent,
-                            animation: true,
-                            animationDuration: 1500,
-                            progressColor: Colors.white,
-                            circularStrokeCap: CircularStrokeCap.round,
-                            lineWidth: 6,
-                          ),
+                    child: CircularPercentIndicator(
+                      radius: 85,
+                      percent: _percent,
+                      backgroundColor: Colors.transparent,
+                      animation: true,
+                      animationDuration: 1500,
+                      progressColor: Colors.white,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      lineWidth: 6,
+                    ),
+                  ),
+                  TweenAnimationBuilder(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: 1500),
+                    curve: Curves.linearToEaseOut,
+                    builder: (_, scale, __) {
+                      return Transform.scale(
+                        scale: scale,
+                        child: SizedBox(
+                          width: width,
+                          child: Image.asset('assets/Level_Up_Star.png'),
                         ),
-                        TweenAnimationBuilder(
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          duration: Duration(milliseconds: 1500),
-                          curve: Curves.linearToEaseOut,
-                          builder: (_, scale, __) {
-                            return Transform.scale(
-                              scale: scale,
-                              child: SizedBox(
-                                width: width,
-                                child: Image.asset('assets/Level_Up_Star.png'),
-                              ),
-                            );
-                          },
-                          onEnd: () {
-                            setState(() {
-                              _percent = 1.0;
-                              _opacity = 1.0;
-                            });
-                            _scaleController.forward();
-                          },
-                        ),
-                        AnimatedOpacity(
-                          duration: Duration(milliseconds: 1500),
-                          opacity: _numberOpacity,
-                          curve: Curves.fastOutSlowIn,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 3,
-                              bottom: 1,
-                              top: 29,
-                              right: 5,
-                            ),
-                            child: AnimatedBuilder(
-                              animation: _numberScaleAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _numberScaleAnimation.value,
-                                  child: child,
-                                );
-                              },
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.white.withOpacity(0.0),
-                                child: Center(
-                                  child: Text(
-                                    '${widget.newLevel}',
-                                    style: TextStyle(
-                                      fontFamily: 'MontereyFLF',
-                                      fontSize: 80,
-                                      color: Colors.black,
-                                      height: 1,
-                                    ),
-                                  ),
+                      );
+                    },
+                    onEnd: () {
+                      setState(() {
+                        _percent = 1.0;
+                        _opacity = 1.0;
+                      });
+                      _scaleController.forward();
+                    },
+                  ),
+                  AnimatedOpacity(
+                    duration: Duration(milliseconds: 1500),
+                    opacity: _numberOpacity,
+                    curve: Curves.fastOutSlowIn,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 3,
+                        bottom: 1,
+                        top: 29,
+                        right: 5,
+                      ),
+                      child: AnimatedBuilder(
+                        animation: _numberScaleAnimation,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _numberScaleAnimation.value,
+                            child: child,
+                          );
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          padding: EdgeInsets.only(right: widget.newLevel >= 100 ? 9 : 0),
+                          child: Center(
+                            child: FittedBox(
+                              child: Text(
+                                '${widget.newLevel}',
+                                style: TextStyle(
+                                  fontFamily: 'MontereyFLF',
+                                  fontSize: 80,
+                                  color: Colors.black,
+                                  height: 1,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    AnimatedContainer(
-                      duration: Duration(seconds: 1),
-                      height: 90,
-                    ),
-                    TweenAnimationBuilder(
-                      tween: Tween(begin: 0.0, end: 1.0),
-                      duration: Duration(milliseconds: 1500),
-                      curve: Curves.linearToEaseOut,
-                      builder: (_, scale, __) {
-                        return Transform.scale(
-                          scale: scale,
-                          child: Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 0, 136, 145),
-                            highlightColor: _shimmerColor,
-                            child: Text(
-                              'Congratulations !',
-                              style: TextStyle(
-                                fontFamily: 'Blenda Script',
-                                fontSize: 42,
-                                color: Color.fromARGB(255, 0, 136, 145),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    AnimatedOpacity(
-                      duration: Duration(milliseconds: 1500),
-                      opacity: _opacity,
-                      onEnd: () {
-                        _numberController.forward();
-                        setState(() {
-                          _numberOpacity = 1.0;
-                          _buttonPosition = 0.8;
-                          _buttonOpacity = 1.0;
-                          _shimmerColor = Colors.white;
-                        });
-                        _textController.forward();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30, bottom: 30),
-                        child: Text(
-                          '${quotes['topQuote'][_topQuote]}\n${quotes['bottomQuote'][_bottomQuote]}',
-                          style: TextStyle(
-                            fontFamily: 'Dubai Regular',
-                            fontSize: 23,
-                            color: Colors.white,
-                            height: 1.1,
-                            letterSpacing: 0.7,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 2,
-                                color: Colors.black.withOpacity(0.5),
-                                offset: Offset(1, 1),
-                              )
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+              ScaleTransition(
+                scale: _scaleAnimation,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -283,8 +178,8 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
                         color: Colors.white,
                         shadows: [
                           Shadow(
-                            blurRadius: 4,
-                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 3,
+                            color: Colors.black.withOpacity(0.3),
                             offset: Offset(2, 2),
                           )
                         ],
@@ -297,13 +192,13 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
                           text: TextSpan(
                             style: TextStyle(
                               fontFamily: 'AgencyFB',
-                              fontSize: 23,
+                              fontSize: 25,
                               letterSpacing: 1,
                               color: Colors.white,
                               shadows: [
                                 Shadow(
                                   blurRadius: 3,
-                                  color: Colors.black.withOpacity(0.8),
+                                  color: Colors.black.withOpacity(0.6),
                                 ),
                               ],
                             ),
@@ -325,35 +220,97 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
                   ],
                 ),
               ),
-            ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 1500),
-              alignment: Alignment(0, _buttonPosition),
-              curve: Curves.fastOutSlowIn,
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 1500),
-                opacity: _buttonOpacity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context, false);
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: TweenAnimationBuilder(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: Duration(milliseconds: 1500),
+                  curve: Curves.linearToEaseOut,
+                  builder: (_, scale, __) {
+                    return Transform.scale(
+                      scale: scale,
+                      child: Shimmer.fromColors(
+                        baseColor: Color.fromARGB(255, 0, 136, 145),
+                        highlightColor: _shimmerColor,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                          child: FittedBox(
+                            child: Text(
+                              'Congratulations !',
+                              style: TextStyle(
+                                fontFamily: 'Blenda Script',
+                                fontSize: 42,
+                                color: Color.fromARGB(255, 0, 136, 145),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  child: Text(
-                    'Continue',
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontSize: 23,
-                    ),
+                ),
+              ),
+              AnimatedOpacity(
+                duration: Duration(milliseconds: 1500),
+                opacity: _opacity,
+                onEnd: () {
+                  _numberController.forward();
+                  setState(() {
+                    _numberOpacity = 1.0;
+                    _buttonOpacity = 1.0;
+                    _shimmerColor = Colors.white;
+                  });
+                  _textController.forward();
+                },
+                child: Text(
+                  '${quotes['topQuote'][_topQuote]}\n${quotes['bottomQuote'][_bottomQuote]}',
+                  style: TextStyle(
+                    fontFamily: 'Dubai Regular',
+                    fontSize: 23,
+                    color: Colors.white,
+                    height: 1.1,
+                    letterSpacing: 0.0,
+                    wordSpacing: 1.0,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2,
+                        color: Colors.black.withOpacity(0.5),
+                        offset: Offset(1, 1),
+                      )
+                    ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                    shape: StadiumBorder(),
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.only(top: 3, bottom: 3, left: 20, right: 20),
-                    elevation: 7,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 30),
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 1500),
+                  opacity: _buttonOpacity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: Text(
+                      'Continue',
+                      style: TextStyle(
+                        fontFamily: 'Open Sans',
+                        fontSize: 23,
+                        color: Colors.white,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: StadiumBorder(),
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.only(top: 3, bottom: 3, left: 20, right: 20),
+                      elevation: 7,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

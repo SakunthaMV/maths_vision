@@ -16,3 +16,35 @@ List trigonometryEventData = [
 ];
 
 List videoPrices = [0, 450, 160, 400, 300, 250, 300, 600, 230, 450];
+
+Map<String, List> quotes = {
+  'topQuote': [
+    'Good effort!',
+    'Good going!',
+    'Good work!',
+    'Keep it up!',
+    'Keep on trying!',
+    'Keep working on it',
+    'Much better!',
+    'Nice work!',
+    'Right on!',
+    'Super Duper!',
+    'Superior work.',
+    'Terrific!',
+    'That’s better.',
+    'That’s good!',
+    'Very interesting.',
+    'Wonderful!',
+  ],
+  'bottomQuote': [
+    'You are doing a good job!',
+    'You are learning a lot.',
+    'You are learning fast.',
+    'You must have been practicing.',
+    'You’re doing a great job',
+    'You’re getting better and better.',
+    'You’re on the right track now.',
+    'You’re really improving.',
+    'Now you’ve figured it out.',
+  ]
+};
