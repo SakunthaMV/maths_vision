@@ -343,7 +343,7 @@ class _EventAppBarState extends State<EventAppBar> {
                                   errorWidget: (context, url, error) {
                                     return Icon(
                                       Icons.account_circle_rounded,
-                                      size: 45,
+                                      size: 43,
                                       color: Color.fromARGB(255, 202, 202, 202),
                                     );
                                   },
