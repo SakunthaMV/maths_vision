@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class QuestionNotation extends StatelessWidget {
   final int stage;
   final int question;
-  const QuestionNotation(this.stage, this.question, {Key key}) : super(key: key);
+  final Color color;
+  const QuestionNotation(this.stage, this.question, {Key key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class QuestionNotation extends StatelessWidget {
         RichText(
           text: TextSpan(
             style: TextStyle(
-              color: Colors.black,
+              color: color?? Colors.black,
               fontSize: 36,
               fontFamily: 'Ateeca',
             ),
@@ -26,7 +27,7 @@ class QuestionNotation extends StatelessWidget {
                   child: Text(
                     '$stage',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: color?? Colors.black,
                       fontSize: 17,
                       fontFamily: 'Ateeca',
                     ),
@@ -42,7 +43,7 @@ class QuestionNotation extends StatelessWidget {
         RichText(
           text: TextSpan(
             style: TextStyle(
-              color: Colors.black,
+              color: color?? Colors.black,
               fontSize: 36,
               fontFamily: 'Ateeca',
             ),
@@ -56,7 +57,7 @@ class QuestionNotation extends StatelessWidget {
                   child: Text(
                     '$question',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: color?? Colors.black,
                       fontSize: 17,
                       fontFamily: 'Ateeca',
                     ),
