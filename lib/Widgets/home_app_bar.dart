@@ -254,7 +254,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
             return;
           }
           Fluttertoast.showToast(
-            msg: 'You need internet connection to continue.',
+            msg: 'You need an internet connection to continue.',
             fontSize: 16,
           );
           return;
@@ -309,8 +309,10 @@ class _HomeAppBarState extends State<HomeAppBar> {
                       fontFamily: 'Philosopher',
                       fontSize: 20,
                       wordSpacing: 1.0,
+                      letterSpacing: 0.0,
                       fontWeight: FontWeight.normal,
                       color: Colors.black.withOpacity(0.8),
+                      shadows: [],
                     ),
                     textAlign: TextAlign.center,
                   ),
