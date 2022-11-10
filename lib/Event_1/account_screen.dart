@@ -1,18 +1,18 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Event_1/account_edit_screen.dart';
-import 'package:maths_vision/Screens/papers_screen.dart';
 import 'package:maths_vision/Splash_Screens/log_out_splash_screen.dart';
 import 'package:maths_vision/Widgets/home_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../Support_Classes/event_errors_and_loading.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key key}) : super(key: key);
@@ -22,63 +22,35 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String _connectionStatus = 'Unknown';
-  final Connectivity _connectivity = Connectivity();
+  bool _hasConnection;
+  StreamSubscription _subscription;
 
-  Future<void> initConnectivity() async {
-    ConnectivityResult result;
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-    return _updateConnectionStatus(result);
+  Future<void> checkInternet() async {
+    bool status = await InternetConnectionChecker().hasConnection;
+    setState(() {
+      _hasConnection = status;
+    });
+    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
+      status = await InternetConnectionChecker().hasConnection;
+      setState(() {
+        _hasConnection = status;
+      });
+    });
   }
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.none:
-        setState(() => _connectionStatus = result.toString());
-        break;
-      default:
-        setState(() => _connectionStatus = 'Failed to get connectivity.');
-        break;
-    }
-  }
-
-  DocumentSnapshot _userData;
-  DocumentSnapshot _userEventData;
   User user;
-  double _labelFontSize = 24;
-  double _valueFontSize = 19;
 
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
-    initConnectivity();
-    DocumentReference userData = FirebaseFirestore.instance.collection('Users').doc(user.uid);
-    userData.snapshots().listen((event) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _userData = event;
-      });
-    });
-    userData.collection('Trigonometry_Event').doc('Event_Info').snapshots().listen((event) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _userEventData = event;
-      });
-    });
+    checkInternet();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.cancel();
   }
 
   @override
@@ -87,7 +59,7 @@ class _AccountScreenState extends State<AccountScreen> {
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 183, 183, 183),
-      appBar: HomeAppBar(page: 'Account',),
+      appBar: HomeAppBar(page: 'Account'),
       body: Stack(
         alignment: AlignmentDirectional.topCenter,
         children: [
@@ -99,454 +71,313 @@ class _AccountScreenState extends State<AccountScreen> {
               child: Container(),
             ),
           ),
-          _connectionStatus == 'ConnectivityResult.wifi' ||
-                  _connectionStatus == 'ConnectivityResult.mobile'
-              ? _userData != null && _userEventData != null
-                  ? SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Stack(
-                          alignment: AlignmentDirectional.topCenter,
-                          children: [
-                            Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.4),
-                                    spreadRadius: 0,
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Stack(
-                                alignment: AlignmentDirectional.center,
-                                children: [
-                                  ClipOval(
-                                    child: SizedBox(
-                                      width: 130,
-                                      height: 130,
-                                      child: _userData['User_Details.photoURL'] != null
-                                          ? CachedNetworkImage(
-                                              imageUrl: _userData['User_Details.photoURL'],
-                                              placeholder: (_, url) {
-                                                return CircularProgressIndicator();
-                                              },
-                                              errorWidget: (context, url, error) {
-                                                return Icon(Icons.error);
-                                              },
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Icon(
-                                              Icons.account_circle_rounded,
-                                              size: 130,
-                                              color: Color.fromARGB(255, 202, 202, 202),
-                                            ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 70,
-                                ),
-                                SizedBox(
-                                  height: 480,
-                                  width: width * 0.8,
-                                  child: CustomPaint(
-                                    painter: DetailContainer(),
-                                    child: Container(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 160,
-                                ),
-                                Text(
-                                  '${_userData['User_Details.firstName']} ${_userData['User_Details.lastName']}',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: 'Open Sans',
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  '${_userData['User_Details.email']}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontFamily: 'Roboto',
-                                    height: 1.2,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Divider(
-                                  color: Color.fromARGB(255, 112, 112, 112),
-                                  thickness: 1,
-                                  endIndent: width * 0.15,
-                                  indent: width * 0.15,
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: width * 0.15, right: width * 0.15),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Account Details',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'Roboto Regular',
-                                          fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(255, 0, 136, 145),
-                                          height: 1,
-                                          shadows: [
-                                            Shadow(
-                                              blurRadius: 1,
-                                              offset: Offset(1, 1),
-                                              color: Colors.black.withOpacity(0.2),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'XP Earned',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            Text(
-                                              '${_userData['User_Details.xp']}',
-                                              style: TextStyle(
-                                                fontSize: _valueFontSize,
-                                                fontFamily: 'Sylfaen',
-                                                color: Colors.black,
-                                                height: 1.35,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Completed',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            RichText(
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                  fontSize: _valueFontSize,
-                                                  fontFamily: 'Sylfaen',
-                                                  color: Colors.black,
-                                                  height: 1.35,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                      text:
-                                                          '${(_userEventData['progress']).toStringAsFixed(1)}'),
-                                                  TextSpan(
-                                                    text: '%',
-                                                    style: TextStyle(fontSize: 14),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Accuracy',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            RichText(
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                  fontSize: _valueFontSize,
-                                                  fontFamily: 'Sylfaen',
-                                                  color: Colors.black,
-                                                  height: 1.35,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                      text:
-                                                          '${(_userEventData['totalCompleted'] != 0 ? (100 * _userEventData['totalCorrect'] / _userEventData['totalCompleted']) : 0).toStringAsFixed(1)}'),
-                                                  TextSpan(
-                                                    text: '%',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Probability',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            RichText(
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                  fontSize: _valueFontSize,
-                                                  fontFamily: 'Sylfaen',
-                                                  color: Colors.black,
-                                                  height: 1.35,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                      text:
-                                                          '${(_userEventData['totalCompleted'] != 0 ? (5 * _userEventData['totalCorrect'] / _userEventData['totalCompleted']) : 0).toStringAsFixed(2)}'),
-                                                  TextSpan(
-                                                    text: '/5',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Best Rank',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            Text(
-                                              '${_userEventData['bestRank']}',
-                                              style: TextStyle(
-                                                fontSize: _valueFontSize,
-                                                fontFamily: 'Sylfaen',
-                                                color: Colors.black,
-                                                height: 1.35,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 7),
-                                        padding: EdgeInsets.only(left: 9, right: 9),
-                                        height: 25,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(255, 238, 238, 238),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Current Rank',
-                                              style: TextStyle(
-                                                fontSize: _labelFontSize,
-                                                fontFamily: 'Microsoft',
-                                                color: Colors.black,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            Text(
-                                              '${_userEventData['currentRank']}',
-                                              style: TextStyle(
-                                                fontSize: _valueFontSize,
-                                                fontFamily: 'Sylfaen',
-                                                color: Colors.black,
-                                                height: 1.35,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Divider(
-                                  color: Color.fromARGB(255, 112, 112, 112),
-                                  thickness: 1,
-                                  endIndent: width * 0.15,
-                                  indent: width * 0.15,
-                                  height: 20,
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: width * 0.15, right: width * 0.15),
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        SizedBox(
-                                          width: 150,
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (_) {
-                                                    return AccountEditScreen();
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                            icon: Icon(Icons.settings),
-                                            label: Text(
-                                              'Edit Profile',
-                                              style: TextStyle(
-                                                fontFamily: 'AgencyFB',
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              shape: StadiumBorder(),
-                                              backgroundColor: Color.fromARGB(255, 0, 136, 145),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 150,
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              initConnectivity().then((value) async {
-                                                if (_connectionStatus == 'ConnectivityResult.wifi' ||
-                                                    _connectionStatus ==
-                                                        'ConnectivityResult.mobile') {
-                                                  final auth = FirebaseAuth.instance;
-                                                  if (auth.currentUser.providerData[0].providerId ==
-                                                      'google.com') {
-                                                    final googleSignIn = GoogleSignIn();
-                                                    await googleSignIn.disconnect();
-                                                  } else if (auth.currentUser.providerData[0].providerId ==
-                                                      'facebook.com') {
-                                                    await FacebookAuth.instance.logOut();
-                                                    print('Facebook Logged Out');
-                                                  }
-                                                  auth.signOut();
-                                                  final SharedPreferences sharedPreferences =
-                                                      await SharedPreferences.getInstance();
-                                                  sharedPreferences.remove('userId');
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (_) {
-                                                        return LogOutSplashScreen();
-                                                      },
-                                                    ),
-                                                  );
-                                                }
-                                              });
-                                            },
-                                            icon: Icon(Icons.logout),
-                                            label: Text(
-                                              'Logout',
-                                              style: TextStyle(
-                                                fontFamily: 'AgencyFB',
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              shape: StadiumBorder(), backgroundColor: Color.fromARGB(255, 0, 136, 145),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+          SingleChildScrollView(
+            padding: EdgeInsets.only(top: width * 0.05),
+            child: Stack(
+              alignment: AlignmentDirectional.topCenter,
+              children: [
+                Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        spreadRadius: 0,
+                        blurRadius: 10,
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5.0,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(user.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator(
+                            color: Colors.black.withOpacity(0.7),
+                            strokeWidth: 7,
+                          );
+                        }
+                        return CachedNetworkImage(
+                          imageUrl: snapshot.data['User_Details.photoURL'],
+                          placeholder: (_, url) {
+                            return CircularProgressIndicator(
+                              color: Colors.black.withOpacity(0.7),
+                              strokeWidth: 7,
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return Icon(
+                              Icons.account_circle_rounded,
+                              size: 130,
+                              color: Color.fromARGB(255, 202, 202, 202),
+                            );
+                          },
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  width: width * 0.85,
+                  height: 470,
+                  margin: EdgeInsets.only(top: 70),
+                  child: CustomPaint(
+                    painter: DetailContainer(),
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        top: 90.0,
+                        left: width * 0.05,
+                        right: width * 0.05,
+                      ),
+                      child: _accountBody(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _accountBody() {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
+      builder: (context, userSnapshot) {
+        if (!userSnapshot.hasData) {
+          return LoadingAnimationWidget.threeArchedCircle(
+            color: Colors.black,
+            size: 100.0,
+          );
+        }
+        final String name = '${userSnapshot.data['User_Details.firstName']}'
+            ' ${userSnapshot.data['User_Details.lastName']}';
+        final String email = '${userSnapshot.data['User_Details.email']}';
+        final int xp = userSnapshot.data['User_Details.xp'];
+        final int currentRank = userSnapshot.data['User_Details.currentRank'];
+        final int bestRank = userSnapshot.data['User_Details.bestRank'];
+        return Column(
+          children: [
+            Text(
+              name,
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Open Sans',
+                fontWeight: FontWeight.bold,
+                height: 1,
+                color: Colors.black,
+              ),
+            ),
+            Text(
+              email,
+              style: TextStyle(
+                fontSize: 10,
+                fontFamily: 'Roboto',
+                height: 1.2,
+                color: Colors.black,
+              ),
+            ),
+            Divider(
+              color: Color.fromARGB(255, 112, 112, 112),
+              thickness: 1,
+            ),
+            Expanded(
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Users')
+                    .doc(user.uid)
+                    .collection('Trigonometry_Event')
+                    .doc('Event_Info')
+                    .snapshots(),
+                builder: (context, eventSnapshot) {
+                  if (!eventSnapshot.hasData) {
+                    return LoadingAnimationWidget.threeArchedCircle(
+                      color: Colors.black,
+                      size: 100.0,
+                    );
+                  }
+                  final double progress =
+                      double.parse((eventSnapshot.data['progress']).toStringAsFixed(1));
+                  final int completed = eventSnapshot.data['totalCompleted'];
+                  final int correct = eventSnapshot.data['totalCorrect'];
+                  final double accuracy = double.parse(
+                      (completed != 0 ? (100 * correct / completed) : 0).toStringAsFixed(1));
+                  final double probability = double.parse(
+                      (completed != 0 ? (5 * correct / completed) : 0).toStringAsFixed(2));
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Account Details',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'Roboto Regular',
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 136, 145),
+                          height: 1,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 1,
+                              offset: Offset(1, 1),
+                              color: Colors.black.withOpacity(0.2),
                             ),
                           ],
                         ),
                       ),
-                    )
-                  : EventLoading()
-              : Center(
-                  child: NetworkError(Colors.white),
+                      _detailRow('XP Earned', xp),
+                      _detailRow('Completed', progress, sub: ' %'),
+                      _detailRow('Accuracy', accuracy, sub: ' %'),
+                      _detailRow('Probability', probability, sub: '/5'),
+                      _detailRow('Best Rank', bestRank),
+                      _detailRow('Current Rank', currentRank),
+                    ],
+                  );
+                },
+              ),
+            ),
+            Divider(
+              color: Color.fromARGB(255, 112, 112, 112),
+              thickness: 1,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _bottomButtons(Icons.settings, 'Edit Profile', _editProfileFunction),
+                    _bottomButtons(Icons.logout, 'Logout', _logoutFunction),
+                  ],
                 ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bottomButtons(IconData icon, String name, Function function) {
+    return SizedBox(
+      width: 150,
+      child: ElevatedButton.icon(
+        onPressed: function,
+        icon: Icon(
+          icon,
+          color: Colors.white,
+        ),
+        label: Text(
+          name,
+          style: TextStyle(
+            fontFamily: 'AgencyFB',
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          shape: StadiumBorder(),
+          backgroundColor: Color.fromARGB(255, 0, 136, 145),
+        ),
+      ),
+    );
+  }
+
+  void _editProfileFunction() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) {
+          return AccountEditScreen();
+        },
+      ),
+    );
+  }
+
+  void _logoutFunction() async {
+    if (_hasConnection ?? false) {
+      final auth = FirebaseAuth.instance;
+      if (auth.currentUser.providerData[0].providerId == 'google.com') {
+        final googleSignIn = GoogleSignIn();
+        await googleSignIn.disconnect();
+      } else if (auth.currentUser.providerData[0].providerId == 'facebook.com') {
+        await FacebookAuth.instance.logOut();
+      }
+      auth.signOut();
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.remove('userId');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return LogOutSplashScreen();
+          },
+        ),
+      );
+    }
+  }
+
+  Widget _detailRow(String rowTopic, var value, {String sub}) {
+    final TextStyle style = TextStyle(
+      fontSize: 19,
+      fontFamily: 'Sylfaen',
+      color: Colors.black,
+      height: 1.5,
+    );
+    return Container(
+      margin: EdgeInsets.only(top: 7),
+      padding: EdgeInsets.only(left: 9, right: 9),
+      height: 25,
+      decoration: BoxDecoration(
+        color: Color.fromARGB(255, 238, 238, 238),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            rowTopic,
+            style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'Microsoft',
+              color: Colors.black,
+              height: 1.1,
+            ),
+          ),
+          Builder(builder: (context) {
+            if (sub != null) {
+              return RichText(
+                text: TextSpan(
+                  style: style,
+                  children: [
+                    TextSpan(
+                      text: '$value',
+                    ),
+                    TextSpan(
+                      text: sub,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }
+            return Text(
+              '$value',
+              style: style,
+            );
+          }),
         ],
       ),
     );
