@@ -718,7 +718,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _eventButtonPress() {
-    if (!_hasConnection) {
+    if (!(_hasConnection?? false)) {
       Fluttertoast.showToast(
         msg: 'You need internet connection to continue.',
         fontSize: 16,
