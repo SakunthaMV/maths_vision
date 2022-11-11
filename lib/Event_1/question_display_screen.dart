@@ -91,7 +91,10 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
           borderRadius: BorderRadius.circular(25),
         ),
         child: Builder(builder: (context) {
-          if (!(_hasConnection ?? false)) {
+          if(_hasConnection==null){
+            return SizedBox.shrink();
+          }
+          if (!_hasConnection) {
             return Center(child: NetworkError(Colors.black));
           }
           return StreamBuilder<DocumentSnapshot>(
