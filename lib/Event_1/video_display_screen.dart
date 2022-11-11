@@ -19,7 +19,7 @@ class VideoDisplayScreen extends StatefulWidget {
 
 class _VideoDisplayScreenState extends State<VideoDisplayScreen>
     with TickerProviderStateMixin {
-  List videos = [
+  List<String> videos = [
     'https://youtu.be/eDlZnG0jI9c',
     'https://youtu.be/7afWio9eXoA',
     'https://youtu.be/D4U_wTt8nX0',
@@ -208,6 +208,7 @@ class _VideoDisplayScreenState extends State<VideoDisplayScreen>
                 setState(() {
                   _commentTapped = false;
                 });
+                print('tapped');
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
