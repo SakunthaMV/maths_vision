@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +12,8 @@ import 'package:maths_vision/Event_1/account_edit_screen.dart';
 import 'package:maths_vision/Splash_Screens/log_out_splash_screen.dart';
 import 'package:maths_vision/Widgets/home_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Support_Classes/Account/profile_picture.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key key}) : super(key: key);
@@ -76,58 +77,7 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Stack(
               alignment: AlignmentDirectional.topCenter,
               children: [
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        spreadRadius: 0,
-                        blurRadius: 10,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 5.0,
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(user.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return CircularProgressIndicator(
-                            color: Colors.black.withOpacity(0.7),
-                            strokeWidth: 7,
-                          );
-                        }
-                        return CachedNetworkImage(
-                          imageUrl: snapshot.data['User_Details.photoURL'],
-                          placeholder: (_, url) {
-                            return CircularProgressIndicator(
-                              color: Colors.black.withOpacity(0.7),
-                              strokeWidth: 7,
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Icon(
-                              Icons.account_circle_rounded,
-                              size: 130,
-                              color: Color.fromARGB(255, 202, 202, 202),
-                            );
-                          },
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                ProfilePicture(user.uid),
                 Container(
                   width: width * 0.85,
                   height: 470,
