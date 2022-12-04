@@ -9,12 +9,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import '../Diary/diary_home_screen.dart';
-import '../Event_1/account_screen.dart';
-import '../Event_1/leaderboard.dart';
-import '../Event_1/store.dart';
-import '../Log_In/log_in_screen.dart';
-import '../Splash_Screens/went_home_splash_screen.dart';
+import '../Screens/Special/Diary/diary_home_screen.dart';
+import '../Screens/Account/Details/account_details.dart';
+import '../Screens/Special/Leaderboard/leaderboard.dart';
+import '../Screens/Special/Store/store.dart';
+import '../Screens/Account/Log_In/log_in_screen.dart';
+import '../Screens/Splashes/went_home_splash_screen.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget leading;

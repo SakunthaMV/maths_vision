@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maths_vision/Providers/play_store_provider.dart';
-import 'package:maths_vision/Splash_Screens/open_splash_screen.dart';
+import 'package:maths_vision/Screens/Splashes/open_splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

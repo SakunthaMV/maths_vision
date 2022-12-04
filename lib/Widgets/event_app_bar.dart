@@ -9,10 +9,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import '../Event_1/account_screen.dart';
-import '../Event_1/leaderboard.dart';
-import '../Event_1/store.dart';
-import '../Splash_Screens/went_home_splash_screen.dart';
+import '../Screens/Account/Details/account_details.dart';
+import '../Screens/Special/Leaderboard/leaderboard.dart';
+import '../Screens/Special/Store/store.dart';
+import '../Screens/Splashes/went_home_splash_screen.dart';
 
 class EventAppBar extends StatefulWidget implements PreferredSizeWidget {
   final backgroundColor;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../Splash_Screens/went_home_splash_screen.dart';
+import '../Screens/Splashes/went_home_splash_screen.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
