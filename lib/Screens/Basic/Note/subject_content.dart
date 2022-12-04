@@ -6,23 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Widgets/common_background.dart';
 
-class NotePage extends StatefulWidget {
+class NotePage extends StatelessWidget {
   final String subject;
-
   const NotePage(this.subject);
-
-  @override
-  _NotePageState createState() => _NotePageState(subject);
-}
-
-class _NotePageState extends State<NotePage> {
-  String subject;
-
-  _NotePageState(this.subject);
 
   Future<List<String>> numberOfImages() async {
     int images;
-    String pathName = widget.subject.split(' ').join('_');
+    String pathName = subject.split(' ').join('_');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     images = prefs.getInt(pathName);
     List<String> allImages = List.generate(images, (index) {
