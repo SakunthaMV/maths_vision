@@ -257,36 +257,27 @@ class _PastPapersAndMarkingSchemesState extends State<PastPapersAndMarkingScheme
                                 child: ListTile(
                                   title: RichText(
                                     text: TextSpan(
+                                      style: TextStyle(
+                                        fontSize: 35,
+                                        fontFamily: 'Constan',
+                                        color: Color.fromARGB(255, 72, 73, 75),
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black.withOpacity(0.4),
+                                            blurRadius: 1,
+                                            offset: Offset(1, 1),
+                                          ),
+                                        ],
+                                      ),
                                       children: [
                                         TextSpan(
                                           text: year[0],
-                                          style: TextStyle(
-                                            fontSize: 35,
-                                            fontFamily: 'Constan',
-                                            color: Color.fromARGB(255, 72, 73, 75),
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.4),
-                                                blurRadius: 1,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
-                                          ),
                                         ),
                                         TextSpan(
                                           text: year.length > 1 ? ' ${year[1]}' : '',
                                           style: TextStyle(
                                             fontSize: 20,
-                                            fontFamily: 'Constan',
-                                            color: Color.fromARGB(255, 72, 73, 75),
                                             wordSpacing: 4,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.4),
-                                                blurRadius: 1,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ],

@@ -110,7 +110,7 @@ class PaperContent extends StatelessWidget {
                     if (snapshot.data < 10 && snapshot.data > 0) {
                       counterOpacity = 1.0;
                     }
-                    if(snapshot.data==0){
+                    if (snapshot.data == 0) {
                       paperHeight = 75;
                     }
                     int time = snapshot.data;
@@ -237,69 +237,70 @@ class PaperContent extends StatelessWidget {
             ],
           ),
           StreamBuilder<int>(
-              stream: waitingCounter(),
-              builder: (context, snapshot) {
-                double positionX = 1.0;
-                double positionY = -1.14;
-                int min = int.parse(timeOrMarks.split(':').first);
-                int sec = int.parse(timeOrMarks.split(':').last);
-                if (!snapshot.hasData) {
-                  return SizedBox.shrink();
-                }
-                if (type != 'Question') {
-                  return SizedBox.shrink();
-                }
-                if(snapshot.data >3){
-                  positionX = 3.0;
-                }
-                if(snapshot.data>0){
-                  positionY = -1.0;
-                }
-                return AnimatedContainer(
-                  duration: Duration(seconds: 3),
-                  alignment: Alignment(positionX, positionY),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 180),
-                    child: Container(
-                      width: 180,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 0, 88, 122),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(35),
-                          bottomLeft: Radius.circular(35),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            offset: Offset(0, 0),
-                            blurRadius: 12,
-                            spreadRadius: 0,
-                          )
-                        ],
+            stream: waitingCounter(),
+            builder: (context, snapshot) {
+              double positionX = 1.0;
+              double positionY = -1.14;
+              int min = int.parse(timeOrMarks.split(':').first);
+              int sec = int.parse(timeOrMarks.split(':').last);
+              if (!snapshot.hasData) {
+                return SizedBox.shrink();
+              }
+              if (type != 'Question') {
+                return SizedBox.shrink();
+              }
+              if (snapshot.data > 3) {
+                positionX = 3.0;
+              }
+              if (snapshot.data > 0) {
+                positionY = -1.0;
+              }
+              return AnimatedContainer(
+                duration: Duration(seconds: 3),
+                alignment: Alignment(positionX, positionY),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 180),
+                  child: Container(
+                    width: 180,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 0, 88, 122),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        bottomLeft: Radius.circular(35),
                       ),
-                      child: CountdownTimerSimple(
-                        endTime: DateTime.now().millisecondsSinceEpoch +
-                            1000 * ((60 * min) + 1 + sec),
-                        showHour: false,
-                        textStyle: TextStyle(
-                          fontSize: 40,
-                          color: Colors.white,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w600,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 2,
-                              color: Colors.black.withOpacity(0.8),
-                              offset: Offset(1, 1),
-                            ),
-                          ],
-                        ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          offset: Offset(0, 0),
+                          blurRadius: 12,
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: CountdownTimerSimple(
+                      endTime: DateTime.now().millisecondsSinceEpoch +
+                          1000 * ((60 * min) + 1 + sec),
+                      showHour: false,
+                      textStyle: TextStyle(
+                        fontSize: 40,
+                        color: Colors.white,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w600,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 2,
+                            color: Colors.black.withOpacity(0.8),
+                            offset: Offset(1, 1),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                );
-              }),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

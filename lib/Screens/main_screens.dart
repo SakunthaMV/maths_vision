@@ -124,7 +124,7 @@ class _MainScreenState extends State<MainScreen> {
                           Shadow(
                               color: Colors.grey.shade800,
                               offset: Offset(2, 2),
-                              blurRadius: 5)
+                              blurRadius: 5,)
                         ],
                       ),
                     ),

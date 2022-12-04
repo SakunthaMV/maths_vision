@@ -353,96 +353,96 @@ class _NoticeState extends State<Notice> with SingleTickerProviderStateMixin {
                           return Padding(
                             padding: const EdgeInsets.only(top: 5, bottom: 5),
                             child: StreamBuilder<DocumentSnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('Users')
-                                    .doc(widget.noticeData['Comments']
-                                            [widget.noticeData['Comments'].length - index - 1]
-                                        ['UserID'])
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return LoadingBouncingLine.circle(
-                                      size: 30,
-                                    );
-                                  }
-                                  return Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 20, right: 10),
-                                        child: Stack(
-                                          alignment: AlignmentDirectional.center,
-                                          children: [
-                                            Container(
-                                              width: 30,
-                                              height: 30,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                            ClipOval(
-                                              child: SizedBox(
-                                                width: 27,
-                                                height: 27,
-                                                child: CachedNetworkImage(
-                                                  fit: BoxFit.cover,
-                                                  imageUrl:
-                                                      snapshot.data['User_Details.photoURL'],
-                                                  placeholder: (_, url) {
-                                                    return CircularProgressIndicator();
-                                                  },
-                                                  errorWidget: (context, url, error) {
-                                                    return Icon(
-                                                      Icons.account_circle_rounded,
-                                                      size: 27,
-                                                      color:
-                                                          Color.fromARGB(255, 202, 202, 202),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              '${snapshot.data['User_Details.firstName']} '
-                                              '${snapshot.data['User_Details.lastName']}',
-                                              style: TextStyle(
-                                                fontFamily: 'Open Sans',
-                                                fontSize: 8,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 0.5,
-                                                color: Color.fromARGB(255, 0, 88, 122),
-                                                height: 1,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 3,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 20),
-                                              child: Text(
-                                                '${widget.noticeData['Comments'][widget.noticeData['Comments'].length - index - 1]['Comment']}',
-                                                style: TextStyle(
-                                                  fontFamily: 'Abhaya Libre',
-                                                  fontSize: 13,
-                                                  color: Colors.black,
-                                                  height: 0.9,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                              stream: FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(widget.noticeData['Comments']
+                                          [widget.noticeData['Comments'].length - index - 1]
+                                      ['UserID'])
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return LoadingBouncingLine.circle(
+                                    size: 30,
                                   );
-                                }),
+                                }
+                                return Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 20, right: 10),
+                                      child: Stack(
+                                        alignment: AlignmentDirectional.center,
+                                        children: [
+                                          Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          ClipOval(
+                                            child: SizedBox(
+                                              width: 27,
+                                              height: 27,
+                                              child: CachedNetworkImage(
+                                                fit: BoxFit.cover,
+                                                imageUrl:
+                                                    snapshot.data['User_Details.photoURL'],
+                                                placeholder: (_, url) {
+                                                  return CircularProgressIndicator();
+                                                },
+                                                errorWidget: (context, url, error) {
+                                                  return Icon(
+                                                    Icons.account_circle_rounded,
+                                                    size: 27,
+                                                    color: Color.fromARGB(255, 202, 202, 202),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '${snapshot.data['User_Details.firstName']} '
+                                            '${snapshot.data['User_Details.lastName']}',
+                                            style: TextStyle(
+                                              fontFamily: 'Open Sans',
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 0.5,
+                                              color: Color.fromARGB(255, 0, 88, 122),
+                                              height: 1,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 3,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 20),
+                                            child: Text(
+                                              '${widget.noticeData['Comments'][widget.noticeData['Comments'].length - index - 1]['Comment']}',
+                                              style: TextStyle(
+                                                fontFamily: 'Abhaya Libre',
+                                                fontSize: 13,
+                                                color: Colors.black,
+                                                height: 0.9,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           );
                         },
                       ),
