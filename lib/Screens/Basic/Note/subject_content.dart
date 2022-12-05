@@ -25,22 +25,11 @@ class NotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return CommonBackground(
       appBarTitle: Text(
         subject,
-        style: TextStyle(
-          fontFamily: 'Gabriola',
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-          shadows: [
-            Shadow(
-              color: Theme.of(context).colorScheme.onPrimary,
-              blurRadius: 3,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
+        style: textTheme.headlineLarge,
       ),
       body: Center(
         child: Container(
