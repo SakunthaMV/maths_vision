@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 
@@ -24,36 +23,24 @@ class ChooseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return CommonBackground(
       body: Center(
         child: Column(
           children: [
             Text(
               subjectS,
-              style: TextStyle(
-                fontFamily: 'Abhaya Libre',
-                fontSize: 30,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                wordSpacing: 1,
-                shadows: [
-                  Shadow(
-                    color: Colors.grey.shade900,
-                    blurRadius: 5,
-                    offset: Offset(1, 1),
-                  ),
-                ],
+              style: textTheme.headlineMedium.copyWith(
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               subjectE,
-              style: TextStyle(
-                fontFamily: 'Gabriola',
+              style: textTheme.headlineLarge.copyWith(
                 fontSize: 25,
                 color: Color.fromARGB(255, 125, 249, 255),
-                fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-                wordSpacing: 1,
                 shadows: [
                   Shadow(
                     color: Colors.grey.shade900,
@@ -63,15 +50,15 @@ class ChooseScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: 18,
-            ),
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.075),
+                padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.075,
+                  vertical: 18.0,
+                ),
                 itemCount: 3,
                 itemBuilder: (context, index) {
-                  final List levels = [
+                  const List levels = [
                     ['සටහන', 'NOTE'],
                     ['පසුගිය ප්‍රශ්න', 'QUESTIONS'],
                     ['පිළිතුරු', 'MARKING SCHEMES']
@@ -83,27 +70,30 @@ class ChooseScreen extends StatelessWidget {
                       if (index == 0) {
                         final SharedPreferences prefs = await SharedPreferences.getInstance();
                         bool deviceConnected = await InternetConnectionChecker().hasConnection;
-                        String pathName = subjectE.split(' ').join('_');
+                        final String pathName = subjectE.split(' ').join('_');
                         String imageBase64;
-                        int imageCount = prefs.getInt(pathName)??0;
+                        final int imageCount = prefs.getInt(pathName) ?? 0;
                         int downloadedCount = 0;
                         int storageImageCount = 0;
-                        if(imageCount!=0){
-                          for(int i=0;i<imageCount;i++){
-                            imageBase64 = prefs.getString('$pathName\_${i+1}');
-                            if(imageBase64!=null){
+                        if (imageCount != 0) {
+                          for (int i = 0; i < imageCount; i++) {
+                            imageBase64 = prefs.getString('$pathName\_${i + 1}');
+                            if (imageBase64 != null) {
                               downloadedCount++;
                             }
                           }
                         }
-                        if(deviceConnected){
-                          Reference ref = FirebaseStorage.instance.ref().child('/Notes/$pathName');
+                        if (deviceConnected) {
+                          final Reference ref =
+                              FirebaseStorage.instance.ref().child('/Notes/$pathName');
                           ref.listAll().then((pages) {
                             storageImageCount = pages.items.length;
                           });
                         }
-                        if(downloadedCount>0 && imageCount>0 && downloadedCount==imageCount
-                            && (storageImageCount==0 || storageImageCount==downloadedCount)){
+                        if (downloadedCount > 0 &&
+                            imageCount > 0 &&
+                            downloadedCount == imageCount &&
+                            (storageImageCount == 0 || storageImageCount == downloadedCount)) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) {
@@ -112,11 +102,12 @@ class ChooseScreen extends StatelessWidget {
                             ),
                           );
                         } else {
-                          if(deviceConnected){
+                          if (deviceConnected) {
                             progressDialogBox(context);
                           } else {
                             Fluttertoast.showToast(
-                              msg: 'You need an internet connection to view $subjectE Note for the first time.',
+                              msg: 'You need an internet connection to view '
+                                  '$subjectE Note for the first time.',
                             );
                           }
                         }
@@ -170,11 +161,10 @@ class ChooseScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   levels[index][0],
-                                  style: TextStyle(
+                                  style: textTheme.headlineMedium.copyWith(
                                     fontSize: 40,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Abhaya Libre',
-                                    color: Color.fromARGB(255, 72, 73, 75),
+                                    fontWeight: FontWeight.bold,
+                                    color: colorScheme.onSecondary,
                                     height: 1,
                                     letterSpacing: 1,
                                     shadows: [
@@ -188,10 +178,8 @@ class ChooseScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   levels[index][1],
-                                  style: TextStyle(
-                                    fontFamily: 'Open Sans',
-                                    fontSize: 20,
-                                    color: Color.fromARGB(255, 119, 123, 126),
+                                  style: textTheme.displayLarge.copyWith(
+                                    color: colorScheme.tertiary,
                                     letterSpacing: 1.5,
                                     height: 1.5,
                                     shadows: [
@@ -249,7 +237,7 @@ class ChooseScreen extends StatelessWidget {
         );
         saveImage(response.bodyBytes, element.name);
         imageCounter++;
-        if(totalImages==imageCounter){
+        if (totalImages == imageCounter) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) {
@@ -262,7 +250,7 @@ class ChooseScreen extends StatelessWidget {
     });
     return showDialog(
       context: context,
-      builder: (context){
+      builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -271,7 +259,9 @@ class ChooseScreen extends StatelessWidget {
           title: Center(
             child: Text(
               'Please Wait ...',
-              style: textTheme.labelMedium,
+              style: textTheme.displayMedium.copyWith(
+                height: 1.5,
+              ),
             ),
           ),
           content: Column(
@@ -291,13 +281,8 @@ class ChooseScreen extends StatelessWidget {
               ),
               Text(
                 'The data related to the $subjectE note is being processed.',
-                style: GoogleFonts.openSans(
-                  textStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    wordSpacing: 1,
-                  ),
+                style: textTheme.displayLarge.copyWith(
+                  fontSize: 15,
                 ),
                 textAlign: TextAlign.center,
               ),
