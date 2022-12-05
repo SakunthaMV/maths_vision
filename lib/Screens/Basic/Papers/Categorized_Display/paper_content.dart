@@ -5,6 +5,7 @@ import 'package:countdown_timer_simple/countdown_timer_simple.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../Widgets/common_background.dart';
@@ -30,6 +31,8 @@ class PaperContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return CommonBackground(
       body: Stack(
         children: [
@@ -41,10 +44,8 @@ class PaperContent extends StatelessWidget {
                   width: size.width * 0.85,
                   height: 130,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 231, 231, 222),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    ),
+                    color: colorScheme.onTertiary,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20),
@@ -52,38 +53,27 @@ class PaperContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Text(
-                            subjectS,
-                            style: TextStyle(
-                              fontFamily: 'Abhaya Libre',
-                              fontSize: 28,
-                              color: Color.fromARGB(255, 0, 88, 122),
-                              fontWeight: FontWeight.w600,
-                            ),
+                        Text(
+                          subjectS,
+                          style: textTheme.headlineMedium.copyWith(
+                            fontSize: 28.0,
+                            color: colorScheme.tertiaryContainer,
+                            fontWeight: FontWeight.bold,
+                            shadows: [],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 3),
-                          child: Text(
-                            year + ' ' + type,
-                            style: TextStyle(
-                              fontFamily: 'Pristina',
-                              fontSize: 30,
-                              color: Color.fromARGB(255, 0, 88, 122),
-                            ),
-                          ),
+                          padding: const EdgeInsets.only(bottom: 3, top: 6.0),
+                          child: Text(year + ' ' + type,
+                              style: textTheme.titleLarge
+                                  .copyWith(fontWeight: FontWeight.normal)),
                         ),
                         Text(
                           type == 'Question'
                               ? 'Time : ' + timeOrMarks + ' min'
                               : 'Marks : ' + timeOrMarks,
-                          style: TextStyle(
-                            fontFamily: 'Pristina',
+                          style: textTheme.titleLarge.copyWith(
                             fontSize: 27,
-                            color: Color.fromARGB(255, 0, 88, 122),
-                            fontWeight: FontWeight.bold,
                             letterSpacing: 1,
                           ),
                         ),
@@ -113,7 +103,7 @@ class PaperContent extends StatelessWidget {
                     if (snapshot.data == 0) {
                       paperHeight = 75;
                     }
-                    int time = snapshot.data;
+                    final int time = snapshot.data;
                     return Column(
                       children: [
                         Center(
@@ -126,11 +116,9 @@ class PaperContent extends StatelessWidget {
                                 height: 25,
                                 child: RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
+                                    style: textTheme.displayLarge.copyWith(
+                                      color: colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
                                       shadows: [
                                         Shadow(
                                           color: Colors.black.withOpacity(0.7),
@@ -146,7 +134,9 @@ class PaperContent extends StatelessWidget {
                                       TextSpan(
                                         text: '$time',
                                         style: TextStyle(
-                                          color: time > 3 ? Colors.white : Colors.red,
+                                          color: time > 3
+                                              ? colorScheme.primary
+                                              : colorScheme.error,
                                           shadows: [
                                             Shadow(
                                               color: time > 3
@@ -182,47 +172,7 @@ class PaperContent extends StatelessWidget {
                     .getDownloadURL()
                     .asStream(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                      child: Container(
-                        alignment: Alignment.topCenter,
-                        width: size.width * 0.95,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: InteractiveViewer(
-                            minScale: 1.0,
-                            maxScale: 4.0,
-                            child: SingleChildScrollView(
-                              child: CachedNetworkImage(
-                                imageUrl: snapshot.data,
-                                placeholder: (context, url) {
-                                  if (type == 'Question') {
-                                    return SizedBox(
-                                      width: double.infinity,
-                                      child: LoadingBumpingLine.circle(
-                                        size: 100,
-                                        backgroundColor: Colors.transparent,
-                                        borderColor: Colors.black,
-                                      ),
-                                    );
-                                  }
-                                  return SizedBox(
-                                    width: size.width * 0.8,
-                                    child: Shimmer.fromColors(
-                                      baseColor: Colors.transparent,
-                                      highlightColor: Colors.grey,
-                                      child: Image.asset('assets/Loading_Icon.png'),
-                                    ),
-                                  );
-                                },
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
+                  if (!snapshot.hasData) {
                     return SizedBox(
                       width: size.width * 0.8,
                       child: Shimmer.fromColors(
@@ -232,6 +182,47 @@ class PaperContent extends StatelessWidget {
                       ),
                     );
                   }
+                  return Expanded(
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      width: size.width * 0.95,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: InteractiveViewer(
+                          minScale: 1.0,
+                          maxScale: 4.0,
+                          child: SingleChildScrollView(
+                            child: CachedNetworkImage(
+                              imageUrl: snapshot.data,
+                              placeholder: (context, url) {
+                                if (type == 'Question') {
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: LoadingBumpingLine.circle(
+                                      size: 100,
+                                      backgroundColor: Colors.transparent,
+                                      borderColor: colorScheme.onPrimary,
+                                    ),
+                                  );
+                                }
+                                return SizedBox(
+                                  width: size.width * 0.8,
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.transparent,
+                                    highlightColor: Colors.grey,
+                                    child: Image.asset('assets/Loading_Icon.png'),
+                                  ),
+                                );
+                              },
+                              errorWidget: (context, url, error) {
+                                return NetworkError();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
             ],
@@ -241,8 +232,8 @@ class PaperContent extends StatelessWidget {
             builder: (context, snapshot) {
               double positionX = 1.0;
               double positionY = -1.14;
-              int min = int.parse(timeOrMarks.split(':').first);
-              int sec = int.parse(timeOrMarks.split(':').last);
+              final int min = int.parse(timeOrMarks.split(':').first);
+              final int sec = int.parse(timeOrMarks.split(':').last);
               if (!snapshot.hasData) {
                 return SizedBox.shrink();
               }
@@ -282,18 +273,8 @@ class PaperContent extends StatelessWidget {
                       endTime: DateTime.now().millisecondsSinceEpoch +
                           1000 * ((60 * min) + 1 + sec),
                       showHour: false,
-                      textStyle: TextStyle(
+                      textStyle: textTheme.displaySmall.copyWith(
                         fontSize: 40,
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w600,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.8),
-                            offset: Offset(1, 1),
-                          ),
-                        ],
                       ),
                     ),
                   ),
