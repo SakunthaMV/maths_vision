@@ -11,7 +11,6 @@ import 'package:maths_vision/Models/event_data.dart';
 import 'package:maths_vision/Screens/Events/Events_Details/event_home_screen.dart';
 import 'package:maths_vision/Screens/Events/Golden_Stage/Stage_Home/golden_stage_home_screen.dart';
 import 'package:maths_vision/Screens/Events/Golden_Entry/stage_entry_page.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:maths_vision/Widgets/event_app_bar.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
@@ -182,7 +181,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
               }
               if (!_hasConnection) {
                 return Center(
-                  child: NetworkError(Colors.white),
+                  child: NetworkError(),
                 );
               }
               return Column(

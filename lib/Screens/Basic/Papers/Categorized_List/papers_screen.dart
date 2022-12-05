@@ -132,7 +132,7 @@ class _PapersScreenState extends State<PapersScreen> {
                 }
                 if(!_hasConnection){
                   return Center(
-                    child: NetworkError(Colors.white),
+                    child: NetworkError(),
                   );
                 }
                 return StreamBuilder<DocumentSnapshot>(
@@ -342,52 +342,4 @@ class ButtonShape extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
-}
-
-class NetworkError extends StatelessWidget {
-  final Color color;
-
-  const NetworkError(this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 250,
-      decoration: BoxDecoration(
-        border: Border.all(color: color, width: 4),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset(
-            'assets/Network_Error_Icon.png',
-            width: 150,
-            color: color,
-          ),
-          Text(
-            'Please check\nyour internet\nconnection ',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Gothic',
-              fontSize: 20,
-              color: color,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-              shadows: [
-                Shadow(
-                  blurRadius: 3,
-                  color: Colors.black.withOpacity(0.5),
-                  offset: Offset(1, 1),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

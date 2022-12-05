@@ -13,6 +13,53 @@ class EventLoading extends StatelessWidget {
   }
 }
 
+class NetworkError extends StatelessWidget {
+  final Color color;
+  const NetworkError({this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Container(
+      width: 200,
+      height: 250,
+      decoration: BoxDecoration(
+        border: Border.all(color: color?? colorScheme.primary, width: 4),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Image.asset(
+            'assets/Network_Error_Icon.png',
+            width: 150,
+            color: color?? colorScheme.primary,
+          ),
+          Text(
+            'Please check\nyour internet\nconnection ',
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium.copyWith(
+              color: color?? colorScheme.primary,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+              shadows: [
+                Shadow(
+                  blurRadius: 3,
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(1, 1),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class UnknownError extends StatelessWidget {
   const UnknownError({Key key}) : super(key: key);
 

@@ -15,7 +15,6 @@ import 'package:maths_vision/Screens/Events/Golden_Stage/Question_Display/golden
 import 'package:maths_vision/Screens/Events/Golden_Stage/Golden_Leaderboard/goldenboard.dart';
 import 'package:maths_vision/Screens/Events/Golden_Stage/Information/rewards_screen.dart';
 import 'package:maths_vision/Screens/Events/Golden_Stage/Information/rules_screen.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:maths_vision/Screens/Splashes/went_home_splash_screen.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -885,7 +884,7 @@ class _GoldenStageHomeScreenState extends State<GoldenStageHomeScreen> {
                   )
                 : EventLoading()
             : Center(
-                child: NetworkError(Colors.white),
+                child: NetworkError(),
               ),
       ),
     );

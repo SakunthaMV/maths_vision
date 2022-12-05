@@ -13,7 +13,6 @@ import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Providers/play_store_provider.dart';
 import 'package:maths_vision/Models/questions_data.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:provider/provider.dart';
 
 class Collection extends StatefulWidget {
@@ -102,7 +101,7 @@ class _CollectionState extends State<Collection> {
                     )
                   : EventLoading()
               : Center(
-                  child: NetworkError(Colors.white),
+                  child: NetworkError(),
                 ),
           Container(
             width: width,

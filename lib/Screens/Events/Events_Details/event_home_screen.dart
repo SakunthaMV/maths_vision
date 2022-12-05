@@ -13,7 +13,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../Basic/Papers/Categorized_List/papers_screen.dart';
 import '../Event_Home/event_front_screen.dart';
 import '../../../Widgets/event_errors_and_loading.dart';
 
@@ -203,7 +202,7 @@ class _EventHomeNetworkDataState extends State<EventHomeNetworkData> {
       }
       if (!_hasConnection) {
         return Center(
-          child: NetworkError(Colors.black),
+          child: NetworkError(),
         );
       }
       return Container(

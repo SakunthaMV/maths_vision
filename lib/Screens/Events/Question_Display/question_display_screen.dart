@@ -15,11 +15,11 @@ import 'package:maths_vision/Screens/Events/Answer_Display/answer_display_screen
 import 'package:maths_vision/Screens/Events/Level_Up/level_up_screen.dart';
 import 'package:maths_vision/Models/questions_data.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:maths_vision/Widgets/event_app_bar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shape_of_view/shape_of_view.dart';
 
+import '../../../Widgets/event_errors_and_loading.dart';
 import '../Common_Widgets/question_notation.dart';
 import '../Common_Widgets/reward_class.dart';
 import '../Common_Widgets/video_button.dart';
@@ -95,7 +95,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
             return SizedBox.shrink();
           }
           if (!_hasConnection) {
-            return Center(child: NetworkError(Colors.black));
+            return Center(child: NetworkError(color: Colors.black));
           }
           return StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),

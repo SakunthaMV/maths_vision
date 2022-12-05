@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Screens/Events/Golden_Stage/Information/rewards_screen.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class GoldenBoard extends StatefulWidget {
@@ -344,7 +343,7 @@ class _GoldenBoardState extends State<GoldenBoard> {
                 )
               : EventLoading()
           : Center(
-              child: NetworkError(Colors.white),
+              child: NetworkError(),
             ),
     );
   }

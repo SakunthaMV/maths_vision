@@ -8,7 +8,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Screens/Special/Collection/collection.dart';
 import 'package:maths_vision/Providers/play_store_provider.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Widgets/event_errors_and_loading.dart';
@@ -94,7 +93,7 @@ class _StoreState extends State<Store> {
                     )
                   : EventLoading()
               : Center(
-                  child: NetworkError(Colors.white),
+                  child: NetworkError(),
                 ),
           Container(
             width: width,

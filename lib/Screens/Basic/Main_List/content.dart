@@ -9,8 +9,8 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Models/subjects_data.dart';
 import 'package:maths_vision/Screens/Basic/Paths/choosable_screen.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Full_Choose/paper_or_markig.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 
+import '../../../Widgets/event_errors_and_loading.dart';
 import '../Note/subject_content.dart';
 
 class Content extends StatelessWidget {
@@ -233,7 +233,7 @@ class _PastPapersAndMarkingSchemesState extends State<PastPapersAndMarkingScheme
         }
         if (!_hasConnection) {
           return Center(
-            child: NetworkError(Colors.black),
+            child: NetworkError(color: Colors.black),
           );
         }
         return StreamBuilder<DocumentSnapshot>(

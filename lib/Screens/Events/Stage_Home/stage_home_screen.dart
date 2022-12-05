@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:maths_vision/Screens/Basic/Papers/Categorized_List/papers_screen.dart';
 import 'package:maths_vision/Widgets/event_app_bar.dart';
 import 'package:connectivity/connectivity.dart';
 
@@ -81,7 +80,7 @@ class _StageHomeScreenState extends State<StageHomeScreen> {
               return Container(
                 margin: EdgeInsets.only(top: 220),
                 child: Center(
-                  child: NetworkError(Colors.white),
+                  child: NetworkError(),
                 ),
               );
             }
