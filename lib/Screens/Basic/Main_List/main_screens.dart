@@ -56,7 +56,10 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return CommonBackground(
       appBarTitle: AnimatedOpacity(
         duration: Duration(milliseconds: 500),
@@ -64,19 +67,9 @@ class _MainScreenState extends State<MainScreen> {
         child: Text(
           _titleSubject,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+          style: textTheme.headlineLarge.copyWith(
             height: 0.8,
-            fontFamily: 'Gabriola',
             fontSize: _titleFontSize,
-            fontWeight: FontWeight.w700,
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                blurRadius: 3,
-                offset: Offset(0, 2),
-              ),
-            ],
           ),
         ),
       ),
@@ -87,15 +80,15 @@ class _MainScreenState extends State<MainScreen> {
             opacity: closeTopContainer ? 0 : 1,
             child: AnimatedContainer(
               duration: Duration(milliseconds: 500),
-              height: closeTopContainer ? 0 : size.height,
+              height: closeTopContainer ? 0 : height,
               child: Stack(
                 children: [
                   Align(
                     child: Transform.rotate(
                       angle: pi / 15,
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        width: MediaQuery.of(context).size.width * 0.89,
+                        height: height * 0.4,
+                        width: width * 0.89,
                         child: CustomPaint(
                           painter: ShapeDrawer(),
                           child: Container(),
@@ -106,8 +99,8 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Align(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      width: MediaQuery.of(context).size.width * 0.47,
+                      height: height * 0.25,
+                      width: width * 0.47,
                       child: Image.asset('assets/Main_Screen_Icon.png'),
                     ),
                     alignment: Alignment(0.7, -0.77),
@@ -116,16 +109,8 @@ class _MainScreenState extends State<MainScreen> {
                     child: Text(
                       _subject,
                       textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontFamily: 'Falcon',
+                      style: Theme.of(context).primaryTextTheme.displayMedium.copyWith(
                         fontSize: _fontSize,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                              color: Colors.grey.shade800,
-                              offset: Offset(2, 2),
-                              blurRadius: 5,)
-                        ],
                       ),
                     ),
                     alignment: Alignment(-0.8, -0.95),
@@ -139,7 +124,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 AnimatedContainer(
                   duration: Duration(milliseconds: 500),
-                  height: closeTopContainer ? 0 : size.height * 0.375,
+                  height: closeTopContainer ? 0 : height * 0.375,
                 ),
                 AnimatedContainer(
                   onEnd: () {
@@ -148,18 +133,21 @@ class _MainScreenState extends State<MainScreen> {
                     });
                   },
                   duration: Duration(milliseconds: 500),
-                  width: size.width * 0.95,
-                  height: closeTopContainer ? size.height * 0.87 : size.height * 0.49,
+                  width: width * 0.95,
+                  height: closeTopContainer ? height * 0.87 : height * 0.49,
                   child: SingleChildScrollView(
                     controller: controller,
-                    child: screen == 'Pure'
-                        ? Content('Pure')
-                        : screen == 'Applied'
-                        ? Content('Applied')
-                        : PastPapersAndMarkingSchemes(),
+                    child: Builder(
+                      builder: (context) {
+                        if(screen=='Pure' || screen=='Applied'){
+                          return Content(screen);
+                        }
+                        return PastPapersAndMarkingSchemes();
+                      }
+                    ),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colorScheme.primary,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
