@@ -1,16 +1,14 @@
-import 'dart:async';
-
 import 'package:clip_shadow/clip_shadow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Categorized_Display/paper_content.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../Widgets/common_background.dart';
 
-class PapersScreen extends StatefulWidget {
+class PapersScreen extends StatelessWidget {
   final String paperType;
   final String subjectS;
   final String subjectE;
@@ -18,107 +16,52 @@ class PapersScreen extends StatefulWidget {
   const PapersScreen(this.paperType, this.subjectS, this.subjectE);
 
   @override
-  _PapersScreenState createState() => _PapersScreenState();
-}
-
-class _PapersScreenState extends State<PapersScreen> {
-  bool _hasConnection;
-  StreamSubscription _subscription;
-  String _subject;
-
-  Future<void> checkInternet() async {
-    bool status = await InternetConnectionChecker().hasConnection;
-    setState(() {
-      _hasConnection = status;
-    });
-    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
-      status = await InternetConnectionChecker().hasConnection;
-      setState(() {
-        _hasConnection = status;
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkInternet();
-    _subject = widget.subjectE.split(' ').join('_');
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _subscription.cancel();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return CommonBackground(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
+            padding: const EdgeInsets.only(left: 30.0, bottom: 12, right: 30),
             child: FittedBox(
-              child: Text(
-                '${widget.paperType.split('_').join(' ')}',
-                style: TextStyle(
-                  fontSize: 43,
-                  fontFamily: 'Roboto',
-                  color: Colors.white,
-                  letterSpacing: -0.7,
-                  wordSpacing: 1,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withOpacity(0.6),
-                      blurRadius: 3,
-                      offset: Offset(1.5, 1.5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${paperType.split('_').join(' ')}',
+                    style: textTheme.displaySmall.copyWith(
+                      fontSize: 43,
+                      letterSpacing: -0.7,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.6),
+                          blurRadius: 3,
+                          offset: Offset(1.5, 1.5),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30),
-            child: Text(
-              widget.subjectS,
-              style: TextStyle(
-                fontSize: 29,
-                fontFamily: 'Abhaya Libre',
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.6),
-                    blurRadius: 3,
-                    offset: Offset(1, 1.5),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, top: 4, bottom: 12),
-            child: Text(
-              widget.subjectE,
-              style: TextStyle(
-                fontSize: 26,
-                fontFamily: 'Dancing Script',
-                color: Colors.white,
-                letterSpacing: 1,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.6),
-                    blurRadius: 3,
-                    offset: Offset(1, 1.5),
+                  Text(
+                    subjectS,
+                    style: textTheme.headlineMedium.copyWith(
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.6),
+                          blurRadius: 3,
+                          offset: Offset(1, 1.5),
+                        ),
+                      ],
+                    ),
                   ),
+                  Text(subjectE, style: Theme.of(context).primaryTextTheme.displayLarge),
                 ],
               ),
             ),
           ),
           Divider(
-            color: Colors.white,
+            color: colorScheme.primary,
             indent: 30,
             endIndent: 30,
             height: 1,
@@ -126,11 +69,13 @@ class _PapersScreenState extends State<PapersScreen> {
           ),
           Expanded(
             child: Builder(
-              builder: (context){
-                if(_hasConnection==null){
+              builder: (context) {
+                bool _hasConnection = Provider.of<InternetConnectionStatus>(context) ==
+                    InternetConnectionStatus.connected;
+                if (_hasConnection == null) {
                   return EventLoading();
                 }
-                if(!_hasConnection){
+                if (!_hasConnection) {
                   return Center(
                     child: NetworkError(),
                   );
@@ -141,11 +86,10 @@ class _PapersScreenState extends State<PapersScreen> {
                       .doc('Papers')
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return _itemList(snapshot.data);
-                    } else {
+                    if (!snapshot.hasData) {
                       return EventLoading();
                     }
+                    return _itemList(context, snapshot.data);
                   },
                 );
               },
@@ -156,167 +100,144 @@ class _PapersScreenState extends State<PapersScreen> {
     );
   }
 
-  Widget _itemList(DocumentSnapshot data) {
-    final width = MediaQuery.of(context).size.width;
-    Map docs = data['Categorised.${widget.paperType}.$_subject'];
-    List sorted = docs.keys.toList()..sort();
-    List sortedKeys = sorted.reversed.toList();
+  Widget _itemList(BuildContext context, DocumentSnapshot data) {
+    final String subject = subjectE.split(' ').join('_');
+    final Map docs = data['Categorised.$paperType.$subject'];
+    final List sorted = docs.keys.toList()..sort();
+    final List sortedKeys = sorted.reversed.toList();
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return Scrollbar(
       thumbVisibility: true,
+      interactive: true,
+      radius: Radius.circular(3.5),
       thickness: 7,
       child: ListView.builder(
-        padding: EdgeInsets.only(bottom: 15),
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 18),
         itemCount: docs.length,
         itemBuilder: (context, index) {
           List year = docs[sortedKeys[index]]['year'].split(' ');
-          return Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                ClipShadow(
-                  clipper: ButtonShape(),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      offset: Offset(5, 5),
-                      spreadRadius: 0,
-                      blurRadius: 10,
-                    )
-                  ],
-                  child: Container(
-                    height: 68,
-                    width: width * 0.84,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 231, 231, 222),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 18),
+            child: ClipShadow(
+              clipper: ButtonShape(),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  offset: Offset(5, 5),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                )
+              ],
+              child: Container(
+                height: 68,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.onTertiary,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) {
+                          if (paperType == 'Past_Papers') {
+                            return PaperContent(
+                              '$paperType/$subject/${sortedKeys[index]}.jpg',
+                              subjectS,
+                              docs[sortedKeys[index]]['year'],
+                              'Question',
+                              docs[sortedKeys[index]]['time'],
+                            );
+                          } else {
+                            return PaperContent(
+                              '$paperType/$subject/${sortedKeys[index]}.jpg',
+                              subjectS,
+                              docs[sortedKeys[index]]['year'],
+                              'Answer',
+                              docs[sortedKeys[index]]['marks'],
+                            );
+                          }
+                        },
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) {
-                              if (widget.paperType == 'Past_Papers') {
-                                return PaperContent(
-                                  '${widget.paperType}/$_subject/${sortedKeys[index]}.jpg',
-                                  widget.subjectS,
-                                  docs[sortedKeys[index]]['year'],
-                                  'Question',
-                                  docs[sortedKeys[index]]['time'],
-                                );
-                              } else {
-                                return PaperContent(
-                                  '${widget.paperType}/$_subject/${sortedKeys[index]}.jpg',
-                                  widget.subjectS,
-                                  docs[sortedKeys[index]]['year'],
-                                  'Answer',
-                                  docs[sortedKeys[index]]['marks'],
-                                );
-                              }
-                            },
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment(-1.2, 0),
+                        child: ClipRRect(
+                          child: Image.asset('assets/Paper_Icon.jpg'),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(17),
                           ),
-                        );
-                      },
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment(-1.2, 0),
-                            child: ClipRRect(
-                              child: Image.asset('assets/Paper_Icon.jpg'),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(17),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 85, top: 25),
-                            child: FittedBox(
-                              child: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: year[0],
-                                      style: TextStyle(
-                                        fontFamily: 'Constan',
-                                        color: Color.fromARGB(255, 0, 88, 122),
-                                        fontSize: 30,
-                                        letterSpacing: -0.5,
-                                        wordSpacing: -2,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.black.withOpacity(0.4),
-                                            blurRadius: 1,
-                                            offset: Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: year.length == 3
-                                          ? ' ${year[1]}'
-                                          : year.length == 2
-                                              ? year[1] == 'New' || year[1] == 'Old'
-                                                  ? ' ${year[1]}'
-                                                  : ''
-                                              : '',
-                                      style: TextStyle(
-                                        fontFamily: 'Open Sans',
-                                        color: Color.fromARGB(255, 0, 88, 122),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: year.length == 3
-                                          ? ' ${year[2]}'
-                                          : year.length == 2
-                                              ? year[1] == 'New' || year[1] == 'Old'
-                                                  ? ''
-                                                  : ' ${year[1]}'
-                                              : '',
-                                      style: TextStyle(
-                                        fontFamily: 'Open Sans',
-                                        color: Color.fromARGB(255, 0, 88, 122),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: widget.paperType == 'Past_Papers'
-                                          ? ' Question'
-                                          : ' Answer',
-                                      style: TextStyle(
-                                        fontFamily: 'Constan',
-                                        color: Color.fromARGB(255, 0, 88, 122),
-                                        fontSize: 13,
-                                        wordSpacing: 1,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.black.withOpacity(0.4),
-                                            blurRadius: 1,
-                                            offset: Offset(0.5, 0.5),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 85, top: 25),
+                        child: FittedBox(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: year[0],
+                                  style: textTheme.headlineSmall.copyWith(
+                                    letterSpacing: -0.5,
+                                    wordSpacing: -2,
+                                  ),
                                 ),
-                              ),
+                                TextSpan(
+                                  text: year.length > 1
+                                      ? year[1] == 'New' || year[1] == 'Old'
+                                          ? ' ${year[1]}'
+                                          : ''
+                                      : '',
+                                  style: textTheme.displayLarge.copyWith(
+                                    color: colorScheme.tertiaryContainer,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: year.length == 3
+                                      ? ' ${year[2]}'
+                                      : year.length == 2
+                                          ? year[1] == 'New' || year[1] == 'Old'
+                                              ? ''
+                                              : ' ${year[1]}'
+                                          : '',
+                                  style: textTheme.displayLarge.copyWith(
+                                    color: colorScheme.tertiaryContainer,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: paperType == 'Past_Papers' ? ' Question' : ' Answer',
+                                  style: textTheme.headlineSmall.copyWith(
+                                    fontSize: 13,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black.withOpacity(0.4),
+                                        blurRadius: 1,
+                                        offset: Offset(0.5, 0.5),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           );
         },
       ),
     );
   }
-
 }
 
 class ButtonShape extends CustomClipper<Path> {
