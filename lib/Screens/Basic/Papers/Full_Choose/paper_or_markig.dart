@@ -5,8 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Full_Display/paper_or_marking_watch.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../Widgets/common_background.dart';
 
@@ -27,32 +29,16 @@ class PaperOrMarking extends StatefulWidget {
 class _PaperOrMarkingState extends State<PaperOrMarking> {
   List _year;
 
-  void pastPaperDownload(String link) async {
+  void paperDownload(String link, String type) async {
     final externalDir =
         await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
     Fluttertoast.showToast(
       msg: 'Downloading...',
-      fontSize: 16,
     );
     FlutterDownloader.enqueue(
       url: link,
       savedDir: externalDir,
-      fileName: '${widget.year} Full Past Paper.pdf',
-      showNotification: true,
-      openFileFromNotification: true,
-    );
-  }
-
-  void markingDownload(String link) async {
-    final externalDir = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-    Fluttertoast.showToast(
-      msg: 'Downloading...',
-      fontSize: 16,
-    );
-    FlutterDownloader.enqueue(
-      url: link,
-      savedDir: externalDir,
-      fileName: '${widget.year} Full Marking Scheme.pdf',
+      fileName: '${widget.year} Full $type.pdf',
       showNotification: true,
       openFileFromNotification: true,
     );
@@ -68,231 +54,135 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final double width = MediaQuery.of(context).size.width;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return CommonBackground(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+      body: Theme(
+        data: Theme.of(context)
+            .copyWith(colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent)),
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: width * 0.1),
           children: [
             Center(
               child: RichText(
                 text: TextSpan(
+                  style: textTheme.titleMedium.copyWith(
+                    fontSize: 60,
+                    height: 1,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 4,
+                        color: Colors.black.withOpacity(0.4),
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
                   children: [
                     TextSpan(
                       text: _year[0],
-                      style: TextStyle(
-                        fontSize: 60,
-                        fontFamily: 'Gothic',
-                        color: Colors.white,
-                        height: 1,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4,
-                            color: Colors.black.withOpacity(0.5),
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
                     ),
                     TextSpan(
                       text: _year.length > 1 ? ' ${_year[1]}' : '',
                       style: TextStyle(
                         fontSize: 40,
                         fontFamily: 'Georgia',
-                        color: Colors.white,
-                        height: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            _listItem('Past Paper'),
+            _listItem('Marking Scheme'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _listItem(String type) {
+    final double width = MediaQuery.of(context).size.width;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final String uType = type.split(' ').join('_');
+    return Container(
+      width: width * 0.8,
+      height: 150,
+      margin: const EdgeInsets.only(top: 25.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 7,
+          backgroundColor: colorScheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+        ),
+        onLongPress: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) {
+                return PaperOrMarkingWatch(
+                  widget.year,
+                  type,
+                );
+              },
+            ),
+          );
+        },
+        onPressed: () {
+          _paperDialog(context, type);
+        },
+        child: Stack(
+          children: [
+            Opacity(
+              opacity: 0.15,
+              child: Container(
+                padding: EdgeInsets.only(left: 100, top: 20),
+                child: Image.asset('assets/$uType\_Icon.jpg'),
+                width: width * 0.9,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: colorScheme.primary,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15, top: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    type == 'Past Paper' ? 'ප්‍රශ්න පත්‍රය' : 'ලකුණු දීමේ ක්‍රමවේදය',
+                    style: textTheme.headlineMedium.copyWith(
+                      fontSize: 35,
+                      color: colorScheme.tertiaryContainer,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 2,
+                          offset: Offset(1, 1),
+                          color: Colors.black.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      type,
+                      style: textTheme.titleLarge.copyWith(
+                        fontSize: 25,
                         shadows: [
                           Shadow(
-                            blurRadius: 4,
-                            color: Colors.black.withOpacity(0.5),
-                            offset: Offset(2, 2),
+                            blurRadius: 1,
+                            offset: Offset(0.5, 0.5),
+                            color: Colors.black.withOpacity(0.3),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: size.width * 0.8,
-              height: 150,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 7,
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
                   ),
-                ),
-                onLongPress: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return PaperOrMarkingWatch(
-                          widget.year,
-                          'Past Paper',
-                        );
-                      },
-                    ),
-                  );
-                },
-                onPressed: () {
-                  _paperDialog(context, 'Past_Paper');
-                },
-                child: Stack(
-                  children: [
-                    Opacity(
-                      child: Container(
-                        padding: EdgeInsets.only(left: 100, top: 20),
-                        child: Image.asset('assets/Past_Paper_Icon.jpg'),
-                        width: size.width * 0.9,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.white,
-                        ),
-                      ),
-                      opacity: 0.15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15, top: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ප්‍රශ්න පත්‍රය',
-                            style: TextStyle(
-                              fontFamily: 'Abhaya Libre',
-                              fontSize: 35,
-                              color: Color.fromARGB(255, 0, 88, 122),
-                              fontWeight: FontWeight.w600,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 2,
-                                  offset: Offset(1, 1),
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              'Past Paper',
-                              style: TextStyle(
-                                fontFamily: 'Pristina',
-                                fontSize: 25,
-                                color: Color.fromARGB(255, 0, 88, 122),
-                                fontWeight: FontWeight.w600,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 1,
-                                    offset: Offset(0.5, 0.5),
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            SizedBox(
-              width: size.width * 0.8,
-              height: 150,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 7,
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                ),
-                onLongPress: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return PaperOrMarkingWatch(
-                          widget.year,
-                          'Marking Scheme',
-                        );
-                      },
-                    ),
-                  );
-                },
-                onPressed: () {
-                  _paperDialog(context, 'Marking_Scheme');
-                },
-                child: Stack(
-                  children: [
-                    Opacity(
-                      child: Container(
-                        padding: EdgeInsets.only(left: 100, top: 20),
-                        child: Image.asset('assets/Marking_Scheme_Icon.jpg'),
-                        width: size.width * 0.9,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.white,
-                        ),
-                      ),
-                      opacity: 0.15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15, top: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ලකුණු දීමේ ක්‍රමවේදය',
-                            style: TextStyle(
-                              fontFamily: 'Abhaya Libre',
-                              fontSize: 35,
-                              color: Color.fromARGB(255, 0, 88, 122),
-                              fontWeight: FontWeight.w600,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 2,
-                                  offset: Offset(1, 1),
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              'Marking Scheme',
-                              style: TextStyle(
-                                fontFamily: 'Pristina',
-                                fontSize: 25,
-                                color: Color.fromARGB(255, 0, 88, 122),
-                                fontWeight: FontWeight.w600,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 1,
-                                    offset: Offset(0.5, 0.5),
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           ],
@@ -302,6 +192,8 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
   }
 
   Future<void> _paperDialog(BuildContext context, String type) async {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return await showDialog(
       context: context,
       builder: (context) {
@@ -310,173 +202,116 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
           child: AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
-              side: BorderSide(color: Colors.black),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FittedBox(
                   child: Text(
-                    type == 'Past_Paper'
-                        ? '${widget.year} Past Paper'
-                        : '${widget.year} Marking Scheme',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Gothic',
+                    '${widget.year} $type',
+                    style: textTheme.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      wordSpacing: 1.0,
-                      letterSpacing: 0.0,
+                      color: Colors.black,
+                      fontStyle: FontStyle.italic,
                       shadows: [
                         Shadow(
                           blurRadius: 2,
-                          color: Colors.black.withOpacity(0.5),
-                          offset: Offset(1, 1.5),
+                          color: Colors.black.withOpacity(0.3),
+                          offset: Offset(1, 1),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 7),
+                  padding: const EdgeInsets.only(top: 7, bottom: 15),
                   child: Text(
-                    type == 'Past_Paper'
+                    type == 'Past Paper'
                         ? 'Download Size : ${widget.paperSize}'
                         : 'Download Size : ${widget.markingSize}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: 'Gothic',
-                      fontWeight: FontWeight.normal,
-                      wordSpacing: 1.0,
-                      letterSpacing: 0.5,
-                    ),
+                    style: textTheme.titleMedium
+                        .copyWith(fontSize: 13, color: colorScheme.onPrimary),
                   ),
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  width: 210,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 0, 136, 145),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 5,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            if (type == 'Past_Paper') {
-                              return PaperOrMarkingWatch(
-                                widget.year,
-                                'Past Paper',
-                              );
-                            } else {
-                              return PaperOrMarkingWatch(
-                                widget.year,
-                                'Marking Scheme',
-                              );
-                            }
-                          },
-                        ),
-                      );
-                    },
-                    label: Padding(
-                      padding: const EdgeInsets.only(top: 5, bottom: 5),
-                      child: Text(
-                        'Watch Now',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontFamily: 'Open Sans',
-                        ),
-                      ),
-                    ),
-                    icon: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Icon(
-                        Icons.chrome_reader_mode,
-                        color: Colors.white,
-                        size: 25,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                StreamBuilder<String>(
-                  stream: type == 'Past_Paper'
-                      ? FirebaseStorage.instance
-                          .ref()
-                          .child(widget.paperPath)
-                          .getDownloadURL()
-                          .asStream()
-                      : FirebaseStorage.instance
-                          .ref()
-                          .child(widget.markingPath)
-                          .getDownloadURL()
-                          .asStream(),
-                  builder: (context, snapshot) {
-                    return SizedBox(
-                      width: 210,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 0, 136, 145),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 5,
-                        ),
-                        onPressed: () async {
-                          if(snapshot.hasData){
-                            final status = await Permission.storage.request();
-                            if (status.isGranted) {
-                              if (type == 'Past_Paper') {
-                                pastPaperDownload(snapshot.data);
-                              } else {
-                                markingDownload(snapshot.data);
-                              }
-                            } else if (status.isRestricted) {
-                              Permission.storage.request();
-                            }
-                          } else {
-                            Fluttertoast.showToast(
-                              msg: 'Please wait while data loads...',
-                              fontSize: 16,
-                            );
-                          }
-                        },
-                        label: Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5),
-                          child: Text(
-                            'Download',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontFamily: 'Open Sans',
-                            ),
-                          ),
-                        ),
-                        icon: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Icon(
-                            Icons.download_sharp,
-                            color: Colors.white,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _dialogButton(context, 'Watch Now', Icons.chrome_reader_mode, type),
+                _dialogButton(context, 'Download', Icons.download_sharp, type)
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  Widget _dialogButton(BuildContext context,String buttonName, IconData icon, String type) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 210,
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 5,
+        ),
+        onPressed: () {
+          if (buttonName == 'Watch Now') {
+            return Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) {
+                  return PaperOrMarkingWatch(
+                    widget.year,
+                    type,
+                  );
+                },
+              ),
+            );
+          }
+          bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
+              InternetConnectionStatus.connected;
+          if (!hasConnection) {
+            return Fluttertoast.showToast(
+              msg: 'Please connect to the Internet.',
+            );
+          }
+          print(widget.paperPath);
+          _downloadSource(type).then((url) async {
+            final status = await Permission.storage.request();
+            if (status.isGranted) {
+              paperDownload(url, type);
+            } else {
+              Permission.storage.request();
+            }
+          });
+        },
+        label: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Text(
+            buttonName,
+            style: textTheme.displayLarge.copyWith(
+              color: colorScheme.primary,
+              fontSize: 25,
+            ),
+          ),
+        ),
+        icon: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Icon(
+            icon,
+            color: colorScheme.primary,
+            size: 25,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<String> _downloadSource(String type) async {
+    return type == 'Past Paper'
+        ? await FirebaseStorage.instance.ref().child(widget.paperPath).getDownloadURL()
+        : await FirebaseStorage.instance.ref().child(widget.markingPath).getDownloadURL();
   }
 }
