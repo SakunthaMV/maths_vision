@@ -4,241 +4,151 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 
 import '../../../../Widgets/common_background.dart';
 
-class PaperOrMarkingWatch extends StatefulWidget {
-  final String year;
+class PaperOrMarkingWatch extends StatelessWidget {
+  final String yearString;
   final String type;
+  const PaperOrMarkingWatch(this.yearString, this.type);
 
-  const PaperOrMarkingWatch(this.year, this.type);
-
-  @override
-  _PaperOrMarkingWatchState createState() => _PaperOrMarkingWatchState();
-}
-
-class _PaperOrMarkingWatchState extends State<PaperOrMarkingWatch> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return CommonBackground(
       appBarTitle: Text(
-        '${widget.year} ${widget.type}',
-        style: TextStyle(
-          fontFamily: 'Gabriola',
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-          shadows: [
-            Shadow(
-              color: Colors.black,
-              blurRadius: 3,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
+        '$yearString $type',
+        style: textTheme.headlineLarge,
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('Papers').doc('Papers').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List typeSplit = widget.type.split(' ');
-            String t = '${typeSplit[0]}_${typeSplit[1]}';
-            int purePages = snapshot.data['Full_Papers.${widget.year}.$t.purePages'];
-            int appliedPages = snapshot.data['Full_Papers.${widget.year}.$t.appliedPages'];
-            return Center(
-              child: Container(
-                width: width * 0.95,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  child: InteractiveViewer(
-                    minScale: 1.0,
-                    maxScale: 4.0,
-                    child: ListView.builder(
-                      itemCount: purePages + appliedPages + 2,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            _page(index, purePages),
-                            Column(
-                              children: [
-                                Container(
-                                  height: 30,
-                                  child: Column(
-                                    children: [
-                                      Divider(
-                                        height: 3,
-                                        thickness: 3,
-                                        color: Colors.black,
-                                        indent: 25,
-                                        endIndent: 25,
-                                      ),
-                                      Divider(
-                                        height: 5,
-                                        thickness: 1,
-                                        color: Colors.black,
-                                        indent: 25,
-                                        endIndent: 25,
-                                      ),
-                                      Text(
-                                        '-${index + 1}-',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontFamily: 'Crash',
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  width: width,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        blurRadius: 2,
-                                        offset: Offset(0, 3),
-                                        spreadRadius: 0,
-                                        color: Colors.black.withOpacity(0.4),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            )
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            );
-          } else {
+          if (!snapshot.hasData) {
             return Center(
               child: LoadingBouncingLine.circle(
                 size: 100,
                 backgroundColor: Colors.transparent,
-                borderColor: Colors.black,
+                borderColor: colorScheme.onPrimary,
               ),
             );
           }
+          final String t = '${type.split(' ').join('_')}';
+          final int purePages = snapshot.data['Full_Papers.$yearString.$t.purePages'];
+          final int appliedPages = snapshot.data['Full_Papers.$yearString.$t.appliedPages'];
+          return Center(
+            child: Container(
+              width: width * 0.95,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                child: InteractiveViewer(
+                  minScale: 1.0,
+                  maxScale: 4.0,
+                  child: ListView.builder(
+                    itemCount: purePages + appliedPages + 2,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          _page(index, purePages),
+                          Container(
+                            height: 30,
+                            margin: const EdgeInsets.only(bottom: 10.0),
+                            child: Column(
+                              children: [
+                                Divider(
+                                  height: 3,
+                                  thickness: 3,
+                                  color: colorScheme.onPrimary,
+                                  indent: 25,
+                                  endIndent: 25,
+                                ),
+                                Divider(
+                                  height: 5,
+                                  thickness: 1,
+                                  color: colorScheme.onPrimary,
+                                  indent: 25,
+                                  endIndent: 25,
+                                ),
+                                Text(
+                                  '-${index + 1}-',
+                                  textAlign: TextAlign.right,
+                                  style: Theme.of(context).primaryTextTheme.displaySmall,
+                                ),
+                              ],
+                            ),
+                            width: width,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary,
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  offset: Offset(0, 3),
+                                  spreadRadius: 0,
+                                  color: Colors.black.withOpacity(0.4),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
         },
       ),
     );
   }
 
   Widget _page(int index, int purePages) {
-    List yearSplit = widget.year.split(' ');
-    String year = '${yearSplit[0]}${yearSplit.length > 1 ? '_${yearSplit[1]}' : ''}';
-    List typeSplit = widget.type.split(' ');
-    String t = '${typeSplit[0]}_${typeSplit[1]}';
-    String purePath = 'Full_Papers/$year/$t/Pure/$index.jpg';
-    String pureFrontPath =
-        'Full_Papers/$year/$t/Pure/${yearSplit[0]}${yearSplit.length > 1 ? yearSplit[1][0] : ''}.jpg';
-    String appliedPath = 'Full_Papers/$year/$t/Applied/${index - purePages - 1}.jpg';
-    String appliedFrontPath =
-        'Full_Papers/$year/$t/Applied/${yearSplit[0]}${yearSplit.length > 1 ? yearSplit[1][0] : ''}.jpg';
+    final List yearSplit = yearString.split(' ');
+    final String year = '${yearString.split(' ').join('_')}';
+    final String t = '${type.split(' ').join('_')}';
+    final String purePath = 'Full_Papers/$year/$t/Pure/$index.jpg';
+    final String pureFrontPath =
+        'Full_Papers/$year/$t/Pure/'
+        '${yearSplit[0]}${yearSplit.length > 1 ? yearSplit[1][0] : ''}.jpg';
+    final String appliedPath = 'Full_Papers/$year/$t/Applied/${index - purePages - 1}.jpg';
+    final String appliedFrontPath =
+        'Full_Papers/$year/$t/Applied/'
+        '${yearSplit[0]}${yearSplit.length > 1 ? yearSplit[1][0] : ''}.jpg';
     if (index == 0) {
-      return StreamBuilder<String>(
-        stream:
-            FirebaseStorage.instance.ref().child(pureFrontPath).getDownloadURL().asStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return CachedNetworkImage(
-              imageUrl: snapshot.data,
-              placeholder: (context, url) {
-                return AspectRatio(
-                  child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-                  aspectRatio: 1080 / 1555,
-                );
-              },
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
-          } else {
-            return AspectRatio(
-              child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-              aspectRatio: 1080 / 1555,
-            );
-          }
-        },
-      );
+      return _pageLoad(pureFrontPath);
     } else if (index > 0 && index <= purePages) {
-      return StreamBuilder<String>(
-        stream: FirebaseStorage.instance.ref().child(purePath).getDownloadURL().asStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return CachedNetworkImage(
-              imageUrl: snapshot.data,
-              placeholder: (context, url) {
-                return AspectRatio(
-                  child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-                  aspectRatio: 1080 / 1555,
-                );
-              },
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
-          } else {
-            return AspectRatio(
-              child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-              aspectRatio: 1080 / 1555,
-            );
-          }
-        },
-      );
+      return _pageLoad(purePath);
     } else if (index == purePages + 1) {
-      return StreamBuilder<String>(
-        stream:
-            FirebaseStorage.instance.ref().child(appliedFrontPath).getDownloadURL().asStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return CachedNetworkImage(
-              imageUrl: snapshot.data,
-              placeholder: (context, url) {
-                return AspectRatio(
-                  child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-                  aspectRatio: 1080 / 1555,
-                );
-              },
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
-          } else {
-            return AspectRatio(
-              child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-              aspectRatio: 1080 / 1555,
-            );
-          }
-        },
-      );
+      return _pageLoad(appliedFrontPath);
     } else {
-      return StreamBuilder<String>(
-        stream: FirebaseStorage.instance.ref().child(appliedPath).getDownloadURL().asStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return CachedNetworkImage(
-              imageUrl: snapshot.data,
-              placeholder: (context, url) {
-                return AspectRatio(
-                  child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-                  aspectRatio: 1080 / 1555,
-                );
-              },
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
-          } else {
-            return AspectRatio(
-              child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
-              aspectRatio: 1080 / 1555,
-            );
-          }
-        },
-      );
+      return _pageLoad(appliedPath);
     }
+  }
+
+  Widget _pageLoad(String path){
+    const AspectRatio aspectRatio = const AspectRatio(
+      child: BlurHash(hash: 'L4Ss50D%_3~q_3IUWB%M~qRkIUt7'),
+      aspectRatio: 1080 / 1555,
+    );
+    return StreamBuilder<String>(
+      stream: FirebaseStorage.instance.ref().child(path).getDownloadURL().asStream(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return aspectRatio;
+        }
+        return CachedNetworkImage(
+          imageUrl: snapshot.data,
+          placeholder: (context, url) {
+            return aspectRatio;
+          },
+          errorWidget: (context, url, error) => UnknownError(),
+        );
+      },
+    );
   }
 }
