@@ -13,13 +13,14 @@ import 'package:maths_vision/Screens/Home/local_widgets.dart';
 import 'package:maths_vision/Screens/Special/Collection/collection.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
 import 'package:maths_vision/Screens/Account/Log_In/log_in_screen.dart';
-import 'package:maths_vision/Screens/Splashes/go_event_splash_screen.dart';
 import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../Basic/Main_List/main_screens.dart';
+import '../Events/Event_Home/event_front_screen.dart';
+import '../Events/Events_Details/event_home_screen.dart';
 import '../Navigation_Drawer/navigation_drawer.dart';
 import 'login_update.dart';
 
@@ -117,7 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   InkWell(
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
-                    onTap: _eventButtonPress,
+                    onTap: () {
+                      _eventButtonPress(context);
+                    },
                     child: Stack(
                       children: [
                         Padding(
@@ -198,7 +201,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   InkWell(
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
-                    onTap: _eventButtonPress,
+                    onTap: () {
+                      _eventButtonPress(context);
+                    },
                     child: Container(
                       height: 150,
                       width: 90,
@@ -219,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _eventCircularProgress(0.0),
+                              _eventCircularProgress(context, 0.0),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                                 child: Text(
@@ -263,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _eventCircularProgress(progress),
+                                _eventCircularProgress(context, progress),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                                   child: Center(
@@ -306,16 +311,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     _mainScreenButtons(
+                      context,
                       'ශුද්ධ ගණිතය',
                       'PURE MATHS',
                       'Pure',
                     ),
                     _mainScreenButtons(
+                      context,
                       'ව්‍යවහාරික ගණිතය',
                       'APPLIED MATHS',
                       'Applied',
                     ),
                     _mainScreenButtons(
+                      context,
                       'පසුගිය විභාග ප්‍රශ්න පත්‍ර සහ පිළිතුරු',
                       'PAST PAPERS & MARKING SCHEMES',
                       'Past Papers And Marking Schemes',
@@ -349,9 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
             overlayOpacity: 0.5,
             overlayColor: Colors.black26,
             children: [
-              _fabChild(GoEventSplashScreen('Event'), Icons.event, 'EVENT'),
-              _fabChild(Store(), Icons.store, 'STORE'),
-              _fabChild(Collection(), Icons.style_outlined, 'COLLECTION'),
+              _fabChild(context, EventHomeScreen(), Icons.event, 'EVENT'),
+              _fabChild(context, Store(), Icons.store, 'STORE'),
+              _fabChild(context, Collection(), Icons.style_outlined, 'COLLECTION'),
             ],
           ),
         ),
@@ -359,12 +367,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  SpeedDialChild _fabChild(Widget screen, IconData icon, String name) {
+  SpeedDialChild _fabChild(BuildContext context, Widget screen, IconData icon, String name) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return SpeedDialChild(
       onTap: () {
-        _fabChildPress(screen);
+        _fabChildPress(context, screen);
       },
       backgroundColor: colorScheme.primary,
       foregroundColor: colorScheme.onPrimary,
@@ -374,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       labelWidget: GestureDetector(
         onTap: () {
-          _fabChildPress(screen);
+          _fabChildPress(context, screen);
         },
         child: Container(
           width: 170,
@@ -405,7 +413,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _mainScreenButtons(String sinhalaName, String englishName, String screen) {
+  Widget _mainScreenButtons(
+      BuildContext context, String sinhalaName, String englishName, String screen) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -467,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _eventCircularProgress(double progress) {
+  Widget _eventCircularProgress(BuildContext context, double progress) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Stack(
       alignment: AlignmentDirectional.center,
@@ -517,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _fabChildPress(Widget screen) {
+  void _fabChildPress(BuildContext context, Widget screen) {
     _hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
         InternetConnectionStatus.connected;
     if (_hasConnection) {
@@ -533,7 +542,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _eventButtonPress() {
+  void _eventButtonPress(BuildContext context) {
     _hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
         InternetConnectionStatus.connected;
     if (!_hasConnection) {
@@ -553,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
-          return GoEventSplashScreen('Stage');
+          return EventFrontScreen();
         },
       ),
     );
