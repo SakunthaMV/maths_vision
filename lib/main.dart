@@ -70,7 +70,7 @@ class MathsVision extends StatelessWidget {
         Color.fromARGB(255, 72, 73, 75),
         shadow: Shadow(
           blurRadius: 1.0,
-          color: Colors.black.withOpacity(0.4),
+          color: Colors.black.withOpacity(0.3),
           offset: Offset(1, 1),
         ),
       ),
@@ -121,18 +121,8 @@ class MathsVision extends StatelessWidget {
           offset: Offset(1.0, 1.0),
         ),
       ),
-      titleLarge: _style(
-        'Pristina',
-        30.0,
-        FontWeight.bold,
-        Color.fromARGB(255, 0, 88, 122),
-      ),
-      titleMedium: _style(
-        'Gothic',
-        20.0,
-        FontWeight.normal,
-        Colors.white,
-      ),
+      titleLarge: _style('Pristina', 30.0, FontWeight.bold, Color.fromARGB(255, 0, 88, 122)),
+      titleMedium: _style('Gothic', 20.0, FontWeight.normal, Colors.white),
       titleSmall: _style(
         'Niagara Solid',
         25.0,
@@ -147,24 +137,9 @@ class MathsVision extends StatelessWidget {
         color: Color.fromARGB(255, 89, 89, 89),
         shadows: [],
       ),
-      bodyMedium: _style(
-        'Iskola Potha',
-        17.0,
-        FontWeight.normal,
-        Colors.black,
-      ),
-      bodySmall: _style(
-        'AgencyFB',
-        25.0,
-        FontWeight.normal,
-        Colors.black,
-      ),
-      labelLarge: _style(
-        'Scriptina',
-        25.0,
-        FontWeight.bold,
-        Colors.white,
-      ),
+      bodyMedium: _style('Iskola Potha', 17.0, FontWeight.normal, Colors.black),
+      bodySmall: _style('AgencyFB', 25.0, FontWeight.normal, Colors.black),
+      labelLarge: _style('Scriptina', 25.0, FontWeight.bold, Colors.white),
       labelMedium: _style(
         'Lemon Jelly',
         20.0,
@@ -198,11 +173,23 @@ class MathsVision extends StatelessWidget {
           blurRadius: 5,
         ),
       ),
-      displaySmall: _style(
-        'Crash',
-        17.0,
+      displaySmall: _style('Crash', 17.0, FontWeight.bold, Colors.black),
+      headlineLarge: _style(
+        'Lemon Jelly',
+        16.0,
+        FontWeight.normal,
+        Color.fromARGB(255, 0, 135, 145),
+      ),
+      headlineMedium: _style(
+        'Warna',
+        27.0,
         FontWeight.bold,
-        Colors.black,
+        Color.fromARGB(255, 72, 73, 75),
+        shadow: Shadow(
+          color: Colors.grey.shade600,
+          blurRadius: 2,
+          offset: Offset(1, 1),
+        ),
       ),
     );
   }
@@ -218,9 +205,11 @@ class MathsVision extends StatelessWidget {
           onPrimary: Colors.black,
           secondary: Color.fromARGB(255, 239, 197, 1),
           onSecondary: Color.fromARGB(255, 72, 73, 75),
+          secondaryContainer: Color.fromARGB(255, 20, 14, 94),
           tertiary: Color.fromARGB(255, 119, 123, 126),
           onTertiary: Color.fromARGB(255, 231, 231, 222),
           tertiaryContainer: Color.fromARGB(255, 0, 88, 122),
+          onTertiaryContainer: Color.fromARGB(255, 162, 156, 156),
           surface: Color.fromARGB(255, 1, 170, 255),
           onSurface: Color.fromARGB(255, 183, 183, 183),
           background: Color.fromARGB(255, 0, 135, 145),
