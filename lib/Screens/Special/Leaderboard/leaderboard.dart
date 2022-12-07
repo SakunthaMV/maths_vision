@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:maths_vision/Widgets/home_app_bar.dart';
+import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 
 class LeaderBoard extends StatefulWidget {
   const LeaderBoard({Key key}) : super(key: key);

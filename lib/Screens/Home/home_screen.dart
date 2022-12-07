@@ -14,7 +14,7 @@ import 'package:maths_vision/Screens/Special/Collection/collection.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
 import 'package:maths_vision/Screens/Account/Log_In/log_in_screen.dart';
 import 'package:maths_vision/Screens/Splashes/go_event_splash_screen.dart';
-import 'package:maths_vision/Widgets/home_app_bar.dart';
+import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';

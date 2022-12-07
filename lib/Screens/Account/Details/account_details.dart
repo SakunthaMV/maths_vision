@@ -10,7 +10,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Screens/Account/Edit/account_edit_screen.dart';
 import 'package:maths_vision/Screens/Splashes/log_out_splash_screen.dart';
-import 'package:maths_vision/Widgets/home_app_bar.dart';
+import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Common_Widgets/profile_picture.dart';

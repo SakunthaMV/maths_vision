@@ -3,7 +3,7 @@ import 'package:maths_vision/Screens/Special/Diary/daily_bonus_tab.dart';
 import 'package:maths_vision/Screens/Special/Diary/golden_sheet_tab.dart';
 import 'package:maths_vision/Screens/Special/Diary/notice_tab.dart';
 import 'package:maths_vision/Screens/Special/Diary/wall_tab.dart';
-import 'package:maths_vision/Widgets/home_app_bar.dart';
+import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class DiaryHomeScreen extends StatefulWidget {

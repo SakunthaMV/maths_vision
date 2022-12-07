@@ -206,6 +206,7 @@ class MathsVision extends StatelessWidget {
           secondary: Color.fromARGB(255, 239, 197, 1),
           onSecondary: Color.fromARGB(255, 72, 73, 75),
           secondaryContainer: Color.fromARGB(255, 20, 14, 94),
+          onSecondaryContainer: Color.fromARGB(255, 139, 205, 250),
           tertiary: Color.fromARGB(255, 119, 123, 126),
           onTertiary: Color.fromARGB(255, 231, 231, 222),
           tertiaryContainer: Color.fromARGB(255, 0, 88, 122),
