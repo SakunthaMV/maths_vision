@@ -58,8 +58,9 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return CommonBackground(
       body: Theme(
-        data: Theme.of(context)
-            .copyWith(colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent)),
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
+        ),
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: width * 0.1),
           children: [
@@ -243,7 +244,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
     );
   }
 
-  Widget _dialogButton(BuildContext context,String buttonName, IconData icon, String type) {
+  Widget _dialogButton(BuildContext context, String buttonName, IconData icon, String type) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Container(
