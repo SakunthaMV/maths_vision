@@ -48,13 +48,18 @@ class NotePage extends StatelessWidget {
                 future: numberOfImages(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return ListView(
-                      children: List.generate(
-                        snapshot.data.length,
-                            (index) {
-                          Uint8List _bytes = Base64Decoder().convert(snapshot.data[index]);
-                          return Image.memory(_bytes);
-                        },
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
+                      ),
+                      child: ListView(
+                        children: List.generate(
+                          snapshot.data.length,
+                              (index) {
+                            Uint8List _bytes = Base64Decoder().convert(snapshot.data[index]);
+                            return Image.memory(_bytes);
+                          },
+                        ),
                       ),
                     );
                   }

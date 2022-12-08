@@ -49,54 +49,59 @@ class PaperOrMarkingWatch extends StatelessWidget {
                 child: InteractiveViewer(
                   minScale: 1.0,
                   maxScale: 4.0,
-                  child: ListView.builder(
-                    itemCount: purePages + appliedPages + 2,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          _page(index, purePages),
-                          Container(
-                            height: 30,
-                            margin: const EdgeInsets.only(bottom: 10.0),
-                            child: Column(
-                              children: [
-                                Divider(
-                                  height: 3,
-                                  thickness: 3,
-                                  color: colorScheme.onPrimary,
-                                  indent: 25,
-                                  endIndent: 25,
-                                ),
-                                Divider(
-                                  height: 5,
-                                  thickness: 1,
-                                  color: colorScheme.onPrimary,
-                                  indent: 25,
-                                  endIndent: 25,
-                                ),
-                                Text(
-                                  '-${index + 1}-',
-                                  textAlign: TextAlign.right,
-                                  style: Theme.of(context).primaryTextTheme.displaySmall,
-                                ),
-                              ],
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
+                    ),
+                    child: ListView.builder(
+                      itemCount: purePages + appliedPages + 2,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _page(index, purePages),
+                            Container(
+                              height: 30,
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              child: Column(
+                                children: [
+                                  Divider(
+                                    height: 3,
+                                    thickness: 3,
+                                    color: colorScheme.onPrimary,
+                                    indent: 25,
+                                    endIndent: 25,
+                                  ),
+                                  Divider(
+                                    height: 5,
+                                    thickness: 1,
+                                    color: colorScheme.onPrimary,
+                                    indent: 25,
+                                    endIndent: 25,
+                                  ),
+                                  Text(
+                                    '-${index + 1}-',
+                                    textAlign: TextAlign.right,
+                                    style: Theme.of(context).primaryTextTheme.displaySmall,
+                                  ),
+                                ],
+                              ),
+                              width: width,
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 2,
+                                    offset: Offset(0, 3),
+                                    spreadRadius: 0,
+                                    color: Colors.black.withOpacity(0.4),
+                                  ),
+                                ],
+                              ),
                             ),
-                            width: width,
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary,
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 2,
-                                  offset: Offset(0, 3),
-                                  spreadRadius: 0,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

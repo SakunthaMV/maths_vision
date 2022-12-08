@@ -191,32 +191,37 @@ class PaperContent extends StatelessWidget {
                         child: InteractiveViewer(
                           minScale: 1.0,
                           maxScale: 4.0,
-                          child: SingleChildScrollView(
-                            child: CachedNetworkImage(
-                              imageUrl: snapshot.data,
-                              placeholder: (context, url) {
-                                if (type == 'Question') {
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
+                            ),
+                            child: SingleChildScrollView(
+                              child: CachedNetworkImage(
+                                imageUrl: snapshot.data,
+                                placeholder: (context, url) {
+                                  if (type == 'Question') {
+                                    return SizedBox(
+                                      width: double.infinity,
+                                      child: LoadingBumpingLine.circle(
+                                        size: 100,
+                                        backgroundColor: Colors.transparent,
+                                        borderColor: colorScheme.onPrimary,
+                                      ),
+                                    );
+                                  }
                                   return SizedBox(
-                                    width: double.infinity,
-                                    child: LoadingBumpingLine.circle(
-                                      size: 100,
-                                      backgroundColor: Colors.transparent,
-                                      borderColor: colorScheme.onPrimary,
+                                    width: size.width * 0.8,
+                                    child: Shimmer.fromColors(
+                                      baseColor: Colors.transparent,
+                                      highlightColor: Colors.grey,
+                                      child: Image.asset('assets/Loading_Icon.png'),
                                     ),
                                   );
-                                }
-                                return SizedBox(
-                                  width: size.width * 0.8,
-                                  child: Shimmer.fromColors(
-                                    baseColor: Colors.transparent,
-                                    highlightColor: Colors.grey,
-                                    child: Image.asset('assets/Loading_Icon.png'),
-                                  ),
-                                );
-                              },
-                              errorWidget: (context, url, error) {
-                                return NetworkError();
-                              },
+                                },
+                                errorWidget: (context, url, error) {
+                                  return NetworkError();
+                                },
+                              ),
                             ),
                           ),
                         ),

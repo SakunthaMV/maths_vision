@@ -57,46 +57,41 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
     final double width = MediaQuery.of(context).size.width;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return CommonBackground(
-      body: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
-        ),
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: width * 0.1),
-          children: [
-            Center(
-              child: RichText(
-                text: TextSpan(
-                  style: textTheme.titleMedium.copyWith(
-                    fontSize: 60,
-                    height: 1,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 4,
-                        color: Colors.black.withOpacity(0.4),
-                        offset: Offset(2, 2),
-                      ),
-                    ],
-                  ),
-                  children: [
-                    TextSpan(
-                      text: _year[0],
-                    ),
-                    TextSpan(
-                      text: _year.length > 1 ? ' ${_year[1]}' : '',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontFamily: 'Georgia',
-                      ),
+      body: ListView(
+        padding: EdgeInsets.symmetric(horizontal: width * 0.1),
+        children: [
+          Center(
+            child: RichText(
+              text: TextSpan(
+                style: textTheme.titleMedium.copyWith(
+                  fontSize: 60,
+                  height: 1,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black.withOpacity(0.4),
+                      offset: Offset(2, 2),
                     ),
                   ],
                 ),
+                children: [
+                  TextSpan(
+                    text: _year[0],
+                  ),
+                  TextSpan(
+                    text: _year.length > 1 ? ' ${_year[1]}' : '',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontFamily: 'Georgia',
+                    ),
+                  ),
+                ],
               ),
             ),
-            _listItem('Past Paper'),
-            _listItem('Marking Scheme'),
-          ],
-        ),
+          ),
+          _listItem('Past Paper'),
+          _listItem('Marking Scheme'),
+        ],
       ),
     );
   }

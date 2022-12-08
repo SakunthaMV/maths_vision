@@ -136,6 +136,7 @@ class _MainScreenState extends State<MainScreen> {
                   width: width * 0.95,
                   height: closeTopContainer ? height * 0.87 : height * 0.49,
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     controller: controller,
                     child: Builder(
                       builder: (context) {

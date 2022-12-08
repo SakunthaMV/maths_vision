@@ -114,6 +114,7 @@ class PapersScreen extends StatelessWidget {
       thickness: 7,
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+        physics: BouncingScrollPhysics(),
         itemCount: docs.length,
         itemBuilder: (context, index) {
           List year = docs[sortedKeys[index]]['year'].split(' ');

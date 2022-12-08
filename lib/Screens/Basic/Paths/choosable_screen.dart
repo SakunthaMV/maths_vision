@@ -52,10 +52,8 @@ class ChooseScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.075,
-                  vertical: 18.0,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.075, vertical: 18.0),
+                physics: BouncingScrollPhysics(),
                 itemCount: 3,
                 itemBuilder: (context, index) {
                   const List levels = [
