@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -79,6 +80,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () {
+                            final bool hasConnection = oneTimeCheck(context);
+                            if (!hasConnection) {
+                              toast('You don\'t have Internet Connection.');
+                              return;
+                            }
                             final DocumentReference userData =
                                 FirebaseFirestore.instance.collection('Users').doc(user.uid);
                             final isValid = editFormKey.currentState.validate();
@@ -131,6 +137,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                             padding: EdgeInsets.all(0),
                             splashRadius: 35,
                             onPressed: () async {
+                              final bool hasConnection = oneTimeCheck(context);
+                              if (!hasConnection) {
+                                toast('You don\'t have Internet Connection.');
+                                return;
+                              }
                               _bottomSheet(context);
                             },
                             icon: Icon(Icons.camera_alt_rounded),
@@ -410,7 +421,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
           _uploadProfilePicture(context);
         } else {
           final DocumentReference userData =
-          FirebaseFirestore.instance.collection('Users').doc(user.uid);
+              FirebaseFirestore.instance.collection('Users').doc(user.uid);
           userData.update({
             'User_Details.photoURL': 'No Image',
           });
