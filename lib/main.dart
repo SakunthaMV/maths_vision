@@ -191,6 +191,7 @@ class MathsVision extends StatelessWidget {
           offset: Offset(1, 1),
         ),
       ),
+      headlineSmall: _style('Sylfaen', 19.0, FontWeight.normal, Colors.black)
     );
   }
 
