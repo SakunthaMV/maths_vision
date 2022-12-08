@@ -48,6 +48,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   permission_handler: ^10.2.0
   image_picker: ^0.8.6
+  image_cropper: ^3.0.1
   external_path: ^1.0.3
   shimmer: ^2.0.0
   date_time_picker: ^2.1.0
