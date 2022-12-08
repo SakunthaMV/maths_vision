@@ -1,65 +1,29 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Screens/Account/Edit/account_edit_screen.dart';
 import 'package:maths_vision/Screens/Splashes/log_out_splash_screen.dart';
 import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Common_Widgets/profile_picture.dart';
 
-class AccountScreen extends StatefulWidget {
+class AccountScreen extends StatelessWidget {
   const AccountScreen({Key key}) : super(key: key);
-
-  @override
-  _AccountScreenState createState() => _AccountScreenState();
-}
-
-class _AccountScreenState extends State<AccountScreen> {
-  bool _hasConnection;
-  StreamSubscription _subscription;
-
-  Future<void> checkInternet() async {
-    bool status = await InternetConnectionChecker().hasConnection;
-    setState(() {
-      _hasConnection = status;
-    });
-    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
-      status = await InternetConnectionChecker().hasConnection;
-      setState(() {
-        _hasConnection = status;
-      });
-    });
-  }
-
-  User user;
-
-  @override
-  void initState() {
-    super.initState();
-    user = FirebaseAuth.instance.currentUser;
-    checkInternet();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _subscription.cancel();
-  }
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 183, 183, 183),
+      backgroundColor: colorScheme.onSurface,
       appBar: HomeAppBar(page: 'Account'),
       body: Stack(
         alignment: AlignmentDirectional.topCenter,
@@ -74,10 +38,11 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           SingleChildScrollView(
             padding: EdgeInsets.only(top: width * 0.05),
+            physics: BouncingScrollPhysics(),
             child: Stack(
               alignment: AlignmentDirectional.topCenter,
               children: [
-                ProfilePicture(user.uid),
+                ProfilePicture(),
                 Container(
                   width: width * 0.85,
                   height: 470,
@@ -90,7 +55,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         left: width * 0.05,
                         right: width * 0.05,
                       ),
-                      child: _accountBody(),
+                      child: _accountBody(context),
                     ),
                   ),
                 ),
@@ -102,7 +67,10 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _accountBody() {
+  Widget _accountBody(BuildContext context) {
+    final User user = FirebaseAuth.instance.currentUser;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
       builder: (context, userSnapshot) {
@@ -112,6 +80,10 @@ class _AccountScreenState extends State<AccountScreen> {
             size: 100.0,
           );
         }
+        final Divider divider = Divider(
+          color: colorScheme.onPrimary,
+          thickness: 1,
+        );
         final String name = '${userSnapshot.data['User_Details.firstName']}'
             ' ${userSnapshot.data['User_Details.lastName']}';
         final String email = '${userSnapshot.data['User_Details.email']}';
@@ -122,27 +94,22 @@ class _AccountScreenState extends State<AccountScreen> {
           children: [
             Text(
               name,
-              style: TextStyle(
+              style: textTheme.displayLarge.copyWith(
                 fontSize: 18,
-                fontFamily: 'Open Sans',
                 fontWeight: FontWeight.bold,
                 height: 1,
-                color: Colors.black,
               ),
             ),
             Text(
               email,
-              style: TextStyle(
+              style: textTheme.displaySmall.copyWith(
                 fontSize: 10,
-                fontFamily: 'Roboto',
                 height: 1.2,
                 color: Colors.black,
+                shadows: [],
               ),
             ),
-            Divider(
-              color: Color.fromARGB(255, 112, 112, 112),
-              thickness: 1,
-            ),
+            divider,
             Expanded(
               child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
@@ -171,11 +138,10 @@ class _AccountScreenState extends State<AccountScreen> {
                     children: [
                       Text(
                         'Account Details',
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                           fontSize: 12,
-                          fontFamily: 'Roboto Regular',
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 136, 145),
+                          color: colorScheme.background,
                           height: 1,
                           shadows: [
                             Shadow(
@@ -186,21 +152,18 @@ class _AccountScreenState extends State<AccountScreen> {
                           ],
                         ),
                       ),
-                      _detailRow('XP Earned', xp),
-                      _detailRow('Completed', progress, sub: ' %'),
-                      _detailRow('Accuracy', accuracy, sub: ' %'),
-                      _detailRow('Probability', probability, sub: '/5'),
-                      _detailRow('Best Rank', bestRank),
-                      _detailRow('Current Rank', currentRank),
+                      _detailRow(context, 'XP Earned', xp),
+                      _detailRow(context, 'Completed', progress, sub: ' %'),
+                      _detailRow(context, 'Accuracy', accuracy, sub: ' %'),
+                      _detailRow(context, 'Probability', probability, sub: '/5'),
+                      _detailRow(context, 'Best Rank', bestRank),
+                      _detailRow(context, 'Current Rank', currentRank),
                     ],
                   );
                 },
               ),
             ),
-            Divider(
-              color: Color.fromARGB(255, 112, 112, 112),
-              thickness: 1,
-            ),
+            divider,
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
@@ -208,8 +171,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    _bottomButtons(Icons.settings, 'Edit Profile', _editProfileFunction),
-                    _bottomButtons(Icons.logout, 'Logout', _logoutFunction),
+                    _bottomButtons(context, Icons.settings, 'Edit Profile'),
+                    _bottomButtons(context, Icons.logout, 'Logout'),
                   ],
                 ),
               ),
@@ -220,32 +183,39 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _bottomButtons(IconData icon, String name, Function function) {
+  Widget _bottomButtons(BuildContext context, IconData icon, String name) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return SizedBox(
       width: 150,
       child: ElevatedButton.icon(
-        onPressed: function,
+        onPressed: () {
+          if (name == 'Logout') {
+            _logoutFunction(context);
+          } else {
+            _editProfileFunction(context);
+          }
+        },
         icon: Icon(
           icon,
-          color: Colors.white,
+          color: colorScheme.primary,
         ),
         label: Text(
           name,
-          style: TextStyle(
-            fontFamily: 'AgencyFB',
+          style: textTheme.bodySmall.copyWith(
             fontSize: 20,
-            color: Colors.white,
+            color: colorScheme.primary,
           ),
         ),
         style: ElevatedButton.styleFrom(
           shape: StadiumBorder(),
-          backgroundColor: Color.fromARGB(255, 0, 136, 145),
+          backgroundColor: colorScheme.background,
         ),
       ),
     );
   }
 
-  void _editProfileFunction() {
+  void _editProfileFunction(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
@@ -255,8 +225,10 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  void _logoutFunction() async {
-    if (_hasConnection ?? false) {
+  void _logoutFunction(BuildContext context) async {
+    bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
+        InternetConnectionStatus.connected;
+    if (hasConnection) {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser.providerData[0].providerId == 'google.com') {
         final googleSignIn = GoogleSignIn();
@@ -277,19 +249,16 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  Widget _detailRow(String rowTopic, var value, {String sub}) {
-    final TextStyle style = TextStyle(
-      fontSize: 19,
-      fontFamily: 'Sylfaen',
-      color: Colors.black,
-      height: 1.5,
-    );
+  Widget _detailRow(BuildContext context, String rowTopic, var value, {String sub}) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).primaryTextTheme;
+    final TextStyle style = textTheme.headlineSmall.copyWith(height: 1.5);
     return Container(
       margin: EdgeInsets.only(top: 7),
       padding: EdgeInsets.only(left: 9, right: 9),
       height: 25,
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 238, 238, 238),
+        color: colorScheme.onTertiary.withOpacity(0.6),
         borderRadius: BorderRadius.circular(3),
       ),
       child: Row(
@@ -300,7 +269,7 @@ class _AccountScreenState extends State<AccountScreen> {
             style: TextStyle(
               fontSize: 24,
               fontFamily: 'Microsoft',
-              color: Colors.black,
+              color: colorScheme.onPrimary,
               height: 1.1,
             ),
           ),

@@ -6,9 +6,10 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -39,11 +40,14 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 183, 183, 183),
+      backgroundColor: colorScheme.onSurface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(top: 50),
+          physics: BouncingScrollPhysics(),
           child: Stack(
             children: [
               Align(
@@ -55,7 +59,8 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                   height: 450,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: Colors.white,
+                    color: colorScheme.primary,
+                    border: Border.all(color: colorScheme.onPrimary, width: 0.5),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -74,7 +79,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () {
-                            DocumentReference userData =
+                            final DocumentReference userData =
                                 FirebaseFirestore.instance.collection('Users').doc(user.uid);
                             final isValid = editFormKey.currentState.validate();
                             if (isValid) {
@@ -85,24 +90,18 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                                 'User_Details.phoneNumber': _phoneNumber,
                                 'User_Details.dateOfBirth': _dateOfBirth,
                               });
-                              Fluttertoast.showToast(
-                                msg: 'Your data has been saved.',
-                                fontSize: 16,
-                              );
+                              toast('Your data has been saved.');
                             }
                           },
                           child: Text(
                             'Save',
-                            style: TextStyle(
-                              fontFamily: 'AgencyFB',
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            style: textTheme.bodySmall.copyWith(
+                              color: colorScheme.primary,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
                             shape: StadiumBorder(),
-                            backgroundColor: Color.fromARGB(255, 0, 136, 145),
+                            backgroundColor: colorScheme.background,
                           ),
                         ),
                       )
@@ -119,21 +118,23 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                     Stack(
                       alignment: AlignmentDirectional.bottomEnd,
                       children: [
-                        ProfilePicture(user.uid),
+                        ProfilePicture(),
                         Container(
                           width: 40,
                           height: 40,
                           margin: EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 0, 136, 145),
+                            color: colorScheme.background,
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             padding: EdgeInsets.all(0),
                             splashRadius: 35,
-                            onPressed: uploadProfilePicture,
+                            onPressed: () async {
+                              _bottomSheet(context);
+                            },
                             icon: Icon(Icons.camera_alt_rounded),
-                            color: Colors.white,
+                            color: colorScheme.primary,
                           ),
                         ),
                       ],
@@ -148,37 +149,28 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                           if (!snapshot.hasData) {
                             return SizedBox.shrink();
                           }
-                          final progress =
+                          double progress =
                               snapshot.data.bytesTransferred / snapshot.data.totalBytes;
                           if (progress < 1) {
                             return Column(
                               children: [
                                 Text(
                                   'Uploading...',
-                                  style: TextStyle(
-                                    fontFamily: 'Open Sans',
+                                  style: textTheme.displayLarge.copyWith(
                                     fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    shadows: [],
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '${progress.toStringAsFixed(2)} %',
-                                  style: TextStyle(
-                                    fontFamily: 'Open Sans',
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    shadows: [],
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                  '${(progress * 100).toStringAsFixed(2)} %',
+                                  style: textTheme.displayLarge.copyWith(fontSize: 16.0),
                                 ),
                                 Container(
                                   width: 150,
                                   child: LinearPercentIndicator(
                                     percent: progress,
                                     lineHeight: 10.0,
-                                    progressColor: Colors.grey.shade500,
+                                    progressColor: colorScheme.background,
                                     barRadius: Radius.circular(5.0),
                                   ),
                                 ),
@@ -199,14 +191,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   }
 
   Widget _formRows() {
-    final TextStyle style = TextStyle(
-      fontSize: 18,
-      fontFamily: 'Open Sans',
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextStyle style = textTheme.displayLarge.copyWith(
+      fontSize: 17,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
-      letterSpacing: 0.0,
-      wordSpacing: 1.0,
-      shadows: [],
     );
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
@@ -214,7 +203,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         if (!snapshot.hasData) {
           return Center(
             child: LoadingAnimationWidget.threeArchedCircle(
-              color: Colors.black,
+              color: colorScheme.onPrimary,
               size: 100.0,
             ),
           );
@@ -241,7 +230,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _formRowIcon(Icons.person),
+                _formRowIcon(context, Icons.person),
                 Expanded(
                   child: TextFormField(
                     textInputAction: TextInputAction.next,
@@ -260,8 +249,8 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                     },
                     keyboardType: TextInputType.name,
                     style: style,
-                    cursorColor: Colors.black,
-                    decoration: _decoration('Name'),
+                    cursorColor: colorScheme.onPrimary,
+                    decoration: _decoration(context, 'Name'),
                   ),
                 ),
               ],
@@ -269,7 +258,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _formRowIcon(Icons.phone),
+                _formRowIcon(context, Icons.phone),
                 Expanded(
                   child: TextFormField(
                     textInputAction: TextInputAction.next,
@@ -277,17 +266,27 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                     onSaved: (text) {
                       _phoneNumber = text.trim();
                     },
+                    validator: (text) {
+                      final String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+                      RegExp regExp = RegExp(pattern);
+                      if (text.length == 0) {
+                        return 'Please enter mobile number';
+                      } else if (!regExp.hasMatch(text)) {
+                        return 'Enter valid mobile number';
+                      }
+                      return null;
+                    },
                     keyboardType: TextInputType.phone,
                     style: style,
-                    cursorColor: Colors.black,
-                    decoration: _decoration('Phone Number'),
+                    cursorColor: colorScheme.onPrimary,
+                    decoration: _decoration(context, 'Phone Number'),
                   ),
                 ),
               ],
             ),
             Row(
               children: [
-                _formRowIcon(Icons.calendar_today_outlined),
+                _formRowIcon(context, Icons.calendar_today_outlined),
                 Expanded(
                   child: DateTimePicker(
                     type: DateTimePickerType.date,
@@ -301,8 +300,8 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                       _dateOfBirth = dob;
                     },
                     style: style,
-                    cursorColor: Colors.black,
-                    decoration: _decoration('Date of Birth'),
+                    cursorColor: colorScheme.onPrimary,
+                    decoration: _decoration(context, 'Date of Birth'),
                   ),
                 ),
               ],
@@ -313,27 +312,28 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     );
   }
 
-  InputDecoration _decoration(String title) {
+  InputDecoration _decoration(BuildContext context, String title) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return InputDecoration(
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Colors.black,
+          color: colorScheme.onPrimary,
         ),
       ),
       errorBorder: UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Color.fromARGB(255, 255, 51, 51),
+          color: colorScheme.error,
         ),
       ),
-      errorStyle: TextStyle(
-        color: Colors.red.shade600,
+      errorStyle: textTheme.bodyLarge.copyWith(
+        color: colorScheme.error,
         fontSize: 15,
-        fontFamily: 'Philosopher',
         shadows: [
           Shadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 2,
-            offset: Offset(1, 1),
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 1,
+            offset: Offset(0.5, 0.5),
           ),
         ],
       ),
@@ -343,48 +343,96 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
       ),
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Color.fromARGB(255, 112, 112, 112),
+          color: colorScheme.tertiary,
           width: 0.5,
         ),
       ),
       labelText: title,
-      labelStyle: TextStyle(
+      labelStyle: textTheme.displaySmall.copyWith(
         fontSize: 23,
-        color: Colors.black,
-        fontFamily: 'Roboto',
-        letterSpacing: 0.0,
-        wordSpacing: 1.0,
+        color: colorScheme.onPrimary,
+        fontWeight: FontWeight.bold,
         shadows: [],
       ),
     );
   }
 
-  Widget _formRowIcon(IconData icon) {
+  Widget _formRowIcon(BuildContext context, IconData icon) {
     return Padding(
       padding: const EdgeInsets.only(right: 10.0),
       child: Icon(
         icon,
         size: 35,
-        color: Color.fromARGB(255, 0, 136, 145),
+        color: Theme.of(context).colorScheme.background,
       ),
     );
   }
 
-  Future<void> uploadProfilePicture() async {
+  Future<void> _bottomSheet(BuildContext context) async {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return await showModalBottomSheet(
+      context: context,
+      backgroundColor: colorScheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _bottomSheetItem(context, Icons.file_upload_outlined, 'Upload Photo'),
+            _bottomSheetItem(context, Icons.delete_outline, 'Remove Photo'),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bottomSheetItem(BuildContext context, IconData icon, String text) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+            color: colorScheme.onPrimary.withOpacity(0.2), shape: BoxShape.circle),
+        child: Icon(icon, color: colorScheme.onPrimary),
+      ),
+      title: Text(
+        text,
+        style: textTheme.displayLarge.copyWith(color: colorScheme.onPrimary),
+      ),
+      onTap: () {
+        if (text == 'Upload Photo') {
+          _uploadProfilePicture(context);
+        } else {
+          final DocumentReference userData =
+          FirebaseFirestore.instance.collection('Users').doc(user.uid);
+          userData.update({
+            'User_Details.photoURL': 'No Image',
+          });
+          toast('Photo Removed.');
+          Navigator.of(context).pop();
+        }
+      },
+    );
+  }
+
+  Future<void> _uploadProfilePicture(BuildContext context) async {
     final _storage = FirebaseStorage.instance;
-    final _picker = ImagePicker();
     await Permission.storage.request();
     var permissionStatus = await Permission.storage.status;
     if (!permissionStatus.isGranted) {
-      return Fluttertoast.showToast(
-        msg: 'Permission denied to select image.',
-      );
+      return toast('Permission denied to select image.');
     }
-    final XFile image = await _picker.pickImage(source: ImageSource.gallery);
+    final CroppedFile image = await _getFromGallery(context).whenComplete(() {
+      Navigator.of(context).pop();
+    });
     if (image == null) {
-      return Fluttertoast.showToast(
-        msg: 'No image found to upload.',
-      );
+      return toast('No image found to upload.');
     }
     var file = File(image.path);
     try {
@@ -392,9 +440,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         task = _storage.ref().child('User_Data/${user.uid}/Profile_Picture').putFile(file);
       });
     } on FirebaseException catch (error) {
-      Fluttertoast.showToast(
-        msg: error.toString(),
-      );
+      toast(error.toString());
     }
     final snapshot = await task.whenComplete(() {});
     final String _imageURL = await snapshot.ref.getDownloadURL();
@@ -403,5 +449,39 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     userData.update({
       'User_Details.photoURL': _imageURL,
     });
+  }
+
+  Future<CroppedFile> _getFromGallery(BuildContext context) async {
+    XFile pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    return await _cropImage(context, pickedFile.path);
+  }
+
+  Future<CroppedFile> _cropImage(BuildContext context, String filePath) async {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    CroppedFile croppedImage = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      compressQuality: 70,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Select Photo',
+          toolbarColor: colorScheme.background,
+          toolbarWidgetColor: colorScheme.primary,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+        ),
+      ],
+    );
+    if (croppedImage != null) {
+      return croppedImage;
+    }
+    return null;
   }
 }

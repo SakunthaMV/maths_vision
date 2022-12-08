@@ -1,18 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePicture extends StatelessWidget {
-  final String userId;
-  const ProfilePicture(this.userId, {Key key}) : super(key: key);
-
+  const ProfilePicture({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: 140,
       height: 140,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.primary,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
@@ -22,7 +22,7 @@ class ProfilePicture extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: Colors.white,
+          color: colorScheme.primary,
           width: 5.0,
         ),
       ),
@@ -30,7 +30,7 @@ class ProfilePicture extends StatelessWidget {
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Users')
-              .doc(userId)
+              .doc(FirebaseAuth.instance.currentUser.uid)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -39,20 +39,24 @@ class ProfilePicture extends StatelessWidget {
                 strokeWidth: 7,
               );
             }
+            Icon errorIcon = Icon(
+              Icons.account_circle_rounded,
+              size: 130,
+              color: colorScheme.onTertiaryContainer.withOpacity(0.7),
+            );
+            if(snapshot.data['User_Details.photoURL']=='No Image'){
+              return errorIcon;
+            }
             return CachedNetworkImage(
               imageUrl: snapshot.data['User_Details.photoURL'],
-              placeholder: (_, url) {
+              progressIndicatorBuilder: (context, url, progress) {
                 return CircularProgressIndicator(
                   color: Colors.black.withOpacity(0.7),
                   strokeWidth: 7,
                 );
               },
               errorWidget: (context, url, error) {
-                return Icon(
-                  Icons.account_circle_rounded,
-                  size: 130,
-                  color: Color.fromARGB(255, 202, 202, 202),
-                );
+                return errorIcon;
               },
               fit: BoxFit.cover,
             );
