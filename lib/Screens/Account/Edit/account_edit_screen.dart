@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Widgets/toast.dart';
@@ -30,7 +30,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
 
   String _name;
   String _phoneNumber;
-  String _dateOfBirth;
+  DateTime _dateOfBirth;
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                                 'User_Details.firstName': _name.split(' ').first,
                                 'User_Details.lastName': _name.split(' ').last,
                                 'User_Details.phoneNumber': _phoneNumber,
-                                'User_Details.dateOfBirth': _dateOfBirth,
+                                'User_Details.dateOfBirth': _dateOfBirth.toString(),
                               });
                               toast('Your data has been saved.');
                             }
@@ -208,6 +208,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
       fontSize: 17,
       fontWeight: FontWeight.bold,
     );
+
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
       builder: (context, snapshot) {
@@ -225,6 +226,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         int year;
         int month;
         int day;
+        DateTime date;
         if (snapshot.data['User_Details.dateOfBirth'] != null) {
           final String birth = snapshot.data['User_Details.dateOfBirth'];
           year = DateTime.parse(birth).year;
@@ -235,6 +237,13 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
           month = DateTime.now().month;
           day = DateTime.now().day;
         }
+        if (_dateOfBirth == null) {
+          date = DateTime(year, month, day);
+        } else {
+          date = _dateOfBirth;
+        }
+        final String dateString = DateFormat('dd-MMM-yyyy').format(date);
+        final TextEditingController controller = TextEditingController(text: dateString);
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -299,17 +308,12 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
               children: [
                 _formRowIcon(context, Icons.calendar_today_outlined),
                 Expanded(
-                  child: DateTimePicker(
-                    type: DateTimePickerType.date,
-                    dateMask: 'dd-MMM-yyyy',
-                    initialValue: DateTime(year, month, day).toString(),
-                    firstDate: DateTime(1960),
-                    lastDate: DateTime.now(),
-                    calendarTitle: 'Date of Birth',
-                    confirmText: 'Done',
-                    onChanged: (dob) {
-                      _dateOfBirth = dob;
+                  child: TextFormField(
+                    controller: controller,
+                    onTap: () {
+                      _datePicker(context, controller);
                     },
+                    readOnly: true,
                     style: style,
                     cursorColor: colorScheme.onPrimary,
                     decoration: _decoration(context, 'Date of Birth'),
@@ -321,6 +325,42 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         );
       },
     );
+  }
+
+  void _datePicker(BuildContext context, TextEditingController controller) async {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    DateTime pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime.now(),
+      confirmText: 'Done',
+      cancelText: 'Cancel',
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: colorScheme.background,
+              onPrimary: colorScheme.primary,
+              onSurface: colorScheme.onPrimary,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: colorScheme.onPrimary,
+                textStyle: textTheme.bodySmall,
+              ),
+            ),
+          ),
+          child: child,
+        );
+      },
+    );
+    if (pickedDate != null) {
+      String formatted = DateFormat('dd-MMM-yyyy').format(pickedDate);
+      controller.text = formatted;
+      _dateOfBirth = pickedDate;
+    }
   }
 
   InputDecoration _decoration(BuildContext context, String title) {
