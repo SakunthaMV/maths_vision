@@ -239,7 +239,7 @@ class AccountScreen extends StatelessWidget {
       auth.signOut();
       final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
       sharedPreferences.remove('userId');
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) {
             return LogOutSplashScreen();
