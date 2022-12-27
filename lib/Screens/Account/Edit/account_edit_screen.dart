@@ -10,10 +10,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Utilities/check_internet.dart';
+import 'package:maths_vision/Utilities/validation_patterns.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../Widgets/date_picker.dart';
 import '../Common_Widgets/profile_picture.dart';
 
 class AccountEditScreen extends StatefulWidget {
@@ -287,11 +289,9 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                       _phoneNumber = text.trim();
                     },
                     validator: (text) {
-                      final String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-                      RegExp regExp = RegExp(pattern);
                       if (text.length == 0) {
                         return 'Please enter mobile number';
-                      } else if (!regExp.hasMatch(text)) {
+                      } else if (!phoneValidity(text)) {
                         return 'Enter valid mobile number';
                       }
                       return null;
@@ -310,8 +310,8 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: controller,
-                    onTap: () {
-                      _datePicker(context, controller);
+                    onTap: () async {
+                      _dateOfBirth = await datePicker(context, controller);
                     },
                     readOnly: true,
                     style: style,
@@ -325,42 +325,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
         );
       },
     );
-  }
-
-  void _datePicker(BuildContext context, TextEditingController controller) async {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    DateTime pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1960),
-      lastDate: DateTime.now(),
-      confirmText: 'Done',
-      cancelText: 'Cancel',
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: colorScheme.background,
-              onPrimary: colorScheme.primary,
-              onSurface: colorScheme.onPrimary,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: colorScheme.onPrimary,
-                textStyle: textTheme.bodySmall,
-              ),
-            ),
-          ),
-          child: child,
-        );
-      },
-    );
-    if (pickedDate != null) {
-      String formatted = DateFormat('dd-MMM-yyyy').format(pickedDate);
-      controller.text = formatted;
-      _dateOfBirth = pickedDate;
-    }
   }
 
   InputDecoration _decoration(BuildContext context, String title) {
