@@ -8,6 +8,8 @@ import 'package:maths_vision/Screens/Splashes/open_splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'Models/theme_data.dart';
+import 'Providers/facebook_sign_in_provider.dart';
+import 'Providers/google_sign_in_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,16 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<GoogleSignInProvider>(
+          create: (context) {
+            return GoogleSignInProvider();
+          },
+        ),
+        ChangeNotifierProvider<FacebookSignInProvider>(
+          create: (context) {
+            return FacebookSignInProvider();
+          },
+        ),
         ChangeNotifierProvider<PlayStoreProvider>(create: (context) {
           return PlayStoreProvider();
         }),
@@ -28,7 +40,7 @@ void main() async {
           create: (context) {
             return InternetConnectionChecker().onStatusChange;
           },
-        )
+        ),
       ],
       child: MathsVision(),
     ),
@@ -67,35 +79,7 @@ class MathsVision extends StatelessWidget {
         textTheme: textTheme(),
         primaryTextTheme: primaryTextTheme(),
       ),
-      home: MyApp(),
+      home: OpenSplashScreen(),
     );
-  }
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    var provider = Provider.of<PlayStoreProvider>(context, listen: false);
-    provider.initialize();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    var provider = Provider.of<PlayStoreProvider>(context, listen: false);
-    provider.subscription.cancel();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return OpenSplashScreen();
   }
 }
