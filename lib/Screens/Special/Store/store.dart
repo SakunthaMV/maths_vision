@@ -73,6 +73,15 @@ class _StoreState extends State<Store> {
         _data = doc;
       });
     });
+    var provider = Provider.of<PlayStoreProvider>(context, listen: false);
+    provider.initialize();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    var provider = Provider.of<PlayStoreProvider>(context, listen: false);
+    provider.subscription.cancel();
   }
 
   @override
