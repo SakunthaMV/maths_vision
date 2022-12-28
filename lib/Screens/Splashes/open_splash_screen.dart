@@ -16,7 +16,7 @@ class _OpenSplashScreenState extends State<OpenSplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(milliseconds: 1500), () {
-      return Navigator.of(context).push(
+      return Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) {
             return HomeScreen();
