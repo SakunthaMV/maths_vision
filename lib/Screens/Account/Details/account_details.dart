@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Screens/Account/Edit/account_edit_screen.dart';
 import 'package:maths_vision/Screens/Splashes/log_out_splash_screen.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Common_Widgets/profile_picture.dart';
@@ -226,8 +225,7 @@ class AccountScreen extends StatelessWidget {
   }
 
   void _logoutFunction(BuildContext context) async {
-    bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-        InternetConnectionStatus.connected;
+    final bool hasConnection = oneTimeCheck(context);
     if (hasConnection) {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser.providerData[0].providerId == 'google.com') {
