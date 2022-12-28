@@ -47,12 +47,13 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Image.asset('assets/HomeButton.jpg'),
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacement(
+              Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (_) {
                     return WentHomeSplashScreen();
                   },
                 ),
+                    (route) => false,
               );
             },
             iconSize: 35,
