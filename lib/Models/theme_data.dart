@@ -158,5 +158,16 @@ TextTheme primaryTextTheme() {
       ),
     ),
     headlineSmall: _style('Sylfaen', 19.0, FontWeight.normal, Colors.black),
+    titleLarge: _style(
+      'Cambria',
+      30.0,
+      FontWeight.normal,
+      Colors.black,
+      shadow: Shadow(
+        color: Colors.black.withOpacity(0.5),
+        blurRadius: 1,
+        offset: Offset(1, 1),
+      ),
+    ),
   );
 }
