@@ -16,7 +16,7 @@ class _WentHomeSplashScreenState extends State<WentHomeSplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(milliseconds: 1000), () {
-      return Navigator.of(context).push(
+      return Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) {
             return HomeScreen();
