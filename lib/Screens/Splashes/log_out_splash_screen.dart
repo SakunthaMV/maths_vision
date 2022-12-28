@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maths_vision/Screens/Home/home_screen.dart';
 import 'package:maths_vision/Screens/Splashes/common_widgets.dart';
@@ -12,18 +13,31 @@ class LogOutSplashScreen extends StatefulWidget {
 }
 
 class _LogOutSplashScreenState extends State<LogOutSplashScreen> {
+
+  StreamSubscription _subscription;
+
   @override
-  void initState() {
-    super.initState();
-    Timer(Duration(milliseconds: 1500), () {
-      return Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) {
-            return HomeScreen();
-          },
-        ),
-      );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Future.delayed(Duration(milliseconds: 1500)).whenComplete(() {
+      _subscription = FirebaseAuth.instance.authStateChanges().listen((event) {
+        if(event==null){
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) {
+                return HomeScreen();
+              },
+            ),
+          );
+        }
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.cancel();
   }
 
   @override
