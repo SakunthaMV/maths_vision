@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../Utilities/check_internet.dart';
+import '../toast.dart';
+
 Text userValues(BuildContext context, String value) {
   final ColorScheme colorScheme = Theme.of(context).colorScheme;
   return Text(
@@ -19,16 +22,22 @@ Widget loginDialogActions(BuildContext context, {Widget screen}) {
     width: 100,
     child: ElevatedButton(
       onPressed: () {
-        if (screen != null) {
-          return Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) {
-                return screen;
-              },
-            ),
-          );
+        final bool hasConnection = oneTimeCheck(context);
+        if (screen == null) {
+          Navigator.pop(context, false);
+          return 0;
         }
-        Navigator.pop(context, false);
+        if (!hasConnection) {
+          toast('You don\'t have Internet Connection.');
+          return 0;
+        }
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) {
+              return screen;
+            },
+          ),
+        );
       },
       child: Text(
         screen != null ? 'Log In' : 'Ok',
