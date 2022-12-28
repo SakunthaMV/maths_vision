@@ -16,6 +16,7 @@ import '../../Screens/Special/Leaderboard/leaderboard.dart';
 import '../../Screens/Special/Store/store.dart';
 import '../../Screens/Account/Log_In/log_in_screen.dart';
 import '../../Screens/Splashes/went_home_splash_screen.dart';
+import '../../Utilities/check_internet.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget leading;
@@ -178,9 +179,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 : null,
       ),
       onPressed: () {
-        bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-            InternetConnectionStatus.connected;
-        User user = FirebaseAuth.instance.currentUser;
+        final bool hasConnection = oneTimeCheck(context);
+        final User user = FirebaseAuth.instance.currentUser;
         if (page == currentPage) {
           return null;
         }
