@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +17,7 @@ import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+import '../../Widgets/Dialogs/will_pop_dialog.dart';
 import '../Basic/Main_List/main_screens.dart';
 import '../Events/Event_Home/event_front_screen.dart';
 import '../Events/Events_Details/event_home_screen.dart';
@@ -63,30 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return HomeBackground(
       body: WillPopScope(
-        onWillPop: () => showDialog<bool>(
-          context: context,
-          builder: (c) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-              content: Text(
-                'Are you sure you want to quit Maths Vision?',
-                style: textTheme.displayMedium.copyWith(
-                  height: 1.5,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              actions: [
-                quitDialogActions(context, 'Yes, Quit Now'),
-                quitDialogActions(context, 'No'),
-              ],
-            ),
-          ),
-        ),
+        onWillPop: () async {
+          return await willPopDialog(
+            context,
+            'Are you sure you want to quit Maths Vision?',
+            actions: [
+              quitDialogActions(context, 'Yes, Quit Now'),
+              quitDialogActions(context, 'No'),
+            ],
+          ).whenComplete(() {
+            print(user);
+          });
+        },
         child: Scaffold(
           appBar: HomeAppBar(
             leading: Builder(
