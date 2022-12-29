@@ -1,15 +1,20 @@
-import 'dart:ui';
+import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:maths_vision/Screens/Account/Common_Widgets/widgets.dart';
 import 'package:maths_vision/Screens/Account/Sign_Up/email_verification.dart';
 import 'package:maths_vision/Providers/facebook_sign_in_provider.dart';
 import 'package:maths_vision/Screens/Account/Log_In/forgot_password.dart';
 import 'package:maths_vision/Screens/Splashes/log_in_splash_screen.dart';
+import 'package:maths_vision/Utilities/validators.dart';
+import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
+import 'package:maths_vision/Widgets/toast.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../Common_Widgets/common_background.dart';
+import '../Common_Widgets/decorations.dart';
+import '../Common_Widgets/other_signin_options.dart';
 import '../Sign_Up/sign_up_screen.dart';
 import '../../../Providers/google_sign_in_provider.dart';
 
@@ -23,66 +28,18 @@ class _LogInScreenState extends State<LogInScreen> {
 
   String _email;
   String _password;
-
-  bool _emailTapped = false;
-  bool _passwordTapped = false;
   bool _passwordInvisible = true;
 
-  double _formContainerHeight = 320.0;
-
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-
-  int _emailAddressCount = 0;
-  int _passwordCount = 0;
-
-  final auth = FirebaseAuth.instance;
-
-  Future<void> sharedPreferenceSaver(userId) async {
-    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString('userId', userId);
-  }
-
-  final CollectionReference users = FirebaseFirestore.instance.collection('Users');
+  StreamSubscription _subscription;
 
   @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<GoogleSignInProvider>(
-          create: (context) {
-            return GoogleSignInProvider();
-          },
-        ),
-        ChangeNotifierProvider<FacebookSignInProvider>(
-          create: (context) {
-            return FacebookSignInProvider();
-          },
-        ),
-      ],
-      child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 0, 136, 145),
-        body: StreamBuilder<User>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            final googleProvider = Provider.of<GoogleSignInProvider>(context);
-            final facebookProvider = Provider.of<FacebookSignInProvider>(context);
-            final user = FirebaseAuth.instance.currentUser;
-            if (googleProvider.isSigningIn || facebookProvider.isSigningIn) {
-              print(facebookProvider.isSigningIn);
-              return Center(
-                child: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 7,
-                  ),
-                ),
-              );
-            } else if (snapshot.hasData) {
-              print(facebookProvider.isSigningIn);
-              sharedPreferenceSaver(user.uid);
+  void initState() {
+    super.initState();
+    _subscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if(user!=null){
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) {
               if (user.providerData[0].providerId == 'google.com' ||
                   user.providerData[0].providerId == 'facebook.com' ||
                   user.emailVerified) {
@@ -90,57 +47,208 @@ class _LogInScreenState extends State<LogInScreen> {
               } else {
                 return EmailVerification();
               }
-            } else {
-              // print(facebookProvider.isSigningIn);
-              return Stack(
-                children: [
-                  Opacity(
-                    opacity: 0.1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/Log_In_Background.png'),
-                          fit: BoxFit.fill,
-                        ),
+            },
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return commonScaffold(
+      context,
+      child: Builder(
+        builder: (context) {
+          final googleProvider = Provider.of<GoogleSignInProvider>(context);
+          final facebookProvider = Provider.of<FacebookSignInProvider>(context);
+          User user = FirebaseAuth.instance.currentUser;
+          if (googleProvider.isSigningIn || facebookProvider.isSigningIn || user!=null) {
+            return EventLoading();
+          }
+          return SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 25, bottom: 25),
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 15,
+                        spreadRadius: 1,
                       ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset('assets/HomeButton.jpg', width: 160),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 2),
+                  child: Text(
+                    'Welcome To',
+                    style: textTheme.displaySmall.copyWith(
+                      fontSize: 20,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 1,
+                          offset: Offset(1, 1),
+                        ),
+                      ],
                     ),
                   ),
-                  SingleChildScrollView(
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 45),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 20,
-                                    spreadRadius: 4,
-                                  ),
-                                ],
-                              ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'assets/HomeButton.jpg',
-                                  width: 170,
-                                ),
+                ),
+                Text(
+                  'MATHS VISION',
+                  style: GoogleFonts.roboto(
+                    fontSize: 30,
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.7),
+                        blurRadius: 1,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                ),
+                backgroundContainer(
+                  context,
+                  child: Form(
+                    key: logInFormKey,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Sign In',
+                          style: Theme.of(context).primaryTextTheme.titleLarge,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            onSaved: (text) {
+                              _email = text.trim();
+                            },
+                            validator: (text) {
+                              return emailValidator(text);
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            style: textTheme.displayLarge.copyWith(
+                              fontSize: 17,
+                              color: colorScheme.primary,
+                            ),
+                            cursorColor: colorScheme.onPrimary,
+                            decoration: inputDeco(context, 'Email'),
+                          ),
+                        ),
+                        TextFormField(
+                          obscureText: _passwordInvisible,
+                          onSaved: (text) {
+                            _password = text.trim();
+                          },
+                          validator: (text) {
+                            if (text.isEmpty) {
+                              return 'Enter Your Password';
+                            } else if (text.length < 8) {
+                              return 'Password must have at least 8 characters';
+                            }
+                            return null;
+                          },
+                          style: textTheme.displayLarge.copyWith(
+                            fontSize: 17,
+                            color: colorScheme.primary,
+                          ),
+                          cursorColor: colorScheme.onPrimary,
+                          decoration: inputDeco(context, 'Password').copyWith(
+                            suffixIcon: InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                _passwordInvisible = !_passwordInvisible;
+                                setState(() {});
+                              },
+                              child: Icon(
+                                _passwordInvisible
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: colorScheme.primary,
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            height: 35,
+                            margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) {
+                                      return ForgotPasswordScreen();
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Forgot Password?',
+                                style: textTheme.displayLarge.copyWith(
+                                  fontSize: 11.0,
+                                  letterSpacing: 0.2,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                foregroundColor: colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          width: 120,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final bool isValid = logInFormKey.currentState.validate();
+                              if (isValid) {
+                                logInFormKey.currentState.save();
+                                try {
+                                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                    email: _email,
+                                    password: _password,
+                                  );
+                                } on FirebaseAuthException catch (error) {
+                                  toast(error.message);
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 4,
+                              backgroundColor: colorScheme.primary,
+                              shape: StadiumBorder(),
+                            ),
                             child: Text(
-                              'Welcome To',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Roboto',
-                                color: Colors.white,
+                              'LOG IN',
+                              style: textTheme.displayLarge.copyWith(
+                                color: colorScheme.onSecondary,
+                                fontWeight: FontWeight.bold,
                                 shadows: [
                                   Shadow(
-                                    color: Colors.grey.shade900,
+                                    color: Colors.black.withOpacity(0.3),
                                     blurRadius: 1,
                                     offset: Offset(1, 1),
                                   ),
@@ -148,546 +256,53 @@ class _LogInScreenState extends State<LogInScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 0),
-                            child: Text(
-                              'MATHS VISION',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontFamily: 'Roboto Regular',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.grey.shade900,
-                                    blurRadius: 1,
-                                    offset: Offset(1, 2),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: [
-                              Opacity(
-                                opacity: 0.0,
-                                child: Container(
-                                  width: size.width * 0.8,
-                                  height: _formContainerHeight,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                width: size.width * 0.8,
-                                height: _formContainerHeight,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                                    child: Container(
-                                      color: Colors.black.withOpacity(0.2),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Form(
-                                key: logInFormKey,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Sign In',
-                                      style: TextStyle(
-                                        fontFamily: 'Cambria',
-                                        fontSize: 30,
-                                        shadows: [
-                                          Shadow(
-                                            color: Colors.black.withOpacity(0.5),
-                                            blurRadius: 1,
-                                            offset: Offset(1, 1.5),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: size.width * 0.67,
-                                      padding: EdgeInsets.only(top: 15),
-                                      child: TextFormField(
-                                        textInputAction: TextInputAction.next,
-                                        controller: _emailController,
-                                        onTap: () {
-                                          setState(() {
-                                            _emailTapped = true;
-                                          });
-                                        },
-                                        onFieldSubmitted: (text) {
-                                          setState(() {
-                                            _emailTapped = false;
-                                            FocusScope.of(context).nextFocus();
-                                          });
-                                        },
-                                        onChanged: (text) {
-                                          setState(() {
-                                            _email = text.trim();
-                                          });
-                                        },
-                                        validator: (text) {
-                                          final emailPattern =
-                                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-                                          final regExp = RegExp(emailPattern);
-                                          if (!regExp.hasMatch(text)) {
-                                            if (_emailAddressCount < 1) {
-                                              setState(() {
-                                                _formContainerHeight =
-                                                    _formContainerHeight + 24.0;
-                                                _emailAddressCount += 1;
-                                              });
-                                            }
-                                          } else {
-                                            if (_formContainerHeight != 300.0) {
-                                              if (_emailAddressCount == 1) {
-                                                setState(() {
-                                                  _formContainerHeight =
-                                                      _formContainerHeight - 24.0;
-                                                  _emailAddressCount = 0;
-                                                });
-                                              }
-                                            }
-                                          }
-                                          if (text.isEmpty) {
-                                            return 'Enter Your Email Address';
-                                          } else if (!regExp.hasMatch(text)) {
-                                            return 'Enter a Valid Email Address';
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        keyboardType: TextInputType.emailAddress,
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.white,
-                                        ),
-                                        cursorColor: Color.fromARGB(255, 45, 45, 45),
-                                        decoration: InputDecoration(
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          errorBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color.fromARGB(255, 255, 51, 51),
-                                            ),
-                                          ),
-                                          errorStyle: TextStyle(
-                                            color: Color.fromARGB(255, 234, 234, 234),
-                                            fontSize: 13,
-                                            fontFamily: 'Philosopher',
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(1),
-                                                blurRadius: 4,
-                                                offset: Offset(1.5, 1.5),
-                                              ),
-                                            ],
-                                          ),
-                                          contentPadding: EdgeInsets.only(
-                                            bottom: 0,
-                                            top: 0,
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          labelText: 'Email',
-                                          labelStyle: TextStyle(
-                                            fontSize: 23,
-                                            color: Colors.white,
-                                            fontFamily: 'Roboto Regular',
-                                            letterSpacing: 1,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(1),
-                                                blurRadius: 4,
-                                                offset: Offset(2, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          suffixIcon: _emailTapped
-                                              ? IconButton(
-                                                  color: Color.fromARGB(255, 45, 45, 45),
-                                                  splashRadius: 1,
-                                                  icon: Icon(Icons.close),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _emailController.text = '';
-                                                    });
-                                                  },
-                                                )
-                                              : Icon(
-                                                  Icons.mail_outline,
-                                                  color: Color.fromARGB(255, 45, 45, 45),
-                                                ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: size.width * 0.67,
-                                      padding: EdgeInsets.only(top: 20),
-                                      child: TextFormField(
-                                        obscureText: _passwordInvisible,
-                                        controller: _passwordController,
-                                        onTap: () {
-                                          _passwordTapped = true;
-                                        },
-                                        onFieldSubmitted: (text) {
-                                          setState(() {
-                                            _passwordTapped = false;
-                                          });
-                                        },
-                                        onChanged: (text) {
-                                          setState(() {
-                                            _passwordTapped = true;
-                                            _password = text.trim();
-                                          });
-                                        },
-                                        validator: (text) {
-                                          if (text.length < 8) {
-                                            if (_passwordCount < 1) {
-                                              setState(() {
-                                                _formContainerHeight =
-                                                    _formContainerHeight + 24.0;
-                                                _passwordCount += 1;
-                                              });
-                                            }
-                                          } else {
-                                            if (_formContainerHeight != 300.0) {
-                                              if (_passwordCount == 1) {
-                                                setState(() {
-                                                  _formContainerHeight =
-                                                      _formContainerHeight - 24.0;
-                                                  _passwordCount = 0;
-                                                });
-                                              }
-                                            }
-                                          }
-                                          if (text.isEmpty) {
-                                            return 'Enter Your Password';
-                                          } else if (text.length < 8) {
-                                            return 'Password must have at least 8 characters';
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.white,
-                                        ),
-                                        cursorColor: Color.fromARGB(255, 45, 45, 45),
-                                        decoration: InputDecoration(
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          errorBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color.fromARGB(255, 255, 51, 51),
-                                            ),
-                                          ),
-                                          errorStyle: TextStyle(
-                                            color: Color.fromARGB(255, 234, 234, 234),
-                                            fontSize: 13,
-                                            fontFamily: 'Philosopher',
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(1),
-                                                blurRadius: 4,
-                                                offset: Offset(1.5, 1.5),
-                                              ),
-                                            ],
-                                          ),
-                                          contentPadding: EdgeInsets.only(
-                                            bottom: 0,
-                                            top: 0,
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          labelText: 'Password',
-                                          labelStyle: TextStyle(
-                                            fontSize: 23,
-                                            color: Colors.white,
-                                            fontFamily: 'Roboto Regular',
-                                            letterSpacing: 1,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(1),
-                                                blurRadius: 4,
-                                                offset: Offset(2, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          suffixIcon: _passwordTapped
-                                              ? GestureDetector(
-                                                  child: Icon(
-                                                    Icons.remove_red_eye_outlined,
-                                                    color:
-                                                        Color.fromARGB(255, 45, 45, 45),
-                                                  ),
-                                                  onTapDown: (tapDetails) {
-                                                    setState(() {
-                                                      _passwordInvisible =
-                                                          !_passwordInvisible;
-                                                    });
-                                                  },
-                                                  onTapUp: (tapDetails) {
-                                                    setState(() {
-                                                      _passwordInvisible =
-                                                          !_passwordInvisible;
-                                                    });
-                                                  },
-                                                )
-                                              : Icon(
-                                                  Icons.vpn_key_outlined,
-                                                  color: Color.fromARGB(255, 45, 45, 45),
-                                                ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: size.width * 0.67,
-                                      height: 38,
-                                      alignment: Alignment.centerRight,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (_) {
-                                                return ForgotPasswordScreen();
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        child: Text(
-                                          'Forgot Password?',
-                                          style: TextStyle(
-                                            fontFamily: 'Open Sans',
-                                          ),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 5),
-                                      width: 120,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          final isValid =
-                                              logInFormKey.currentState.validate();
-                                          if (isValid) {
-                                            try {
-                                              await auth.signInWithEmailAndPassword(
-                                                  email: _email, password: _password);
-                                            } on FirebaseAuthException catch (error) {
-                                              Fluttertoast.showToast(
-                                                msg: error.message,
-                                                timeInSecForIosWeb: 3,
-                                                gravity: ToastGravity.TOP,
-                                                fontSize: 17,
-                                                backgroundColor:
-                                                    Color.fromARGB(255, 34, 34, 47),
-                                                textColor: Colors.white,
-                                              );
-                                            }
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 4,
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(25.0),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'LOG IN',
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 90, 90, 90),
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.5),
-                                                blurRadius: 2,
-                                                offset: Offset(1, 1),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: size.width * 0.67,
-                                      margin: EdgeInsets.only(left: 7),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Don't Have an Account?",
-                                            style: TextStyle(
-                                              fontFamily: 'Open Sans',
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 80,
-                                            height: 40,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (_) {
-                                                      return SignUpScreen();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                              child: Text(
-                                                'SIGN UP',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Open Sans',
-                                                  color:
-                                                      Color.fromARGB(255, 231, 231, 222),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                height: 1.5,
-                                width: size.width * 0.3,
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 9, 66, 71),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      offset: Offset(0.2, 0.5),
-                                      blurRadius: 0.25,
-                                      spreadRadius: 0.25,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                'SIGN IN WITH',
-                                style: TextStyle(
-                                  fontFamily: 'Cambria',
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      blurRadius: 5,
-                                      offset: Offset(1, 1),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: 1.5,
-                                width: size.width * 0.3,
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 9, 66, 71),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      offset: Offset(0.2, 0.5),
-                                      blurRadius: 0.25,
-                                      spreadRadius: 0.25,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  final facebookProvider =
-                                      Provider.of<FacebookSignInProvider>(context,
-                                          listen: false);
-                                  facebookProvider.loginFacebook();
-                                },
-                                icon: Image.asset(
-                                  'assets/Facebook_Login_Icon.png',
+                              Text(
+                                "Don't Have an Account?",
+                                style: textTheme.displayLarge.copyWith(
+                                  color: colorScheme.primary,
+                                  fontSize: 15,
                                 ),
-                                iconSize: 55,
-                                splashRadius: 30,
-                                splashColor: Colors.transparent,
                               ),
-                              SizedBox(
-                                width: size.width * 0.04,
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  final provider = Provider.of<GoogleSignInProvider>(
-                                    context,
-                                    listen: false,
-                                  );
-                                  provider.login();
-                                },
-                                icon: Image.asset('assets/Google_Login_Icon.png'),
-                                iconSize: 55,
-                                splashRadius: 30,
-                                splashColor: Colors.transparent,
+                              Container(
+                                height: 35,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) {
+                                          return SignUpScreen();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'SIGN UP',
+                                    style: textTheme.displayLarge.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.onTertiary,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              );
-            }
-          },
-        ),
+                ),
+                OtherSignInOptions(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
