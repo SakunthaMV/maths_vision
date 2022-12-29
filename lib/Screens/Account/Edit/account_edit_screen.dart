@@ -771,9 +771,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> with TickerProvid
           }
           if (user.providerData[0].providerId != 'password') {
             await deleteAccount();
+            return 0;
           } else {
             if(_deletePasswordVisibility){
               await deleteAccount();
+              return 0;
             }
           }
           if (!_deletePasswordVisibility) {
