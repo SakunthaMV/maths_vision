@@ -11,19 +11,21 @@ Future<void> initializeUser(
   String dateOfBirth,
   String gender,
   String email,
-  String phoneNumber,
-) async {
+  String phoneNumber, {
+  String photoURL,
+  String signUpMethod,
+}) async {
   return await users.doc(uid).set({
     'User_Details': {
       'userId': uid,
-      'signUpWith': 'Email and Password',
+      'signUpWith': signUpMethod?? 'Email and Password',
       'firstName': firstName,
       'lastName': lastName,
       'dateOfBirth': dateOfBirth,
       'gender': gender,
       'email': email,
       'phoneNumber': phoneNumber,
-      'photoURL': 'No Image',
+      'photoURL': photoURL?? 'No Image',
       'coins': 50,
       'xp': 0,
       'level': 1,
