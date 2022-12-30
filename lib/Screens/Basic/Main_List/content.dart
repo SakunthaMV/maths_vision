@@ -1,315 +1,143 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Models/subjects_data.dart';
 import 'package:maths_vision/Screens/Basic/Paths/choosable_screen.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Full_Choose/paper_or_markig.dart';
-import 'package:provider/provider.dart';
 
 import '../../../Widgets/event_errors_and_loading.dart';
+import 'common_widgets.dart';
 
-class Content extends StatelessWidget {
-  final String category;
-  const Content(this.category);
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.only(top: 15.0),
-      child: Column(
-        children: (category == 'Pure' ? pureSubjects : appliedSubjects)
-            .map(
-              (val) => Column(
-                children: [
-                  SizedBox(
-                    height: 55,
-                    child: Center(
-                      heightFactor: 100.0,
-                      child: ListTile(
-                        title: Text(
-                          val[0],
-                          style: textTheme.headlineMedium.copyWith(
-                            fontSize: 23.0,
-                            color: colorScheme.onSecondary,
-                            shadows: [
-                              Shadow(
-                                color: Colors.grey.shade600,
-                                blurRadius: 2,
-                                offset: Offset(1, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                        subtitle: Text(
-                          val[2],
-                          style: textTheme.headlineLarge.copyWith(
-                            fontSize: 20.0,
-                            color: colorScheme.tertiary,
-                            letterSpacing: 0.5,
-                            fontWeight: FontWeight.normal,
-                            shadows: [
-                              Shadow(
-                                color: Colors.grey.shade600,
-                                blurRadius: 1,
-                                offset: Offset(0.5, 0.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                        leading: Image.asset(
-                          val[1],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return ChooseScreen(val[2], val[0]);
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Divider(
-                    thickness: 1,
-                    indent: 88,
-                    endIndent: 20,
-                  )
-                ],
-              ),
-            )
-            .toList(),
+Widget lesson(BuildContext context, int index, String screen, {bool main}) {
+  final TextTheme textTheme = Theme.of(context).textTheme;
+  final ColorScheme colorScheme = Theme.of(context).colorScheme;
+  String sinhala;
+  String english;
+  if (screen == 'Pure') {
+    sinhala = pureSubjects[index][0];
+    english = pureSubjects[index][1];
+  } else {
+    sinhala = appliedSubjects[index][0];
+    english = appliedSubjects[index][1];
+  }
+  return ListTile(
+    title: Text(
+      sinhala,
+      style: textTheme.headlineMedium.copyWith(
+        fontSize: main == null ? 23.0 : 20.0,
+        color: main == null ? colorScheme.onSecondary : colorScheme.onPrimary,
+        shadows: main == null
+            ? [Shadow(color: Colors.grey.shade600, blurRadius: 2, offset: Offset(1, 1))]
+            : [],
       ),
-    );
-  }
-}
-
-// Navigation Bar Content
-
-class ContentNavigation extends StatelessWidget {
-  final String category;
-  const ContentNavigation(this.category);
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      children: (category == 'Pure' ? pureSubjects : appliedSubjects)
-          .map(
-            (val) => SizedBox(
-              height: 55,
-              child: ListTile(
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        val[0],
-                        style: textTheme.headlineMedium.copyWith(
-                          fontSize: 20,
-                          color: colorScheme.onPrimary,
-                          shadows: [],
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                    )
-                  ],
-                ),
-                leading: SizedBox(
-                  height: 45,
-                  child: Image.asset(
-                    val[1],
-                    color: colorScheme.onPrimary,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return ChooseScreen(val[2], val[0]);
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-}
-
-// Past Papers and Making Scheme Content
-
-class PastPapersAndMarkingSchemes extends StatelessWidget {
-  const PastPapersAndMarkingSchemes();
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.only(top: 15.0),
-      child: Builder(builder: (context) {
-        final bool hasConnection = Provider.of<InternetConnectionStatus>(context) ==
-            InternetConnectionStatus.connected;
-        if (!hasConnection) {
-          return Center(
-            child: NetworkError(color: colorScheme.onPrimary),
-          );
-        }
-        return StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection('Papers').doc('Papers').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return LoadingBouncingLine.circle(
-                size: 100,
-                borderColor: colorScheme.onPrimary,
-                backgroundColor: Colors.transparent,
-              );
-            }
-            final Map docs = snapshot.data['Full_Papers'];
-            final List sorted = docs.keys.toList()..sort();
-            final List sortedKeys = sorted.reversed.toList();
-            return Column(
-              children: [
-                Column(
-                  children: List.generate(
-                    docs.length,
-                    (index) {
-                      final List year = sortedKeys[index].split(" ");
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 55,
-                            child: ListTile(
-                              title: RichText(
-                                text: TextSpan(
-                                  style: textTheme.headlineSmall.copyWith(
-                                    fontSize: 35,
-                                    color: colorScheme.onSecondary,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: year[0],
-                                    ),
-                                    TextSpan(
-                                      text: year.length > 1 ? ' ${year[1]}' : '',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        wordSpacing: 4,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              leading: _leading(context, '#${year[0][2]}${year[0][3]}', 1.0),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) {
-                                      return PaperOrMarking(
-                                        sortedKeys[index],
-                                        docs[sortedKeys[index]]['Past_Paper']['size'],
-                                        'Full_Papers'
-                                            '/${year[0]}${year.length > 1 ? '_${year[1]}' : ''}'
-                                            '/Past_Paper'
-                                            '/${year[0]}${year.length > 1 ? '_${year[1]}' : ''}'
-                                            '_Past_Paper.pdf',
-                                        docs[sortedKeys[index]]['Marking_Scheme']['size'],
-                                        'Full_Papers'
-                                            '/${year[0]}${year.length > 1 ? '_${year[1]}' : ''}'
-                                            '/Marking_Scheme'
-                                            '/${year[0]}${year.length > 1 ? '_${year[1]}' : ''}'
-                                            '_Marking_Scheme.pdf',
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          Divider(
-                            thickness: 1,
-                            indent: 87,
-                            endIndent: 20,
-                            height: 10,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                Opacity(
-                  opacity: 0.6,
-                  child: ListTile(
-                    title: Text(
-                      'Coming Soon...',
-                      style: textTheme.headlineSmall.copyWith(
-                        fontSize: 20.0,
-                        color: colorScheme.onSecondary,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    leading: _leading(context, '#?', 5.0),
-                  ),
+    ),
+    subtitle: main == null
+        ? Text(
+            english,
+            style: textTheme.headlineLarge.copyWith(
+              fontSize: 20.0,
+              color: colorScheme.tertiary,
+              letterSpacing: 0.5,
+              fontWeight: FontWeight.normal,
+              shadows: [
+                Shadow(
+                  color: Colors.grey.shade600,
+                  blurRadius: 1,
+                  offset: Offset(0.5, 0.5),
                 ),
               ],
-            );
+            ),
+          )
+        : null,
+    leading: Image.asset(
+      "assets/${english.split(' ').join('_')}_Icon.png",
+      width: main == null ? 55.0 : 45.0,
+      color: main == null ? null : colorScheme.onPrimary,
+    ),
+    onTap: () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) {
+            return ChooseScreen(english, sinhala);
           },
-        );
-      }),
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
-  Widget _leading(BuildContext context, String topic, double spacing) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: 60,
-      child: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colorScheme.tertiaryContainer,
-            ),
-          ),
-          Container(
-            width: 49,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colorScheme.primary,
-            ),
-            child: Center(
-              child: FittedBox(
-                child: Text(
-                  topic,
-                  style: GoogleFonts.freehand(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.tertiaryContainer,
-                    letterSpacing: spacing,
+StreamBuilder pastPaperItemList(BuildContext context, ScrollController controller) {
+  final ColorScheme colorScheme = Theme.of(context).colorScheme;
+  final TextTheme textTheme = Theme.of(context).textTheme;
+  final double width = MediaQuery.of(context).size.width;
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('Papers').doc('Papers').snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) {
+        return EventLoading(size: 100, color: colorScheme.onPrimary);
+      }
+      final Map docs = snapshot.data['Full_Papers'];
+      final List sortedMap = docs.keys.toList()..sort();
+      final List order = sortedMap.reversed.toList();
+      return ListView.separated(
+        physics: BouncingScrollPhysics(),
+        controller: controller,
+        padding: const EdgeInsets.symmetric(vertical: 15.0),
+        itemCount: docs.length + 1,
+        itemBuilder: (context, index) {
+          if (index == docs.length) {
+            return Opacity(
+              opacity: 0.6,
+              child: ListTile(
+                title: Text(
+                  'Coming Soon...',
+                  style: textTheme.headlineSmall.copyWith(
+                    fontSize: 20.0,
+                    color: colorScheme.onSecondary,
+                    letterSpacing: 0.2,
                   ),
                 ),
+                leading: leadingPastPaper(context, '#?', 5.0),
+              ),
+            );
+          }
+          final List year = order[index].split(" ");
+          final String pSize = docs[order[index]]['Past_Paper']['size'];
+          final String pPath = 'Full_Papers/${year.join('_')}/Past_Paper'
+              '/${year.join('_')}_Past_Paper.pdf';
+          final String mSize = docs[order[index]]['Marking_Scheme']['size'];
+          final String mPath = 'Full_Papers/${year.join('_')}'
+              '/Marking_Scheme/${year.join('_')}_Marking_Scheme.pdf';
+          return ListTile(
+            title: RichText(
+              text: TextSpan(
+                children: List.generate(year.length, (i) {
+                  return TextSpan(
+                    text: i > 0 ? ' ' + year[i] : year[i],
+                    style: textTheme.headlineSmall.copyWith(
+                      fontSize: i > 0 ? 20.0 : 35.0,
+                      wordSpacing: i > 0 ? 4.0 : 1.0,
+                      color: colorScheme.onSecondary,
+                    ),
+                  );
+                }),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            leading: leadingPastPaper(context, '#${year[0][2]}${year[0][3]}', 1.0),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) {
+                    return PaperOrMarking(order[index], pSize, pPath, mSize, mPath);
+                  },
+                ),
+              );
+            },
+          );
+        },
+        separatorBuilder: (context, index) {
+          return Divider(thickness: 1, indent: width * 0.225, endIndent: width * 0.03);
+        },
+      );
+    },
+  );
 }
