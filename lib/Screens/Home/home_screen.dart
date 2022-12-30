@@ -1,21 +1,19 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Screens/Home/background.dart';
 import 'package:maths_vision/Screens/Home/local_widgets.dart';
 import 'package:maths_vision/Screens/Special/Collection/collection.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
 import 'package:maths_vision/Screens/Account/Log_In/log_in_screen.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Widgets/Main_App_Bar/home_app_bar.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:provider/provider.dart';
 
 import '../../Widgets/Dialogs/will_pop_dialog.dart';
 import '../Basic/Main_List/main_screens.dart';
@@ -30,30 +28,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _hasConnection;
   Color _fabBackgroundColor = Color.fromARGB(255, 1, 79, 134);
   User user;
-
-  Future<void> checkInternet() async {
-    bool status = await InternetConnectionChecker().hasConnection;
-    setState(() {
-      _hasConnection = status;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
-    checkInternet().whenComplete(() {
-      if (_hasConnection) {
-        if (user != null) {
-          FirebaseFirestore.instance.collection('Users').doc(user.uid).get().then((doc) {
-            loginDetails(doc, user);
-          });
-        }
+    if (oneTimeCheck(context)) {
+      if (user != null) {
+        FirebaseFirestore.instance.collection('Users').doc(user.uid).get().then((doc) {
+          loginDetails(doc, user);
+        });
       }
-    });
+    }
   }
 
   @override
@@ -71,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               quitDialogActions(context, 'Yes, Quit Now'),
               quitDialogActions(context, 'No'),
             ],
-          ).whenComplete(() {
-            print(user);
-          });
+          );
         },
         child: Scaffold(
           appBar: HomeAppBar(
@@ -402,7 +388,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _mainScreenButtons(
-      BuildContext context, String sinhalaName, String englishName, String screen) {
+    BuildContext context,
+    String sinhalaName,
+    String englishName,
+    String screen,
+  ) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -515,9 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _fabChildPress(BuildContext context, Widget screen) {
-    _hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-        InternetConnectionStatus.connected;
-    if (_hasConnection) {
+    if (oneTimeCheck(context)) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) {
@@ -531,9 +519,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _eventButtonPress(BuildContext context) {
-    _hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-        InternetConnectionStatus.connected;
-    if (!_hasConnection) {
+    if (!oneTimeCheck(context)) {
       toast('You need internet connection to continue.');
       return;
     }
