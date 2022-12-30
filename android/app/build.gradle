@@ -78,6 +78,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.android.gms:play-services-ads:21.3.0'
-    implementation 'com.facebook.android:facebook-login:15.0.2'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
+    implementation 'com.facebook.android:facebook-login:15.2.0'
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
 }
