@@ -1,8 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:maths_vision/Models/subjects_data.dart';
 import 'package:maths_vision/Screens/Home/home_screen.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import '../../../Widgets/common_background.dart';
+import '../../../Widgets/event_errors_and_loading.dart';
 import 'content.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,15 +14,11 @@ class MainScreen extends StatefulWidget {
   const MainScreen(this.screen);
 
   @override
-  _MainScreenState createState() => _MainScreenState(screen);
+  _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String screen;
-
-  _MainScreenState(this.screen);
-
-  ScrollController controller = ScrollController();
+  final ScrollController _controller = ScrollController();
   bool closeTopContainer = false;
   String _subject;
   String _titleSubject;
@@ -29,17 +28,17 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    controller.addListener(() {
+    _controller.addListener(() {
       setState(() {
-        closeTopContainer = controller.offset > 10;
+        closeTopContainer = _controller.offset > 10;
       });
     });
-    if (screen == 'Pure') {
+    if (widget.screen == 'Pure') {
       setState(() {
         _subject = 'PURE\nMATHS';
         _titleSubject = 'PURE MATHS';
       });
-    } else if (screen == 'Applied') {
+    } else if (widget.screen == 'Applied') {
       setState(() {
         _subject = 'APPLIED\nMATHS';
         _titleSubject = 'APPLIED MATHS';
@@ -110,8 +109,8 @@ class _MainScreenState extends State<MainScreen> {
                       _subject,
                       textAlign: TextAlign.start,
                       style: Theme.of(context).primaryTextTheme.displayMedium.copyWith(
-                        fontSize: _fontSize,
-                      ),
+                            fontSize: _fontSize,
+                          ),
                     ),
                     alignment: Alignment(-0.8, -0.95),
                   ),
@@ -129,24 +128,44 @@ class _MainScreenState extends State<MainScreen> {
                 AnimatedContainer(
                   onEnd: () {
                     setState(() {
-                      controller.dispose();
+                      _controller.dispose();
                     });
                   },
                   duration: Duration(milliseconds: 500),
                   width: width * 0.95,
                   height: closeTopContainer ? height * 0.87 : height * 0.49,
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    controller: controller,
-                    child: Builder(
-                      builder: (context) {
-                        if(screen=='Pure' || screen=='Applied'){
-                          return Content(screen);
-                        }
-                        return PastPapersAndMarkingSchemes();
+                  child: Builder(builder: (context) {
+                    int itemCount;
+                    if (widget.screen == 'Pure') {
+                      itemCount = pureSubjects.length;
+                    } else if (widget.screen == 'Applied') {
+                      itemCount = appliedSubjects.length;
+                    } else {
+                      if (!oneTimeCheck(context)) {
+                        return Center(
+                          child: NetworkError(color: colorScheme.onPrimary),
+                        );
                       }
-                    ),
-                  ),
+                      return pastPaperItemList(context, _controller);
+                    }
+                    return ListView.separated(
+                      physics: BouncingScrollPhysics(),
+                      controller: _controller,
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
+                      itemCount: itemCount,
+                      itemBuilder: (BuildContext context, int index) {
+                        return lesson(context, index, widget.screen);
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          thickness: 1,
+                          height: 1,
+                          indent: width * 0.225,
+                          endIndent: width * 0.03,
+                        );
+                      },
+                    );
+                  }),
                   decoration: BoxDecoration(
                     color: colorScheme.primary,
                     borderRadius: BorderRadius.circular(20),
