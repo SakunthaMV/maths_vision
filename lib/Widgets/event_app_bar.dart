@@ -334,6 +334,7 @@ class _EventAppBarState extends State<EventAppBar> {
                               child: SizedBox(
                                 width: 43,
                                 height: 43,
+                                // Todo: correct the no image error.
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
                                   imageUrl: imgURL,
