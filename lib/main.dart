@@ -14,6 +14,7 @@ import 'Providers/google_sign_in_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // TODO: remove debug things before release app.
   await FlutterDownloader.initialize(debug: true);
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: 'recaptcha-v3-site-key',
