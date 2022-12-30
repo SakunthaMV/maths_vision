@@ -12,6 +12,7 @@ import 'package:maths_vision/Utilities/validators.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Widgets/toast.dart';
 import 'package:provider/provider.dart';
+import '../../../Widgets/maths_vision_logo.dart';
 import '../Common_Widgets/common_background.dart';
 import '../Common_Widgets/decorations.dart';
 import '../Common_Widgets/other_signin_options.dart';
@@ -79,21 +80,7 @@ class _LogInScreenState extends State<LogInScreen> {
             physics: BouncingScrollPhysics(),
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset('assets/HomeButton.jpg', width: 160),
-                  ),
-                ),
+                roundedLogo(context),
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 2),
                   child: Text(
