@@ -3,18 +3,24 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class EventLoading extends StatelessWidget {
   final Color color;
-  const EventLoading({Key key, this.color}) : super(key: key);
+  final double size;
+
+  const EventLoading({Key key, this.color, this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LoadingAnimationWidget.threeArchedCircle(color: color?? Colors.white, size: 120),
+      child: LoadingAnimationWidget.threeArchedCircle(
+        color: color ?? Colors.white,
+        size: size ?? 120,
+      ),
     );
   }
 }
 
 class NetworkError extends StatelessWidget {
   final Color color;
+
   const NetworkError({this.color});
 
   @override
@@ -25,7 +31,7 @@ class NetworkError extends StatelessWidget {
       width: 200,
       height: 250,
       decoration: BoxDecoration(
-        border: Border.all(color: color?? colorScheme.primary, width: 4),
+        border: Border.all(color: color ?? colorScheme.primary, width: 4),
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
@@ -36,13 +42,13 @@ class NetworkError extends StatelessWidget {
           Image.asset(
             'assets/Network_Error_Icon.png',
             width: 150,
-            color: color?? colorScheme.primary,
+            color: color ?? colorScheme.primary,
           ),
           Text(
             'Please check\nyour internet\nconnection ',
             textAlign: TextAlign.center,
             style: textTheme.titleMedium.copyWith(
-              color: color?? colorScheme.primary,
+              color: color ?? colorScheme.primary,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
               shadows: [
@@ -92,4 +98,3 @@ class UnknownError extends StatelessWidget {
     );
   }
 }
-
