@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 
 import '../../../Models/event_data.dart';
 import '../../Special/Store/store.dart';
@@ -88,6 +89,7 @@ class _VideoButtonState extends State<VideoButton> {
                   return null;
                 }
                 if (videoPurchased) {
+                  AdManager.showInterstitial('Lesson_Video_Interstitial');
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) {

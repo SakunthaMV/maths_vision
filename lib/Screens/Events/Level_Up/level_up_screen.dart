@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -289,6 +290,7 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
                   opacity: _buttonOpacity,
                   child: ElevatedButton(
                     onPressed: () {
+                      AdManager.showInterstitial('Level_Up_Interstitial');
                       Navigator.pop(context, false);
                     },
                     child: Text(
