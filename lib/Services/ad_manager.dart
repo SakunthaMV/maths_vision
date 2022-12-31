@@ -1,36 +1,50 @@
-import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:stack_appodeal_flutter/stack_appodeal_flutter.dart';
 
 class AdManager {
 
-  static String get appId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-2445637094519371~9400624945";
+  static Future<bool> canShowBanner() async {
+    final bool isCanShow = await Appodeal.canShow(Appodeal.BANNER);
+    final bool isLoaded = await Appodeal.isLoaded(Appodeal.BANNER);
+    if (isLoaded && isCanShow) {
+      return true;
     } else {
-      throw new UnsupportedError("Unsupported platform");
+      return false;
     }
   }
 
-  static String get bannerAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-2445637094519371/1088087280";
+  static Future<void> showInterstitial(String placement) async {
+    final bool isCanShow = await Appodeal.canShow(Appodeal.INTERSTITIAL);
+    final bool isLoaded = await Appodeal.isLoaded(Appodeal.INTERSTITIAL);
+    if (isLoaded && isCanShow) {
+      await Appodeal.show(Appodeal.INTERSTITIAL, placement);
     } else {
-      throw new UnsupportedError("Unsupported platform");
+      print('Interstitial ad unable to load');
     }
   }
 
-  static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-2445637094519371/4015834653";
+  static Future<void> showReward(String placement) async {
+    final bool isCanShow = await Appodeal.canShow(Appodeal.REWARDED_VIDEO);
+    final bool isLoaded = await Appodeal.isLoaded(Appodeal.REWARDED_VIDEO);
+    if (isLoaded && isCanShow) {
+      await Appodeal.show(Appodeal.REWARDED_VIDEO, placement);
     } else {
-      throw new UnsupportedError("Unsupported platform");
+      print('Reward ad unable to load');
     }
   }
 
-  static String get rewardedAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-2445637094519371/2983908298";
-    } else {
-      throw new UnsupportedError("Unsupported platform");
-    }
+  static Widget showBottomBanner(String placement) {
+    return FutureBuilder<bool>(
+      future: canShowBanner(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SizedBox.shrink();
+        }
+        return Container(
+          margin: const EdgeInsets.only(top: 10.0),
+          child: AppodealBanner(adSize: AppodealBannerSize.BANNER, placement: placement),
+        );
+      },
+    );
   }
 }
