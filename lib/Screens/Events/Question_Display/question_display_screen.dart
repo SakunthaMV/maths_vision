@@ -15,6 +15,7 @@ import 'package:maths_vision/Screens/Events/Answer_Display/answer_display_screen
 import 'package:maths_vision/Screens/Events/Level_Up/level_up_screen.dart';
 import 'package:maths_vision/Models/questions_data.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 import 'package:maths_vision/Widgets/event_app_bar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shape_of_view/shape_of_view.dart';
@@ -78,76 +79,81 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: EventAppBar(),
       backgroundColor: Color.fromARGB(255, 1, 79, 134),
-      body: Container(
-        width: width * 0.95,
-        height: height,
-        margin: EdgeInsets.all(width * 0.025),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Builder(builder: (context) {
-          if(_hasConnection==null){
-            return SizedBox.shrink();
-          }
-          if (!_hasConnection) {
-            return Center(child: NetworkError(color: Colors.black));
-          }
-          return StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
-              builder: (context, userSnapshot) {
-                if (userSnapshot.hasData) {
-                  int sumOfN = 0;
-                  int xp = userSnapshot.data['User_Details.xp'];
-                  for (int i = 1; i < 150; i += 1) {
-                    _currentLevel = i;
-                    sumOfN += i;
-                    int levelNValue = sumOfN * 10;
-                    if (levelNValue > xp) {
-                      break;
-                    }
-                  }
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              width: width * 0.95,
+              margin: EdgeInsets.all(width * 0.025),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Builder(builder: (context) {
+                if(_hasConnection==null){
+                  return SizedBox.shrink();
+                }
+                if (!_hasConnection) {
+                  return Center(child: NetworkError(color: Colors.black));
                 }
                 return StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Users')
-                        .doc(user.uid)
-                        .collection('Trigonometry_Event')
-                        .doc('Stages')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: LoadingAnimationWidget.threeArchedCircle(
-                            color: Colors.black,
-                            size: 100.0,
-                          ),
-                        );
-                      }
-                      String dataPath =
-                          'Stage_${widget.stage}.Questions_Details.Question_${widget.question}';
-                      Map<String, dynamic> questionData = snapshot.data[dataPath];
-                      if (questionData['done']) {
-                        _selectedValue = questionData['selectedValue'];
-                        _answerSelected = true;
-                      } else {
-                        if (!_answerSelected) {
-                          _selectedValue = '';
+                    stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
+                    builder: (context, userSnapshot) {
+                      if (userSnapshot.hasData) {
+                        int sumOfN = 0;
+                        int xp = userSnapshot.data['User_Details.xp'];
+                        for (int i = 1; i < 150; i += 1) {
+                          _currentLevel = i;
+                          sumOfN += i;
+                          int levelNValue = sumOfN * 10;
+                          if (levelNValue > xp) {
+                            break;
+                          }
                         }
                       }
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
-                          child: _questionBody(context, questionData),
-                        ),
-                      );
+                      return StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(user.uid)
+                              .collection('Trigonometry_Event')
+                              .doc('Stages')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: LoadingAnimationWidget.threeArchedCircle(
+                                  color: Colors.black,
+                                  size: 100.0,
+                                ),
+                              );
+                            }
+                            String dataPath =
+                                'Stage_${widget.stage}.Questions_Details.Question_${widget.question}';
+                            Map<String, dynamic> questionData = snapshot.data[dataPath];
+                            if (questionData['done']) {
+                              _selectedValue = questionData['selectedValue'];
+                              _answerSelected = true;
+                            } else {
+                              if (!_answerSelected) {
+                                _selectedValue = '';
+                              }
+                            }
+                            return SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
+                                child: _questionBody(context, questionData),
+                              ),
+                            );
+                          });
                     });
-              });
-        }),
+              }),
+            ),
+          ),
+          AdManager.showBottomBanner('Event_Question_Banner'),
+        ],
       ),
     );
   }
@@ -407,6 +413,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
               InkWell(
                 onTap: () {
                   if (answerBought) {
+                    AdManager.showReward('Answer_Display_Video');
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) {
@@ -1129,6 +1136,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontFamily: 'Microsoft',
+                                  color: Colors.black,
                                   height: 1,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.normal,
@@ -1561,6 +1569,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
       eventsInfo.doc('All_Events').update({
         'AllAnswersBought': FieldValue.increment(1),
       });
+      AdManager.showReward('Answer_Display_Video');
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) {
