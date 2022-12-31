@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:maths_vision/Widgets/toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Providers/facebook_sign_in_provider.dart';
 import '../../../Providers/google_sign_in_provider.dart';
+import '../../../Utilities/check_internet.dart';
 
 class OtherSignInOptions extends StatelessWidget {
   const OtherSignInOptions({Key key}) : super(key: key);
@@ -52,6 +54,10 @@ class OtherSignInOptions extends StatelessWidget {
   IconButton _button(BuildContext context, String type) {
     return IconButton(
       onPressed: () {
+        if(!oneTimeCheck(context)){
+          toast('You Don\'t have Internet connection. Please connect to the Internet.');
+          return;
+        }
         if (type == 'Facebook') {
           Provider.of<FacebookSignInProvider>(context, listen: false).login();
         } else {
