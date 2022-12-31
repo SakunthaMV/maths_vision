@@ -9,6 +9,7 @@ import 'package:maths_vision/Screens/Account/Common_Widgets/widgets.dart';
 import 'package:maths_vision/Screens/Account/Log_In/log_in_screen.dart';
 import 'package:maths_vision/Screens/Splashes/log_in_splash_screen.dart';
 import 'package:maths_vision/Services/firestore_userdata.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Utilities/validators.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Widgets/toast.dart';
@@ -169,6 +170,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               final isValid = signUpFormKey.currentState.validate();
                               if (isValid) {
                                 signUpFormKey.currentState.save();
+                                if(!oneTimeCheck(context)){
+                                  toast('Please Connect to Internet.');
+                                  return;
+                                }
                                 try {
                                   UserCredential result = await FirebaseAuth.instance
                                       .createUserWithEmailAndPassword(

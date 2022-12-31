@@ -8,6 +8,7 @@ import 'package:maths_vision/Screens/Account/Sign_Up/email_verification.dart';
 import 'package:maths_vision/Providers/facebook_sign_in_provider.dart';
 import 'package:maths_vision/Screens/Account/Log_In/forgot_password.dart';
 import 'package:maths_vision/Screens/Splashes/log_in_splash_screen.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:maths_vision/Utilities/validators.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:maths_vision/Widgets/toast.dart';
@@ -213,6 +214,10 @@ class _LogInScreenState extends State<LogInScreen> {
                               final bool isValid = logInFormKey.currentState.validate();
                               if (isValid) {
                                 logInFormKey.currentState.save();
+                                if(!oneTimeCheck(context)){
+                                  toast('Please Connect to Internet.');
+                                  return;
+                                }
                                 try {
                                   await FirebaseAuth.instance.signInWithEmailAndPassword(
                                     email: _email,
