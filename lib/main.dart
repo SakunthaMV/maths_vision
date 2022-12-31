@@ -69,6 +69,7 @@ class MathsVision extends StatelessWidget {
           surface: Color.fromARGB(255, 1, 170, 255),
           onSurface: Color.fromARGB(255, 183, 183, 183),
           surfaceVariant: Color.fromARGB(255, 0, 70, 98),
+          inverseSurface: Color.fromARGB(255, 249, 224, 159),
           background: Color.fromARGB(255, 0, 135, 145),
           onBackground: Color.fromARGB(255, 1, 79, 134),
           error: Colors.red,
