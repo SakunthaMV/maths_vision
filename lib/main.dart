@@ -6,6 +6,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Providers/play_store_provider.dart';
 import 'package:maths_vision/Screens/Splashes/open_splash_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:stack_appodeal_flutter/stack_appodeal_flutter.dart';
 
 import 'Models/theme_data.dart';
 import 'Providers/facebook_sign_in_provider.dart';
@@ -19,6 +20,10 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: 'recaptcha-v3-site-key',
     androidProvider: AndroidProvider.debug,
+  );
+  await Appodeal.initialize(
+    appKey: '3691fbfffc57f6e17eb13ea66f7e77dc65477cd8abb03f8f',
+    adTypes: [Appodeal.BANNER, Appodeal.INTERSTITIAL, Appodeal.REWARDED_VIDEO],
   );
   runApp(
     MultiProvider(
