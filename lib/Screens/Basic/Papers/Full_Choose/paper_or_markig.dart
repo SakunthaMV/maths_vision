@@ -5,10 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Full_Display/paper_or_marking_watch.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../Widgets/common_background.dart';
 
@@ -47,9 +47,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _year = widget.year.split(" ");
-    });
+    _year = widget.year.split(" ");
   }
 
   @override
@@ -57,40 +55,48 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
     final double width = MediaQuery.of(context).size.width;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return CommonBackground(
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.1),
+      body: Stack(
         children: [
-          Center(
-            child: RichText(
-              text: TextSpan(
-                style: textTheme.titleMedium.copyWith(
-                  fontSize: 60,
-                  height: 1,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: Colors.black.withOpacity(0.4),
-                      offset: Offset(2, 2),
+          ListView(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.1),
+            children: [
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    style: textTheme.titleMedium.copyWith(
+                      fontSize: 60,
+                      height: 1,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 4,
+                          color: Colors.black.withOpacity(0.4),
+                          offset: Offset(2, 2),
+                        ),
+                      ],
                     ),
-                  ],
+                    children: [
+                      TextSpan(
+                        text: _year[0],
+                      ),
+                      TextSpan(
+                        text: _year.length > 1 ? ' ${_year[1]}' : '',
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontFamily: 'Georgia',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                children: [
-                  TextSpan(
-                    text: _year[0],
-                  ),
-                  TextSpan(
-                    text: _year.length > 1 ? ' ${_year[1]}' : '',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontFamily: 'Georgia',
-                    ),
-                  ),
-                ],
               ),
-            ),
+              _listItem('Past Paper'),
+              _listItem('Marking Scheme'),
+            ],
           ),
-          _listItem('Past Paper'),
-          _listItem('Marking Scheme'),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AdManager.showBottomBanner('Full_Paper_Banner'),
+          ),
         ],
       ),
     );
@@ -254,6 +260,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
           elevation: 5,
         ),
         onPressed: () {
+          AdManager.showInterstitial('Full_Paper_Interstitial');
           if (buttonName == 'Watch Now') {
             return Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -266,8 +273,7 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
               ),
             );
           }
-          bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-              InternetConnectionStatus.connected;
+          bool hasConnection = oneTimeCheck(context);
           if (!hasConnection) {
             return Fluttertoast.showToast(
               msg: 'Please connect to the Internet.',
