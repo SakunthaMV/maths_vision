@@ -5,6 +5,7 @@ import 'package:countdown_timer_simple/countdown_timer_simple.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -183,49 +184,56 @@ class PaperContent extends StatelessWidget {
                     );
                   }
                   return Expanded(
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      width: size.width * 0.95,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: InteractiveViewer(
-                          minScale: 1.0,
-                          maxScale: 4.0,
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
-                            ),
-                            child: SingleChildScrollView(
-                              child: CachedNetworkImage(
-                                imageUrl: snapshot.data,
-                                placeholder: (context, url) {
-                                  if (type == 'Question') {
-                                    return SizedBox(
-                                      width: double.infinity,
-                                      child: LoadingBumpingLine.circle(
-                                        size: 100,
-                                        backgroundColor: Colors.transparent,
-                                        borderColor: colorScheme.onPrimary,
-                                      ),
-                                    );
-                                  }
-                                  return SizedBox(
-                                    width: size.width * 0.8,
-                                    child: Shimmer.fromColors(
-                                      baseColor: Colors.transparent,
-                                      highlightColor: Colors.grey,
-                                      child: Image.asset('assets/Loading_Icon.png'),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.topCenter,
+                            width: size.width * 0.95,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: InteractiveViewer(
+                                minScale: 1.0,
+                                maxScale: 4.0,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.fromSeed(seedColor: Colors.transparent),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: CachedNetworkImage(
+                                      imageUrl: snapshot.data,
+                                      placeholder: (context, url) {
+                                        if (type == 'Question') {
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            child: LoadingBumpingLine.circle(
+                                              size: 100,
+                                              backgroundColor: Colors.transparent,
+                                              borderColor: colorScheme.onPrimary,
+                                            ),
+                                          );
+                                        }
+                                        return SizedBox(
+                                          width: size.width * 0.8,
+                                          child: Shimmer.fromColors(
+                                            baseColor: Colors.transparent,
+                                            highlightColor: Colors.grey,
+                                            child: Image.asset('assets/Loading_Icon.png'),
+                                          ),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return NetworkError();
+                                      },
                                     ),
-                                  );
-                                },
-                                errorWidget: (context, url, error) {
-                                  return NetworkError();
-                                },
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+                        AdManager.showBottomBanner('Marking_Scheme_Banner'),
+                      ],
                     ),
                   );
                 },
