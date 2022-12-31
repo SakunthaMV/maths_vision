@@ -30,9 +30,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 0, 136, 205),
-      appBar: HomeAppBar(
-        page: 'Leaderboard',
-      ),
+      appBar: HomeAppBar(page: 'Leaderboard'),
       body: Stack(
         alignment: AlignmentDirectional.center,
         children: [
