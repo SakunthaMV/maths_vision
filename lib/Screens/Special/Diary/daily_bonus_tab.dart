@@ -176,6 +176,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
                           right: width * 0.05,
                         ),
                         child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.only(
                             top: 20,
                             bottom: 20,

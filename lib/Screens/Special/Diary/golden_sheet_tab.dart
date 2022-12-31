@@ -207,6 +207,7 @@ class _GoldenSheetTabState extends State<GoldenSheetTab> {
                               String Q = 'Questions_Info';
                               String B = 'BestTiming';
                               return ListView.builder(
+                                physics: BouncingScrollPhysics(),
                                 padding:
                                     EdgeInsets.fromLTRB(width * 0.075, 10, width * 0.075, 10),
                                 itemCount: icons.length,

@@ -97,6 +97,7 @@ class _StoreState extends State<Store> {
                   _connectionStatus == 'ConnectivityResult.mobile'
               ? _data != null
                   ? SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.only(top: height * 0.13),
                       child: _storeContent(),
                     )

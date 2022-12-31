@@ -90,6 +90,7 @@ class NoticeTab extends StatelessWidget {
                             );
                           }
                           return ListView.builder(
+                            physics: BouncingScrollPhysics(),
                             padding: EdgeInsets.only(
                               left: width * 0.01,
                               right: width * 0.01,
