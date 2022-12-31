@@ -186,6 +186,8 @@ class _EventAppBarState extends State<EventAppBar> {
                         ),
                       );
                     },
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     child: Container(
                       height: 25,
                       width: 95,
@@ -335,19 +337,27 @@ class _EventAppBarState extends State<EventAppBar> {
                                 width: 43,
                                 height: 43,
                                 // Todo: correct the no image error.
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: imgURL,
-                                  placeholder: (_, url) {
-                                    return CircularProgressIndicator();
-                                  },
-                                  errorWidget: (context, url, error) {
-                                    return Icon(
+                                child: Builder(
+                                  builder: (context) {
+                                    const Icon errorIcon = Icon(
                                       Icons.account_circle_rounded,
                                       size: 43,
                                       color: Color.fromARGB(255, 202, 202, 202),
                                     );
-                                  },
+                                    if(imgURL=='No Image'){
+                                      return errorIcon;
+                                    }
+                                    return CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      imageUrl: imgURL,
+                                      placeholder: (_, url) {
+                                        return CircularProgressIndicator();
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return errorIcon;
+                                      },
+                                    );
+                                  }
                                 ),
                               ),
                             ),
