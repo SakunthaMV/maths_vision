@@ -37,7 +37,10 @@ class AdManager {
     return FutureBuilder<bool>(
       future: canShowBanner(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if(!snapshot.hasData){
+          return SizedBox.shrink();
+        }
+        if (!snapshot.data) {
           return SizedBox.shrink();
         }
         return Container(
