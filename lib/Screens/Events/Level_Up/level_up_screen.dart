@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -33,6 +35,25 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
   Animation _numberScaleAnimation;
   Animation _textAnimation;
 
+  InterstitialAd _interstitialAd;
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdManager.interstitialLevelUp,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          setState(() {
+            _interstitialAd = ad;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+        },
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +82,7 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
     ).animate(_textController);
     _topQuote = Random().nextInt(quotes['topQuote'].length);
     _bottomQuote = Random().nextInt(quotes['bottomQuote'].length);
+    _loadInterstitialAd();
   }
 
   @override
@@ -68,6 +90,7 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
     _scaleController.dispose();
     _numberController.dispose();
     _textController.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -289,6 +312,9 @@ class _LevelUpScreenState extends State<LevelUpScreen> with TickerProviderStateM
                   opacity: _buttonOpacity,
                   child: ElevatedButton(
                     onPressed: () {
+                      if(_interstitialAd!=null){
+                        _interstitialAd.show();
+                      }
                       Navigator.pop(context, false);
                     },
                     child: Text(
