@@ -9,12 +9,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:maths_vision/Screens/Events/Answer_Display/answer_display_screen.dart';
 import 'package:maths_vision/Screens/Events/Level_Up/level_up_screen.dart';
 import 'package:maths_vision/Models/questions_data.dart';
 import 'package:maths_vision/Screens/Special/Store/store.dart';
+import 'package:maths_vision/Services/ad_manager.dart';
 import 'package:maths_vision/Widgets/event_app_bar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shape_of_view/shape_of_view.dart';
@@ -62,17 +64,63 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
   Color _selectedColor = Color.fromARGB(255, 1, 79, 134);
   Color _unselectedColor = Colors.black;
 
+  BannerAd _bannerAd;
+  RewardedAd _rewardedAd;
+
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdManager.rewardedAnswerDisplay,
+      request: AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              setState(() {
+                ad.dispose();
+                _rewardedAd = null;
+              });
+            },
+          );
+          setState(() {
+            _rewardedAd = ad;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load a rewarded ad: ${err.message}');
+        },
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
     checkInternet();
+    BannerAd(
+      adUnitId: AdManager.bannerEventQuestion,
+      request: AdRequest(),
+      size: AdSize.fullBanner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          ad.dispose();
+        },
+      ),
+    ).load();
   }
 
   @override
   void dispose() {
     super.dispose();
     _subscription.cancel();
+    _bannerAd?.dispose();
+    _rewardedAd?.dispose();
   }
 
   @override
@@ -82,72 +130,83 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
     return Scaffold(
       appBar: EventAppBar(),
       backgroundColor: Color.fromARGB(255, 1, 79, 134),
-      body: Container(
-        width: width * 0.95,
-        height: height,
-        margin: EdgeInsets.all(width * 0.025),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Builder(builder: (context) {
-          if(_hasConnection==null){
-            return SizedBox.shrink();
-          }
-          if (!_hasConnection) {
-            return Center(child: NetworkError(color: Colors.black));
-          }
-          return StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots(),
-              builder: (context, userSnapshot) {
-                if (userSnapshot.hasData) {
-                  int sumOfN = 0;
-                  int xp = userSnapshot.data['User_Details.xp'];
-                  for (int i = 1; i < 150; i += 1) {
-                    _currentLevel = i;
-                    sumOfN += i;
-                    int levelNValue = sumOfN * 10;
-                    if (levelNValue > xp) {
-                      break;
-                    }
-                  }
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              width: width * 0.95,
+              height: height,
+              margin: EdgeInsets.all(width * 0.025),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Builder(builder: (context) {
+                if (_hasConnection == null) {
+                  return SizedBox.shrink();
+                }
+                if (!_hasConnection) {
+                  return Center(child: NetworkError(color: Colors.black));
                 }
                 return StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('Users')
                         .doc(user.uid)
-                        .collection('Trigonometry_Event')
-                        .doc('Stages')
                         .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: LoadingAnimationWidget.threeArchedCircle(
-                            color: Colors.black,
-                            size: 100.0,
-                          ),
-                        );
-                      }
-                      String dataPath =
-                          'Stage_${widget.stage}.Questions_Details.Question_${widget.question}';
-                      Map<String, dynamic> questionData = snapshot.data[dataPath];
-                      if (questionData['done']) {
-                        _selectedValue = questionData['selectedValue'];
-                        _answerSelected = true;
-                      } else {
-                        if (!_answerSelected) {
-                          _selectedValue = '';
+                    builder: (context, userSnapshot) {
+                      if (userSnapshot.hasData) {
+                        int sumOfN = 0;
+                        int xp = userSnapshot.data['User_Details.xp'];
+                        for (int i = 1; i < 150; i += 1) {
+                          _currentLevel = i;
+                          sumOfN += i;
+                          int levelNValue = sumOfN * 10;
+                          if (levelNValue > xp) {
+                            break;
+                          }
                         }
                       }
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
-                          child: _questionBody(context, questionData),
-                        ),
-                      );
+                      return StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(user.uid)
+                              .collection('Trigonometry_Event')
+                              .doc('Stages')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: LoadingAnimationWidget.threeArchedCircle(
+                                  color: Colors.black,
+                                  size: 100.0,
+                                ),
+                              );
+                            }
+                            String dataPath =
+                                'Stage_${widget.stage}.Questions_Details.Question_${widget.question}';
+                            Map<String, dynamic> questionData = snapshot.data[dataPath];
+                            if (questionData['done']) {
+                              _selectedValue = questionData['selectedValue'];
+                              _answerSelected = true;
+                            } else {
+                              if (!_answerSelected) {
+                                _selectedValue = '';
+                              }
+                            }
+                            return SingleChildScrollView(
+                              physics: BouncingScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20, top: 15, right: 20),
+                                child: _questionBody(context, questionData),
+                              ),
+                            );
+                          });
                     });
-              });
-        }),
+              }),
+            ),
+          ),
+          AdManager.bannerAdShow(_bannerAd, margin: 0.0),
+        ],
       ),
     );
   }
@@ -405,7 +464,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
             alignment: AlignmentDirectional.center,
             children: [
               InkWell(
-                onTap: () {
+                onTap: () async {
                   if (answerBought) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -415,6 +474,7 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
                       ),
                     );
                   } else {
+                    _loadRewardedAd();
                     _answerBuyDialog(context);
                   }
                 },
@@ -1352,173 +1412,257 @@ class _QuestionDisplayScreenState extends State<QuestionDisplayScreen> {
       builder: (context) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-            contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Color.fromARGB(255, 96, 170, 77),
-                        Color.fromARGB(255, 159, 219, 155),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 2,
-                        spreadRadius: 0,
-                        color: Colors.black.withOpacity(0.3),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              Future.delayed(Duration(seconds: 1)).whenComplete(() {
+                setState((){});
+              });
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 100,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color.fromARGB(255, 96, 170, 77),
+                            Color.fromARGB(255, 159, 219, 155),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 2,
+                            spreadRadius: 0,
+                            color: Colors.black.withOpacity(0.3),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Stage ${widget.stage < 10 ? '0' : ''}${widget.stage}',
-                          style: TextStyle(
-                            fontFamily: 'Rockwell',
-                            fontSize: 25,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.0,
-                            wordSpacing: 1.0,
-                            shadows: [],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          child: Text(
-                            'Question ${widget.question < 10 ? '0' : ''}${widget.question}',
-                            style: TextStyle(
-                              fontFamily: 'Rockwell',
-                              fontSize: 25,
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              letterSpacing: 0.0,
-                              wordSpacing: 1.0,
-                              shadows: [],
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Answer',
-                          style: TextStyle(
-                            fontFamily: 'Rockwell',
-                            fontSize: 25,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0.0,
-                            wordSpacing: 1.0,
-                            shadows: [],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
-                  child: Text(
-                    'This answer will help you to know, how to solve this type of questions',
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontSize: 15,
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0.0,
-                      wordSpacing: 1.0,
-                      shadows: [],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(user.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return LoadingAnimationWidget.stretchedDots(
-                            color: Colors.black,
-                            size: 50.0,
-                          );
-                        }
-                        int userCoins = snapshot.data['User_Details.coins'];
-                        return SizedBox(
-                          width: 110,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (!_hasConnection) {
-                                return Fluttertoast.showToast(
-                                  msg: 'You don\'t have internet connection.',
-                                );
-                              }
-                              _purchaseButtonPress(userCoins);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color.fromARGB(255, 1, 79, 134),
-                              padding: EdgeInsets.only(left: 3, right: 3),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Stage ${widget.stage < 10 ? '0' : ''}${widget.stage}',
+                              style: TextStyle(
+                                fontFamily: 'Rockwell',
+                                fontSize: 25,
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                letterSpacing: 0.0,
+                                wordSpacing: 1.0,
+                                shadows: [],
                               ),
-                              side: BorderSide(width: 3, color: Colors.black),
                             ),
-                            child: Stack(
-                              alignment: AlignmentDirectional.center,
-                              children: [
-                                Container(
-                                  height: 35,
-                                  width: 110,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(3)),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5, bottom: 5),
+                              child: Text(
+                                'Question ${widget.question < 10 ? '0' : ''}${widget.question}',
+                                style: TextStyle(
+                                  fontFamily: 'Rockwell',
+                                  fontSize: 25,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                  letterSpacing: 0.0,
+                                  wordSpacing: 1.0,
+                                  shadows: [],
                                 ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '$answerBuyCoins',
-                                      style: TextStyle(
-                                        fontFamily: 'Crash',
-                                        fontSize: 25,
-                                        color: Colors.white,
-                                        height: 0.9,
-                                        fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Answer',
+                              style: TextStyle(
+                                fontFamily: 'Rockwell',
+                                fontSize: 25,
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                letterSpacing: 0.0,
+                                wordSpacing: 1.0,
+                                shadows: [],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
+                      child: Text(
+                        'This answer will help you to know, how to solve this type of questions',
+                        style: TextStyle(
+                          fontFamily: 'Open Sans',
+                          fontSize: 15,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0.0,
+                          wordSpacing: 1.0,
+                          shadows: [],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(user.uid)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return LoadingAnimationWidget.stretchedDots(
+                                color: Colors.black,
+                                size: 50.0,
+                              );
+                            }
+                            int userCoins = snapshot.data['User_Details.coins'];
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Opacity(
+                                  opacity: _rewardedAd != null ? 1.0 : 0.6,
+                                  child: SizedBox(
+                                    width: 110,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: _rewardedAd != null
+                                          ? () {
+                                              if (!_hasConnection) {
+                                                return Fluttertoast.showToast(
+                                                  msg: 'You don\'t have internet connection.',
+                                                );
+                                              }
+                                              _rewardedAd.show(
+                                                onUserEarnedReward: (_, reward) {
+                                                  Navigator.of(context).pushReplacement(
+                                                    MaterialPageRoute(
+                                                      builder: (_) {
+                                                        return AnswerDisplayScreen(
+                                                            widget.stage, widget.question);
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color.fromARGB(255, 1, 79, 134),
+                                        padding: EdgeInsets.only(left: 3, right: 3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        side: BorderSide(width: 3, color: Colors.black),
+                                      ),
+                                      child: Stack(
+                                        alignment: AlignmentDirectional.center,
+                                        children: [
+                                          Container(
+                                            height: 35,
+                                            width: 110,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.circular(3)),
+                                          ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.ads_click_outlined,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                'Free',
+                                                style: TextStyle(
+                                                  fontFamily: 'Crash',
+                                                  fontSize: 22,
+                                                  color: Colors.white,
+                                                  height: 0.9,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 110,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (!_hasConnection) {
+                                        return Fluttertoast.showToast(
+                                          msg: 'You don\'t have internet connection.',
+                                        );
+                                      }
+                                      _purchaseButtonPress(userCoins);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color.fromARGB(255, 1, 79, 134),
+                                      padding: EdgeInsets.only(left: 3, right: 3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      side: BorderSide(width: 3, color: Colors.black),
                                     ),
-                                    SizedBox(
-                                      width: 25,
-                                      child: Image.asset('assets/Coin.png'),
+                                    child: Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      children: [
+                                        Container(
+                                          height: 35,
+                                          width: 110,
+                                          decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.circular(3)),
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              '$answerBuyCoins',
+                                              style: TextStyle(
+                                                fontFamily: 'Crash',
+                                                fontSize: 25,
+                                                color: Colors.white,
+                                                height: 0.9,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            SizedBox(
+                                              width: 25,
+                                              child: Image.asset('assets/Coin.png'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
-                            ),
-                          ),
-                        );
-                      }),
+                            );
+                          }),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            }
           ),
         );
       },
