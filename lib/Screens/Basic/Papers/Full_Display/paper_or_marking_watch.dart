@@ -21,7 +21,7 @@ class PaperOrMarkingWatch extends StatefulWidget {
 
 class _PaperOrMarkingWatchState extends State<PaperOrMarkingWatch> {
   InterstitialAd _interstitialAd;
-  
+
   void _loadInterstitialAd() {
     InterstitialAd.load(
       adUnitId: AdManager.interstitialFullPaper,
