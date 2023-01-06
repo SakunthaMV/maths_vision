@@ -4,13 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:countdown_timer_simple/countdown_timer_simple.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:maths_vision/Widgets/event_errors_and_loading.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../../Services/ad_manager.dart';
 import '../../../../Widgets/common_background.dart';
 
-class PaperContent extends StatelessWidget {
+class PaperContent extends StatefulWidget {
   final String imagePath;
   final String subjectS;
   final String year;
@@ -19,12 +21,50 @@ class PaperContent extends StatelessWidget {
 
   const PaperContent(this.imagePath, this.subjectS, this.year, this.type, this.timeOrMarks);
 
+  @override
+  State<PaperContent> createState() => _PaperContentState();
+}
+
+class _PaperContentState extends State<PaperContent> {
   Stream<int> waitingCounter() async* {
     int seconds = 11;
     while (true) {
       await Future.delayed(Duration(seconds: 1));
       yield --seconds;
       if (seconds == 0) break;
+    }
+  }
+
+  BannerAd _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.type != 'Question'){
+      BannerAd(
+        adUnitId: AdManager.bannerMarkingScheme,
+        request: AdRequest(),
+        size: AdSize.banner,
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _bannerAd = ad as BannerAd;
+            });
+          },
+          onAdFailedToLoad: (ad, err) {
+            print('Failed to load a banner ad: ${err.message}');
+            ad.dispose();
+          },
+        ),
+      ).load();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if(widget.type != 'Question'){
+      _bannerAd?.dispose();
     }
   }
 
@@ -54,7 +94,7 @@ class PaperContent extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          subjectS,
+                          widget.subjectS,
                           style: textTheme.headlineMedium.copyWith(
                             fontSize: 28.0,
                             color: colorScheme.tertiaryContainer,
@@ -64,14 +104,14 @@ class PaperContent extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 3, top: 6.0),
-                          child: Text(year + ' ' + type,
+                          child: Text(widget.year + ' ' + widget.type,
                               style: textTheme.titleLarge
                                   .copyWith(fontWeight: FontWeight.normal)),
                         ),
                         Text(
-                          type == 'Question'
-                              ? 'Time : ' + timeOrMarks + ' min'
-                              : 'Marks : ' + timeOrMarks,
+                          widget.type == 'Question'
+                              ? 'Time : ' + widget.timeOrMarks + ' min'
+                              : 'Marks : ' + widget.timeOrMarks,
                           style: textTheme.titleLarge.copyWith(
                             fontSize: 27,
                             letterSpacing: 1,
@@ -92,7 +132,7 @@ class PaperContent extends StatelessWidget {
                         height: paperHeight + 35,
                       );
                     }
-                    if (type != 'Question') {
+                    if (widget.type != 'Question') {
                       return SizedBox(
                         height: 25,
                       );
@@ -168,7 +208,7 @@ class PaperContent extends StatelessWidget {
               StreamBuilder<String>(
                 stream: FirebaseStorage.instance
                     .ref()
-                    .child(imagePath)
+                    .child(widget.imagePath)
                     .getDownloadURL()
                     .asStream(),
                 builder: (context, snapshot) {
@@ -199,7 +239,7 @@ class PaperContent extends StatelessWidget {
                               child: CachedNetworkImage(
                                 imageUrl: snapshot.data,
                                 placeholder: (context, url) {
-                                  if (type == 'Question') {
+                                  if (widget.type == 'Question') {
                                     return SizedBox(
                                       width: double.infinity,
                                       child: LoadingBumpingLine.circle(
@@ -230,6 +270,8 @@ class PaperContent extends StatelessWidget {
                   );
                 },
               ),
+              if(widget.type != 'Question')
+                AdManager.bannerAdShow(_bannerAd),
             ],
           ),
           StreamBuilder<int>(
@@ -237,12 +279,12 @@ class PaperContent extends StatelessWidget {
             builder: (context, snapshot) {
               double positionX = 1.0;
               double positionY = -1.14;
-              final int min = int.parse(timeOrMarks.split(':').first);
-              final int sec = int.parse(timeOrMarks.split(':').last);
+              final int min = int.parse(widget.timeOrMarks.split(':').first);
+              final int sec = int.parse(widget.timeOrMarks.split(':').last);
               if (!snapshot.hasData) {
                 return SizedBox.shrink();
               }
-              if (type != 'Question') {
+              if (widget.type != 'Question') {
                 return SizedBox.shrink();
               }
               if (snapshot.data > 3) {
