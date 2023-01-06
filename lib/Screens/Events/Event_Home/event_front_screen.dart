@@ -199,6 +199,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
                                 _stageIndex = int;
                               });
                             },
+                            scrollPhysics: BouncingScrollPhysics(),
                             listController: _snapController,
                             itemSize: _listWidth,
                             dynamicItemSize: true,
@@ -235,6 +236,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
                       child: SingleChildScrollView(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         controller: controller,
+                        physics: BouncingScrollPhysics(),
                         child: Builder(builder: (context) {
                           if (_stageIndex == 10) {
                             return _goldenStageDetailsColumn();

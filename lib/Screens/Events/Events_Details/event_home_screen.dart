@@ -211,6 +211,7 @@ class _EventHomeNetworkDataState extends State<EventHomeNetworkData> {
         child: ScrollSnapList(
           onItemFocus: (int) {},
           itemSize: _listWidth,
+          scrollPhysics: BouncingScrollPhysics(),
           itemCount: 2,
           dynamicItemSize: true,
           itemBuilder: (context, index) {

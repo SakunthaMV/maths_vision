@@ -92,6 +92,7 @@ class _StageHomeScreenState extends State<StageHomeScreen> {
                 }
                 int level = snapshot.data['User_Details.level'];
                 return ListView.builder(
+                  physics: BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(top: 230),
                   itemCount: questions['stage${widget.stage}'].length,
                   itemBuilder: (context, index) {
