@@ -1,7 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Providers/play_store_provider.dart';
@@ -17,7 +16,6 @@ void main() async {
   await Firebase.initializeApp();
   await MobileAds.instance.initialize();
   // TODO: remove debug things before release app.
-  await FlutterDownloader.initialize(debug: true);
   await FirebaseAppCheck.instance.activate(
     webRecaptchaSiteKey: 'recaptcha-v3-site-key',
     androidProvider: AndroidProvider.debug,
@@ -35,9 +33,11 @@ void main() async {
             return FacebookSignInProvider();
           },
         ),
-        ChangeNotifierProvider<PlayStoreProvider>(create: (context) {
-          return PlayStoreProvider();
-        }),
+        ChangeNotifierProvider<PlayStoreProvider>(
+          create: (context) {
+            return PlayStoreProvider();
+          },
+        ),
         StreamProvider<InternetConnectionStatus>(
           initialData: InternetConnectionStatus.connected,
           create: (context) {
