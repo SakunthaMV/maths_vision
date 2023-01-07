@@ -49,7 +49,6 @@ dependencies:
   permission_handler: ^10.2.0
   image_picker: ^0.8.6
   image_cropper: ^3.0.1
-  external_path: ^1.0.3
   shimmer: ^2.0.0
   scroll_snap_list: ^0.9.1
   shared_preferences: ^2.0.15
@@ -58,7 +57,7 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   flutter_blurhash: ^0.7.0
   flutter_rating_bar: ^4.0.1
-  flutter_downloader: ^1.9.1
+  flutter_file_downloader: ^1.1.0+1
   fluttertoast: ^8.1.2
   flutter_speed_dial: ^6.2.0
   flutter_facebook_auth: ^5.0.7

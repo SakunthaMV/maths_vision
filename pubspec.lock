@@ -155,13 +155,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  external_path:
-    dependency: "direct main"
-    description:
-      name: external_path
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   facebook_auth_desktop:
     dependency: transitive
     description:
@@ -314,13 +307,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_downloader:
-    dependency: "direct main"
-    description:
-      name: flutter_downloader
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.9.1"
   flutter_facebook_auth:
     dependency: "direct main"
     description:
@@ -342,6 +328,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.1"
+  flutter_file_downloader:
+    dependency: "direct main"
+    description:
+      name: flutter_file_downloader
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0+1"
   flutter_inappwebview:
     dependency: transitive
     description:

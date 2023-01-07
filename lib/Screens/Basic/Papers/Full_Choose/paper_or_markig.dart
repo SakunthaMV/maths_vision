@@ -1,16 +1,15 @@
 import 'dart:ui';
 
-import 'package:external_path/external_path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maths_vision/Screens/Basic/Papers/Full_Display/paper_or_marking_watch.dart';
+import 'package:maths_vision/Utilities/check_internet.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../Widgets/common_background.dart';
+import '../../../../Widgets/toast.dart';
 
 class PaperOrMarking extends StatefulWidget {
   final String year;
@@ -30,17 +29,18 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
   List _year;
 
   void paperDownload(String link, String type) async {
-    final externalDir =
-        await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-    Fluttertoast.showToast(
-      msg: 'Downloading...',
-    );
-    FlutterDownloader.enqueue(
+    await FileDownloader.downloadFile(
       url: link,
-      savedDir: externalDir,
-      fileName: '${widget.year} Full $type.pdf',
-      showNotification: true,
-      openFileFromNotification: true,
+      name: '${widget.year} Full $type.pdf',
+      onProgress: (String fileName, double progress) {
+        toast('Downloading... $progress%');
+      },
+      onDownloadCompleted: (String path) {
+        toast('Your file has been downloaded.');
+      },
+      onDownloadError: (String error) {
+        toast('There is an error: $error');
+      },
     );
   }
 
@@ -266,14 +266,11 @@ class _PaperOrMarkingState extends State<PaperOrMarking> {
               ),
             );
           }
-          bool hasConnection = Provider.of<InternetConnectionStatus>(context, listen: false) ==
-              InternetConnectionStatus.connected;
-          if (!hasConnection) {
+          if (!oneTimeCheck(context)) {
             return Fluttertoast.showToast(
               msg: 'Please connect to the Internet.',
             );
           }
-          print(widget.paperPath);
           _downloadSource(type).then((url) async {
             final status = await Permission.storage.request();
             if (status.isGranted) {
