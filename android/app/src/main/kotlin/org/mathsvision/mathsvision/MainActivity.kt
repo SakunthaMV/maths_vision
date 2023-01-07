@@ -1,4 +1,4 @@
-package com.mathsvision.maths_vision
+package org.mathsvision.mathsvision
 
 import io.flutter.embedding.android.FlutterActivity
 
