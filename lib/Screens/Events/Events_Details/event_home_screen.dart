@@ -212,6 +212,7 @@ class _EventHomeNetworkDataState extends State<EventHomeNetworkData> {
           onItemFocus: (int) {},
           itemSize: _listWidth,
           itemCount: 2,
+          scrollPhysics: BouncingScrollPhysics(),
           dynamicItemSize: true,
           itemBuilder: (context, index) {
             return Column(

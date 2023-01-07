@@ -199,6 +199,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
                                 _stageIndex = int;
                               });
                             },
+                            scrollPhysics: BouncingScrollPhysics(),
                             listController: _snapController,
                             itemSize: _listWidth,
                             dynamicItemSize: true,
@@ -233,6 +234,7 @@ class _EventFrontScreenState extends State<EventFrontScreen> {
                   Expanded(
                     child: Center(
                       child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         controller: controller,
                         child: Builder(builder: (context) {
