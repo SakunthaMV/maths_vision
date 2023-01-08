@@ -24,7 +24,7 @@ Future<void> initializeUser(
       'dateOfBirth': dateOfBirth,
       'gender': gender,
       'email': email,
-      'phoneNumber': phoneNumber,
+      'phoneNumber': phoneNumber?? '0110000000',
       'photoURL': photoURL?? 'No Image',
       'coins': 50,
       'xp': 0,
