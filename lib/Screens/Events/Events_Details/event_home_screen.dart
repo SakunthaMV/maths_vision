@@ -302,7 +302,7 @@ class TrigonometryEventDetails extends StatelessWidget {
             ),
           );
         }
-        double progress = snapshot.data['progress'];
+        double progress = snapshot.data['progress'].toDouble();
         int correct = snapshot.data['totalCorrect'];
         int completed = snapshot.data['totalCompleted'];
         int eventXP = snapshot.data['xpEarned'];
