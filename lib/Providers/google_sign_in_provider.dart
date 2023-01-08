@@ -51,7 +51,6 @@ class GoogleSignInProvider extends ChangeNotifier {
             signUpMethod: 'Google',
             photoURL: user.photoURL,
           );
-          updateEventData();
         }
       });
     }

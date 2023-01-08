@@ -190,7 +190,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     _email,
                                     _phoneNumber,
                                   );
-                                  updateEventData();
                                   _dateController.dispose();
                                 } on FirebaseAuthException catch (error) {
                                   toast(error.message);

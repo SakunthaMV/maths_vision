@@ -44,7 +44,6 @@ class FacebookSignInProvider extends ChangeNotifier {
               signUpMethod: 'Facebook',
               photoURL: userData['picture']['data']['url'],
             );
-            updateEventData();
           }
         });
         break;
