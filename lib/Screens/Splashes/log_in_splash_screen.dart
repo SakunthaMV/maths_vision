@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maths_vision/Screens/Home/home_screen.dart';
 import 'package:maths_vision/Screens/Splashes/common_widgets.dart';
-import 'package:maths_vision/Services/firestore_userdata.dart';
 
 class LogInSplashScreen extends StatefulWidget {
   const LogInSplashScreen({Key key}) : super(key: key);
@@ -15,14 +12,10 @@ class LogInSplashScreen extends StatefulWidget {
 }
 
 class _LogInSplashScreenState extends State<LogInSplashScreen> {
-  final CollectionReference users = FirebaseFirestore.instance.collection('Users');
-  User user;
 
   @override
   void initState() {
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
-    initializeUserEvent(user.uid);
     Timer(Duration(milliseconds: 1500), () {
       return Navigator.of(context).pushReplacement(
         MaterialPageRoute(
