@@ -26,157 +26,8 @@ Future<void> initializeUser(
       'email': email,
       'phoneNumber': phoneNumber?? '0110000000',
       'photoURL': photoURL?? 'No Image',
-      'coins': 50,
-      'xp': 0,
-      'level': 1,
-      'currentRank': 0,
-      'bestRank': 0,
-      'average_time': 0,
     },
-    'LogIn_Details': {
-      'day': DateTime.now().day,
-      'month': DateTime.now().month,
-      'loginDays': 1,
-      'Owned_Days': {
-        '1': false,
-        '2': false,
-        '3': false,
-        '4': false,
-        '5': false,
-        '6': false,
-        '7': false,
-      },
-    },
-    'Collection': {
-      'Coupons': {
-        'Answer_Coupons': {},
-        'Video_Coupons': {},
-      },
-      'Double_XP_Cards': {
-        'Silver_Double_XP': {
-          'available': 0,
-          'used': 0,
-        },
-        'Golden_Double_XP': {
-          'available': 0,
-          'used': 0,
-        },
-      },
-      'Vouchers': {
-        'Answer_Vouchers': {
-          'available': 0,
-          'used': 0,
-        },
-        'Video_Vouchers': {
-          'available': 0,
-          'used': 0,
-        },
-      },
-      'Bonus_Cards': {
-        'available': 0,
-        'used': 0,
-      },
-    },
-  });
-}
-
-void initializeUserEvent(String userId) async {
-  if (userId != null) {
-    await users
-        .doc(userId)
-        .collection('Trigonometry_Event')
-        .doc('Golden_Stage')
-        .get()
-        .then((doc) {
-      if (!doc.exists) {
-        users.doc(userId).collection('Trigonometry_Event').doc('Golden_Stage').set({
-          'Entry_Tasks': {
-            'accuracyTask': false,
-            'leaderboardTask': false,
-            'loginTask': false,
-            'rulesDialog': false,
-          },
-          'Stage_Info': {
-            'completed': 0,
-            'correct': 0,
-            'xpEarned': 0,
-          },
-        });
-      }
-    });
-    await users
-        .doc(userId)
-        .collection('Trigonometry_Event')
-        .doc('Event_Info')
-        .get()
-        .then((doc) {
-      if (!doc.exists) {
-        users.doc(userId).collection('Trigonometry_Event').doc('Event_Info').set({
-          'progress': 0.0,
-          'totalCompleted': 0,
-          'totalCorrect': 0,
-          'xpEarned': 0,
-          'currentRank': 0,
-          'bestRank': 0,
-          'goldenStageUnlocked': false,
-        });
-      }
-    });
-    await users.doc(userId).collection('Trigonometry_Event').doc('Stages').get().then((doc) {
-      if (!doc.exists) {
-        for (int i = 1; i <= 10; i++) {
-          users.doc(userId).collection('Trigonometry_Event').doc('Stages').set({
-            'Stage_$i': {
-              'Info': {
-                'completed': 0,
-                'correct': 0,
-                'xpEarned': 0,
-                'stage': i,
-                'Video': {
-                  'purchased': false,
-                  'liked': false,
-                  'commented': false,
-                }
-              },
-              'Questions_Details': {
-                'Question_1': {
-                  'correct': false,
-                  'done': false,
-                  'xpDoubleUsed': false,
-                  'answerBought': false,
-                  'question': 1,
-                  'selectedValue': '',
-                }
-              }
-            }
-          }, SetOptions(merge: true));
-        }
-      }
-    });
-  }
-}
-
-void updateEventData() {
-  for (int i = 1; i < 11; i++) {
-    events.doc('Trigonometry').collection('Stages').doc('Stage_$i').update({
-      'TotalUnlocked': FieldValue.increment(1),
-    });
-    events
-        .doc('Trigonometry')
-        .collection('Stages')
-        .doc('Stage_$i')
-        .collection('Questions')
-        .doc('Question_1')
-        .update({
-      'Unlocked': FieldValue.increment(1),
-    });
-  }
-  events.doc('Trigonometry').update({
-    'TotalUnlocked': FieldValue.increment(10),
-  });
-  events.doc('All_Events').update({
-    'AllUnlocked': FieldValue.increment(10),
-  });
+  }, SetOptions(merge: true));
 }
 
 Future<void> removeUserDate(User user) async {
@@ -202,3 +53,120 @@ Future<void> removeUserDate(User user) async {
   });
   return await users.doc(user.uid).delete();
 }
+
+// Future<void> createEvent() async {
+//   List questionIcons = [
+//     'Alpha',
+//     'Beta',
+//     'Gamma',
+//     'Delta',
+//     'Epsilon',
+//     'Lambda',
+//     'Mu',
+//     'Tau',
+//     'Phi',
+//     'Psi',
+//   ];
+//   CollectionReference eventsInfo = FirebaseFirestore.instance.collection('Test_Events');
+//   CollectionReference stagesInfo = FirebaseFirestore.instance
+//       .collection('Test_Events')
+//       .doc('Trigonometry')
+//       .collection('Stages');
+//   await eventsInfo.doc('All_Events').set({
+//     'AllCompleted': 0,
+//     'AllCorrect': 0,
+//     'AllXPDoubleUsed': 0,
+//     'AllAnswersBought': 0,
+//     'AllUnlocked': 0,
+//     'Golden_Stages': {
+//       'AllCompleted': 0,
+//       'AllCorrect': 0,
+//       'AllGoldenDoubleXPUsed': 0,
+//       'AllStageUnlocks': 0,
+//       'AllStepOneBought': 0,
+//       'AllStepOneCompleted': 0,
+//       'AllStepOneCorrect': 0,
+//       'AllStepTwoBought': 0,
+//       'AllStepTwoCompleted': 0,
+//       'AllStepTwoCorrect': 0,
+//       'AllTimeElapsed': 0,
+//       'AllUnlocked': 0,
+//     }
+//   });
+//   await eventsInfo.doc('Trigonometry').set({
+//     'TotalCompleted': 0,
+//     'TotalCorrect': 0,
+//     'TotalXPDoubleUsed': 0,
+//     'TotalAnswersBought': 0,
+//     'TotalUnlocked': 0,
+//     'Event': 'Trigonometry Event',
+//   });
+//   await stagesInfo.doc('Golden_Stage').set({
+//     'Stage_Info': {
+//       'TotalCompleted': 0,
+//       'TotalCorrect': 0,
+//       'TotalGoldenDoubleXPUsed': 0,
+//       'TotalStageUnlocks': 0,
+//       'TotalStepOneBought': 0,
+//       'TotalStepOneCompleted': 0,
+//       'TotalStepOneCorrect': 0,
+//       'TotalStepTwoBought': 0,
+//       'TotalStepTwoCompleted': 0,
+//       'TotalStepTwoCorrect': 0,
+//       'TotalTimeElapsed': 0,
+//       'TotalUnlocked': 0,
+//     }
+//   });
+//   for (int i = 0; i < questionIcons.length; i++) {
+//     await stagesInfo.doc('Golden_Stage').set(
+//       {
+//         'Questions_Info': {
+//           'Question_${questionIcons[i]}': {
+//             'BestTiming': {
+//               'Time': 86400000,
+//               'UserID': null,
+//             },
+//             'Completed': 0,
+//             'Correct': 0,
+//             'GoldenDoubleXPUsed': 0,
+//             'StepOneBought': 0,
+//             'StepOneCompleted': 0,
+//             'StepOneCorrect': 0,
+//             'StepTwoBought': 0,
+//             'StepTwoCompleted': 0,
+//             'StepTwoCorrect': 0,
+//             'TimeElapsed': 0,
+//             'Unlocked': 0,
+//           }
+//         }
+//       },
+//       SetOptions(merge: true),
+//     );
+//   }
+//   for (int i = 1; i <= 10; i++) {
+//     await stagesInfo.doc('Stage_$i').set({
+//       'TotalCompleted': 0,
+//       'TotalCorrect': 0,
+//       'TotalXPDoubleUsed': 0,
+//       'TotalAnswersBought': 0,
+//       'TotalUnlocked': 0,
+//       'Stage': i,
+//       'Video': {
+//         'LikeCount': 0,
+//         'CommentCount': 0,
+//         'PurchaseCount': 0,
+//         'Comments': null,
+//       },
+//     });
+//     for (int j = 1; j <= questions['stage$i'].length; j++) {
+//       await stagesInfo.doc('Stage_$i').collection('Questions').doc('Question_$j').set({
+//         'Completed': 0,
+//         'Correct': 0,
+//         'XPDoubleUsed': 0,
+//         'AnswersBought': 0,
+//         'Question': j,
+//         'Unlocked': 0,
+//       });
+//     }
+//   }
+// }
