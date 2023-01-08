@@ -66,6 +66,7 @@ dependencies:
   firebase_storage: ^11.0.10
   firebase_app_check: ^0.1.1+8
   firebase_core_platform_interface: 4.5.2
+  cloud_functions: ^4.0.7
   in_app_purchase:
   firebase_messaging:
 
