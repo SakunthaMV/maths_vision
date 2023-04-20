@@ -1,4 +1,4 @@
-# maths_vision
+# Maths Vision - Combine Mathematics ගොඩ යමු.
 
 App For Combine Maths Students
 
