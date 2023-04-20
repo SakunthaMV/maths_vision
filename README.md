@@ -22,6 +22,9 @@ To use Maths Vision, simply download from below link(Suatable version for your m
 
 **Download** :- [**Maths Vision**](https://github.com/SakunthaMV/maths_vision/releases/latest)
 
+
+You can download our app according to your Mobile Phone Architecture. If you dont know about your phone architecture see this [Article](https://www.howtogeek.com/339665/how-to-find-your-android-devices-info-for-correct-apk-downloads/)
+
 ## Screenshots
 
 ### Main Screen
@@ -56,12 +59,10 @@ To use Maths Vision, simply download from below link(Suatable version for your m
 
 If you have any questions, comments, or suggestions, please do not hesitate to contact us. You can reach us at
 
-Sakuntha Hansaka: sakunthasugathadasa@gmail.com
-Thamindu Manodya: thamindumanodya285@gmail.com
-MHDEVELOPER: magichackers0101@gmail.com
+* Sakuntha Hansaka: sakunthasugathadasa@gmail.com
+* Thamindu Manodya: thamindumanodya285@gmail.com
+* MHDEVELOPER: magichackers0101@gmail.com
 
 ## Acknowledgements
 
 We would like to thank all the students and educators who have helped us develop and refine Maths Vision over the years. Your feedback and support have been invaluable to us.
-
-You can download our app according to your Mobile Phone Architecture. If you dont know about your phone architecture see this [Article](https://www.howtogeek.com/339665/how-to-find-your-android-devices-info-for-correct-apk-downloads/)
